@@ -1,0 +1,16 @@
+#skip commiting the compiled files
+*.tiff
+*.tif
+*.pyc
+*.nc
+*.JPEG
+*.xls
+*.xlsx
+*.JPG
+*.pdf
+*.rar
+*.zip
+*.csv
+.qt_for_python
+input
+__pycache__
