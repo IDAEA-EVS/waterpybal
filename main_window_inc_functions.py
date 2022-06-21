@@ -56,7 +56,8 @@ class waterpybalMainwindow(QtWidgets.QMainWindow):
             self.ui_visual.org_ds_dir=self.ds_dir
             self.ui_visual.set_ds_path()
             self.ui_visual.updatelist_vars()
-            if self.ui_visual.exec()==1 and qt_exception_hook.exception_hook_bool==False:
+            if self.ui_visual.exec()==0:
+                print ("out_of_ui_visual!!!!")
                 self.win_open=False
                 self.ds=self.ui_visual.ds
                 self.ds=nc.Dataset(self.ds_dir,'r+',format='NETCDF4')
@@ -81,6 +82,7 @@ class waterpybalMainwindow(QtWidgets.QMainWindow):
             else:
                 self.win_open=False
                 self.ui.label_to_Balance.setText("")
+    
     #######################################
     def open_etp(self):
         if self.win_open==False: #to just have one window open!
@@ -184,7 +186,7 @@ class waterpybalMainwindow(QtWidgets.QMainWindow):
             self.ui_interpol.preferred_date_interval=self.preferred_date_interval
             try: self.ui_interpol.sam_raster_dir=self.sam_raster_dir
             except: pass
-            self.ui_interpol.updatelist_vars()
+            self.ui_interpol.set_samp_rast()
             if self.ui_interpol.exec()==1 and qt_exception_hook.exception_hook_bool==False:
                 self.ds=self.ui_interpol.ds
                 self.ui.label_to_var_spat_interpol.setText("Done")
@@ -193,6 +195,7 @@ class waterpybalMainwindow(QtWidgets.QMainWindow):
             else:
                 self.ui.label_to_var_spat_interpol.setText("")
                 self.win_open=False
+    
     #######################################
     def open_lat_lon(self):
         if self.win_open==False: #to just have one window open!
@@ -251,6 +254,7 @@ class waterpybalMainwindow(QtWidgets.QMainWindow):
                 
             
             else: self.win_open=False
+    
     #######################################
     def selectFolder(self):
         self.Folder_dir = QtWidgets.QFileDialog.getExistingDirectory(caption='select a directory')

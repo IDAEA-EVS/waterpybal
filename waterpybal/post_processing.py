@@ -17,7 +17,7 @@ import rioxarray as rio
 #lon_val=6.246e+05
 class post_process():
 
-    def ds_date_selector(ds_dir,time_dic,var_name):
+    def ds_date_selector(ds_dir,time_dic,var_name_list):
 
         ds_disk=xr.open_dataset(ds_dir)
         '''
@@ -40,37 +40,60 @@ class post_process():
         start=np.datetime64( time_dic["start"][0] +'-'+ time_dic["start"][1] +'-'+ time_dic["start"][2] + 'T'+ time_dic["start"][3])
         end=np.datetime64( time_dic["end"][0] +'-'+ time_dic["end"][1] +'-'+ time_dic["end"][2] + 'T'+ time_dic["end"][3])
 
-        selected_var=ds_disk[var_name].sel(time=slice(start,end))
+        selected_vars=list()
+        for selected_var in var_name_list:
+            selected_vars.append(ds_disk[selected_var].sel(time=slice(start,end)))
 
         ds_disk.close()
         
-        return selected_var
+        return selected_vars
     
     ##################################    
-    def point_fig_csv(ds_dir,save_dir,time_dic,lat_val,lon_val,lat_name,lon_name,var_name,to_fig_or_csv):
+    def point_fig_csv(ds_dir,save_dir,time_dic,lat_val,lon_val,lat_name,lon_name,var_name_list,to_fig_or_csv):
+        var_name_list_len=len(var_name_list)
         
-        selected_var=post_process.ds_date_selector(ds_dir,time_dic,var_name)
+        selected_vars=post_process.ds_date_selector(ds_dir,time_dic,var_name_list)
 
-        try:
+        
+        for cnt,(var_name,selected_var) in enumerate(zip(var_name_list,selected_vars)):
+
+            #try:
             coords={lat_name:np.array(lat_val),lon_name:np.array(lon_val)}
+            print (coords)
             s_t=selected_var.sel(coords,method="nearest")
+            #except:
+                #print("lat lon not found in point_plot method!!")
+            
             
             if to_fig_or_csv=="Figure":
                 #dir
-                fig_dir=os.path.join(save_dir,'lat_'+str(lat_val)+'_lon_'+str(lon_val)+'.png')
+                fig_dir=os.path.join(save_dir,str(var_name)+'_lat_'+str(lat_val)+'_lon_'+str(lon_val)+'.png')
                 ##############
                 fig, ax = plt.subplots()
                 s_t.plot(ax=ax)
                 fig.savefig(fig_dir)
             else:
+                
                 #dir
-                excel_dir=os.path.join(save_dir,'lat_'+str(lat_val)+'_lon_'+str(lon_val)+'.csv')
-                ##############
+                excel_dir=os.path.join(save_dir,str(var_name)+'_lat_'+str(lat_val)+'_lon_'+str(lon_val)+'.csv')
+                print (var_name)
+                print (s_t)
                 df_d_t=pd.DataFrame(s_t,index=s_t.time,columns=[var_name])
-                df_d_t.to_csv(excel_dir)
 
-        except: print ("lat lon not found in point_plot method!!")
 
+                ##############
+
+            if cnt==0: 
+                df_d_t_f=df_d_t   
+            else: 
+                df_d_t_f=pd.concat([df_d_t_f, df_d_t],axis=1,ignore_index=False)
+        
+        if to_fig_or_csv!="Figure":
+                            
+            if var_name_list_len==1: df_d_t_f.to_csv(excel_dir)
+            else: 
+                excel_dir=os.path.join(save_dir,'All_variables_lat_'+str(lat_val)+'_lon_'+str(lon_val)+'.csv')
+                df_d_t_f.to_csv(excel_dir)
     ##################################
     def raster_fig_csv(ds_dir,save_dir,time_dic,var_name,fig_csv_raster):
         
@@ -88,7 +111,7 @@ class post_process():
             Path(csv_path).mkdir(parents=True, exist_ok=True)
 
         print ("selected_var",selected_var)
-        for i in selected_var:
+        for i in selected_var: #i is each time step
 
             date_str=i["time"].dt.strftime('%Y-%m-%d-%H-%M')
             date_str=str(date_str.data)

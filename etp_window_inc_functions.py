@@ -56,6 +56,8 @@ class Ui_Dialog_etp_(QtWidgets.QDialog):
                     etp_meth_input_dic[par_name]=float(val_or_path)
         #execute the method
         
+        print ("raster_etp_var_dic####\n",raster_etp_var_dic)
+        print ("etp_meth_input_dic####\n",etp_meth_input_dic)
         self.ds=ETP.ETP_calc_main(self.ds,method=self.new_method,preferred_date_interval=self.preferred_date_interval,var_name='ETP_Val',raster_etp_var_dic=raster_etp_var_dic,**etp_meth_input_dic)
       
     ######################
@@ -80,10 +82,12 @@ class Ui_Dialog_etp_(QtWidgets.QDialog):
                 cellinfo_c0.setFlags(QtCore.Qt.ItemFlag.ItemIsEnabled)
                 self.ui.tableWidget_etp_method_params.setItem(row, 0, cellinfo_c0)
                 
-                #lat parameter is an exception because lat is defined 1D in dataset
-                if item[0]=="lat":
-                    cellinfo_c1=QtWidgets.QTableWidgetItem("Raster")
-                    self.ui.tableWidget_etp_method_params.setItem(row, 1, cellinfo_c1)
+                #lat parameter is an exception because lat & lon is defined 1D in dataset
+                if item[0] in ["lat", "lon"]:
+                    combo_c1 = QtWidgets.QComboBox()
+                    combo_c1.addItems(["Constant","Raster"])
+                    self.ui.tableWidget_etp_method_params.setCellWidget(row, 1, combo_c1)
+
                 else:
                 #combobox
                     combo_c1 = QtWidgets.QComboBox()

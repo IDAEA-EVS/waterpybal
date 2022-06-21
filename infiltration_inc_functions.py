@@ -68,4 +68,4 @@ class Ui_Dialog_infiltration_(QtWidgets.QDialog):
         if self.ui.comboBox_average.currentText()=='Yes': average_thresh=True
         else: average_thresh=False
         preferred_date_interval=self.preferred_date_interval
-        self.ds=infiltration.Inf_calc(CN_table_dir,raster_dir,HSG_band,LU_band,ELEV_band,DEM_path_or_raster,DEM_or_raster,filled_dep,slope_range_list,amc1_coeffs,amc3_coeffs,dormant_thresh,growing_thresh,average_thresh,mon_list_dormant,preferred_date_interval)
+        self.ds=infiltration.Inf_calc(self.ds,CN_table_dir,raster_dir,HSG_band,LU_band,ELEV_band,DEM_path_or_raster,DEM_or_raster,filled_dep,slope_range_list,amc1_coeffs,amc3_coeffs,dormant_thresh,growing_thresh,average_thresh,mon_list_dormant,preferred_date_interval)

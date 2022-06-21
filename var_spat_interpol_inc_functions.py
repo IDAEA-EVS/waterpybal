@@ -1,7 +1,7 @@
 from PyQt6 import QtWidgets,QtCore
 from var_spat_interpol import Ui_Dialog_var_spat_interpol
 from waterpybal.dataset_prep import netCDF_ds
-
+import pandas as pd
 
 class Ui_Dialog_var_spat_interpol_(QtWidgets.QDialog):
 
@@ -37,6 +37,8 @@ class Ui_Dialog_var_spat_interpol_(QtWidgets.QDialog):
         cellinfo=QtWidgets.QTableWidgetItem('0.0')
         self.ui.tableWidget_intp_method_params.setItem(0, 1, cellinfo)
 
+        #refresh
+        self.ui.toolButton_refresh.clicked.connect(lambda: self.updatelist_vars())
         #Method combo box and table
         self.ui.comboBox_method.currentTextChanged.connect(lambda: self.update_table())
         ##################
@@ -121,8 +123,13 @@ class Ui_Dialog_var_spat_interpol_(QtWidgets.QDialog):
             row += 1
 
     #################
+    def set_samp_rast(self):
+        #same sample raster as before as a default path
+        self.ui.lineEdit_xyraster.setText(self.sam_raster_dir)
+
     #function to list the variables
     def updatelist_vars(self):
+        self.ui.comboBox_var_name.clear()
         try:
             #list of variables:
 
@@ -130,14 +137,21 @@ class Ui_Dialog_var_spat_interpol_(QtWidgets.QDialog):
             #self.ds=None
             #dir=r"C:\Users\Ash kan\Documents\watbalpy\daymet_v4_daily_hi_prcp_2021.nc"
             #ds=nc.Dataset(dir,'r',format='NETCDF4')
-
-            list_vars=list(self.ds.variables.keys())
+            
+            #ds heads
+            list_vars_ds=list(self.ds.variables.keys())
             dims_list=["time_bnds","time","lat","lon","x","y"]
-            list_vars=[n for n in list_vars if n not in dims_list]
+            list_vars_ds=[n for n in list_vars_ds if n not in dims_list]
+            #------
+            #read csv heads
+            csv_dir=self.ui.lineEdit_csv.text()
+            df=pd.read_csv(csv_dir)
+            list_vars_excel=list(df.head())
+            #-----
+            list_vars=[n for n in list_vars_ds if n in list_vars_excel]
             self.ui.comboBox_var_name.addItems(list_vars)
             
-            #same sample raster as before as a default path
-            self.ui.lineEdit_xyraster.setText(self.sam_raster_dir)
+
         except: pass
     ###############
     #select csv
@@ -175,8 +189,8 @@ class Ui_Dialog_var_spat_interpol_(QtWidgets.QDialog):
         var_name=self.ui.comboBox_var_name.currentText()
         
         preferred_date_interval=self.preferred_date_interval
-        print ('preferred_date_interval',preferred_date_interval)
-        print ()
+        #print ('preferred_date_interval',preferred_date_interval)
+        #print ()
         interpolation_time_int=self.ui.comboBox_time_interval.currentText()
         self.ds=netCDF_ds.var_interpolation(self.ds,ras_sample_dir,csv_dir,time_csv_col,lat_csv_col,lon_csv_col,var_name,method,preferred_date_interval,interpolation_time_int)
 

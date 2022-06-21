@@ -35,7 +35,7 @@ class Ui_Dialog_swr_(QtWidgets.QDialog):
     ###############
     #select raster file
     def selectrastFile(self):
-        filter = "Raster(*.tiff)"
+        filter = "Raster(*.tif)"
         self.rastfileName = QtWidgets.QFileDialog.getOpenFileName(caption='select raster file',filter=filter)[0]
         self.ui.lineEdit_csv.setText(self.rastfileName)
     ################

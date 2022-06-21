@@ -92,7 +92,7 @@ dormant_thresh=None
 growing_thresh=None
 average_thresh=False
 mon_list_dormant=None
-ds=infiltration.Inf_calc(CN_table_dir,raster_dir,HSG_band,LU_band,ELEV_band,DEM_path_or_raster,DEM_or_raster,filled_dep,slope_range_list,amc1_coeffs,amc3_coeffs,dormant_thresh,growing_thresh,average_thresh,mon_list_dormant,preferred_date_interval)
+ds=infiltration.Inf_calc(ds,CN_table_dir,raster_dir,HSG_band,LU_band,ELEV_band,DEM_path_or_raster,DEM_or_raster,filled_dep,slope_range_list,amc1_coeffs,amc3_coeffs,dormant_thresh,growing_thresh,average_thresh,mon_list_dormant,preferred_date_interval)
 #------------------------------------------------
 #calculating PRU
 ds=PRU.PRu_calc(ds,time_steps=None)

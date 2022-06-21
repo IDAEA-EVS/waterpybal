@@ -41,5 +41,8 @@ class Ui_Dialog_open_dataset_(QtWidgets.QDialog):
     def ok_clicked(self):
         self.sam_raster_dir=self.ui.lineEdit_sample_raster.text()
         self.ds_dir=self.ui.lineEdit_open.text()
-        self.preferred_date_interval=self.ui.comboBox_time_interval.currentText()
+        preferred_date_interval=self.ui.comboBox_time_interval.currentText()
+        if preferred_date_interval=="Daily":self.preferred_date_interval='datetime64[D]'
+        if preferred_date_interval=="Monthly":self.preferred_date_interval='datetime64[M]'
+        if preferred_date_interval=="Hourly":self.preferred_date_interval='datetime64[h]'
         

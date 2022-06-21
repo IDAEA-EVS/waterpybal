@@ -12,8 +12,19 @@ class Ui_Dialog_visual_(QtWidgets.QDialog):
 
         self.ui = Ui_Dialog_visual()
         
+
+
+
         self.ui.setupUi(self)
-        
+
+        self.ui.checkBox_all_vars.setStyleSheet("""
+            QCheckBox {
+                font-size: 13px;
+            }
+            QCheckBox::indicator { width: 15px; height: 15px;}
+            }
+        """)
+
         self.show()
         ##############
         #limit the year to ints and 4 digits
@@ -41,6 +52,21 @@ class Ui_Dialog_visual_(QtWidgets.QDialog):
         self.ui.pushButton_maps_excel.clicked.connect(lambda: self.maps_funcs("CSV"))
         self.ui.pushButton_maps_raster.clicked.connect(lambda: self.maps_funcs("Raster"))
         self.ui.pushButton_map_figure.clicked.connect(lambda: self.maps_funcs("Figure"))
+        self.ui.checkBox_all_vars.stateChanged.connect(lambda:self.checkboxclicked())
+
+    def checkboxclicked(self):
+        if self.ui.checkBox_all_vars.isChecked()==True:
+            self.ui.pushButton_map_figure.setEnabled(False)
+            self.ui.pushButton_maps_excel.setEnabled(False)
+            self.ui.pushButton_maps_raster.setEnabled(False)
+            self.ui.pushButton_point_time_plot.setEnabled(False)
+            self.ui.comboBox_var_name.setEnabled(False)
+        if self.ui.checkBox_all_vars.isChecked()==False:
+            self.ui.pushButton_map_figure.setEnabled(True)
+            self.ui.pushButton_maps_excel.setEnabled(True)
+            self.ui.pushButton_maps_raster.setEnabled(True)
+            self.ui.pushButton_point_time_plot.setEnabled(True)
+            self.ui.comboBox_var_name.setEnabled(True)
 
     #################
     def set_ds_path(self):
@@ -60,8 +86,8 @@ class Ui_Dialog_visual_(QtWidgets.QDialog):
             #update list of variables:
             list_vars=list(self.ds_n.variables.keys())
             dims_list=["time_bnds","time","lat","lon","x","y"]
-            list_vars=[n for n in list_vars if n not in dims_list]
-            self.ui.comboBox_var_name.addItems(list_vars)
+            self.list_vars=[n for n in list_vars if n not in dims_list]
+            self.ui.comboBox_var_name.addItems(self.list_vars)
             self.ds_n.close()
         except: pass
     
@@ -77,8 +103,13 @@ class Ui_Dialog_visual_(QtWidgets.QDialog):
         lon_val=self.ui.lineEdit_lon.text()
         lat_name=self.ui.lineEdit_lat_name.text()
         lon_name=self.ui.lineEdit_lon_name.text()
-        var_name=self.ui.comboBox_var_name.currentText()
-        post_process.point_fig_csv(ds_dir,save_dir,time_dic,lat_val,lon_val,lat_name,lon_name,var_name,to_fig_or_csv)
+        if self.ui.checkBox_all_vars.isChecked()==False:
+            var_name_list=[self.ui.comboBox_var_name.currentText()]
+        else: 
+            var_name_list=self.list_vars
+        print (var_name_list)    
+        post_process.point_fig_csv(ds_dir,save_dir,time_dic,lat_val,lon_val,lat_name,lon_name,var_name_list,to_fig_or_csv)
+        print ("vis after func")
         msgBox=QtWidgets.QMessageBox()
         msgBox.setIcon(QtWidgets.QMessageBox.Icon.Information)
         msgBox.setText(to_fig_or_csv+"s created successfully in"+ save_dir)

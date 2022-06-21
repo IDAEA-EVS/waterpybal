@@ -11,6 +11,7 @@
 *.rar
 *.zip
 *.csv
+*.vrt
 .qt_for_python
 input
 __pycache__

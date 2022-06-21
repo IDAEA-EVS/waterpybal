@@ -21,16 +21,20 @@ class PRU(object):
 
             if raster_PRU_dir==None:
                 pwp=ds["pwp"][time_steps[t],:,:].data
+                pwp[pwp==-9999]=np.nan
                 cc=ds["cc"][time_steps[t],:,:].data
-                rrt=ds["rrt"][time_steps[t],:,:]
+                rrt=ds["rrt"][time_steps[t],:,:].data
             elif time_steps != "all":
                 src=rs.open(raster_PRU_dir)
+                msk = src.read_masks(raster_bands_dic["pwp"])
                 pwp=src.read(raster_bands_dic["pwp"])
+                pwp[msk==0]=np.nan
                 cc=src.read(raster_bands_dic["cc"])
                 rrt=src.read(raster_bands_dic["rrt"])
                 src.close()
 
-            pru_sh=(pwp-cc)*rrt
+            pru_sh=(cc-pwp)*rrt*1000 #1000 to convert it to mm
+            pru_sh=np.nan_to_num(pru_sh,nan=-9999)
 
             #the same xy plane of values have to be added to the ds from t to t+1 step
             if time_steps==None: 

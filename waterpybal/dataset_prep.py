@@ -144,12 +144,13 @@ class netCDF_ds(object):
     @staticmethod
     def match_date(new_dic,preferred_date_interval,new_time_int,ds,var_name):
         
-        print ("new_dic:\n",new_dic)
+        #print ("new_dic:\n",new_dic)
 
         if preferred_date_interval=='datetime64[h]': ds_date_interval='datetime64[m]'
         elif preferred_date_interval=='datetime64[D]': ds_date_interval='datetime64[h]'
         elif preferred_date_interval=='datetime64[M]': ds_date_interval='datetime64[D]'
         
+        print (preferred_date_interval)
         time=ds["time"][:].data #numbers
         time=time.astype(ds_date_interval)
 
@@ -194,6 +195,7 @@ class netCDF_ds(object):
                 u_list=list(u[0])
                 if len(u_list)>0:
                     for uu in u_list:
+                        arr=np.nan_to_num(arr,nan=-9999)
                         ds[var_name][uu ,:,:]=arr
 
         return ds
@@ -227,6 +229,7 @@ class netCDF_ds(object):
         outputBounds=[src.bounds.left,src.bounds.top,src.bounds.right,src.bounds.bottom]
         width=src.width
         height=src.height
+        msk = src.read_masks(1)
         src.close()
 
         if interpolation_time_int in ["Daily",'datetime64[D]']: interpolation_time_int='datetime64[D]'
@@ -247,9 +250,9 @@ class netCDF_ds(object):
         
         #datetime64
         time_tt=np.array(df.index.unique())
-        print ("time_tt",time_tt)
+        #print ("time_tt",time_tt)
         for i in time_tt:
-            print ("i,type i",i, type(i))
+            #print ("i,type i",i, type(i))
             #delete existing files
             if os.path.exists("temp_tiff.tiff"): os.remove("temp_tiff.tiff")
             if os.path.exists("temp_csv.csv"): os.remove("temp_csv.csv")
@@ -278,12 +281,13 @@ class netCDF_ds(object):
 
             #interpolate the dataset
             nn=gdal.Grid("temp_tiff.tiff", "temp_csv.vrt",zfield=var_name,algorithm=method,
-            outputBounds=outputBounds,width=width,height=height)
+            outputBounds=outputBounds,width=width,height=height,noData=-9999)
             nn=None
 
             #open temp_tiff
             src_temp = rs.open("temp_tiff.tiff")
             rast=src_temp.read(1)
+            rast[msk==0]=np.nan #no data
             #here we have to change the index (i) to number:
 
 

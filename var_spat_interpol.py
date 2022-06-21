@@ -12,7 +12,7 @@ from PyQt6 import QtCore, QtGui, QtWidgets
 class Ui_Dialog_var_spat_interpol(object):
     def setupUi(self, Dialog_var_spat_interpol):
         Dialog_var_spat_interpol.setObjectName("Dialog_var_spat_interpol")
-        Dialog_var_spat_interpol.resize(380, 500)
+        Dialog_var_spat_interpol.resize(456, 322)
         self.verticalLayout = QtWidgets.QVBoxLayout(Dialog_var_spat_interpol)
         self.verticalLayout.setObjectName("verticalLayout")
         self.horizontalLayout = QtWidgets.QHBoxLayout()
@@ -36,6 +36,10 @@ class Ui_Dialog_var_spat_interpol(object):
         self.toolButton_browse_csv.setMaximumSize(QtCore.QSize(20, 20))
         self.toolButton_browse_csv.setObjectName("toolButton_browse_csv")
         self.horizontalLayout.addWidget(self.toolButton_browse_csv)
+        self.toolButton_refresh = QtWidgets.QToolButton(Dialog_var_spat_interpol)
+        self.toolButton_refresh.setMinimumSize(QtCore.QSize(40, 20))
+        self.toolButton_refresh.setObjectName("toolButton_refresh")
+        self.horizontalLayout.addWidget(self.toolButton_refresh)
         self.verticalLayout.addLayout(self.horizontalLayout)
         self.horizontalLayout_5 = QtWidgets.QHBoxLayout()
         self.horizontalLayout_5.setObjectName("horizontalLayout_5")
@@ -81,7 +85,7 @@ class Ui_Dialog_var_spat_interpol(object):
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(self.comboBox_var_name.sizePolicy().hasHeightForWidth())
         self.comboBox_var_name.setSizePolicy(sizePolicy)
-        self.comboBox_var_name.setMinimumSize(QtCore.QSize(50, 20))
+        self.comboBox_var_name.setMinimumSize(QtCore.QSize(70, 20))
         self.comboBox_var_name.setObjectName("comboBox_var_name")
         self.horizontalLayout_3.addWidget(self.comboBox_var_name)
         self.horizontalLayout_7.addLayout(self.horizontalLayout_3)
@@ -220,6 +224,7 @@ class Ui_Dialog_var_spat_interpol(object):
         Dialog_var_spat_interpol.setWindowTitle(_translate("Dialog_var_spat_interpol", "Spatial Interpolation of a variable"))
         self.label_csv.setText(_translate("Dialog_var_spat_interpol", "File path (.CSV)"))
         self.toolButton_browse_csv.setText(_translate("Dialog_var_spat_interpol", "..."))
+        self.toolButton_refresh.setText(_translate("Dialog_var_spat_interpol", "refresh"))
         self.label_xy_raster.setText(_translate("Dialog_var_spat_interpol", "Sample Raster"))
         self.toolButton_browse_xy_raster.setText(_translate("Dialog_var_spat_interpol", "..."))
         self.label_var_name.setText(_translate("Dialog_var_spat_interpol", "Variable name"))
@@ -242,3 +247,13 @@ class Ui_Dialog_var_spat_interpol(object):
         self.lineEdit_lat_col.setText(_translate("Dialog_var_spat_interpol", "lat"))
         self.label_lon_col.setText(_translate("Dialog_var_spat_interpol", "Longitude column name"))
         self.lineEdit_lon_col.setText(_translate("Dialog_var_spat_interpol", "lon"))
+
+
+if __name__ == "__main__":
+    import sys
+    app = QtWidgets.QApplication(sys.argv)
+    Dialog_var_spat_interpol = QtWidgets.QDialog()
+    ui = Ui_Dialog_var_spat_interpol()
+    ui.setupUi(Dialog_var_spat_interpol)
+    Dialog_var_spat_interpol.show()
+    sys.exit(app.exec())

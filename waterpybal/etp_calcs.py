@@ -134,13 +134,18 @@ class ETP(object):
         for lat_t in lats:
             for lon_t in lons:  
                 kwargs_={}
+                nodata_etp=False
                 for k in kwargs:
                     if type(kwargs[k])==str and kwargs[k]=='ds':
                         
                         
                         v=ds[k][time_step_st:time_step_fin,lat_t,lon_t].data
-                        t_v=pd.DataFrame(v,columns=[k],index=time_ind)
-                        kwargs_[k]=t_v[k]
+                        if np.all(v==-9999):
+                            nodata_etp=True
+                        
+                        else:
+                            t_v=pd.DataFrame(v,columns=[k],index=time_ind)
+                            kwargs_[k]=t_v[k]
 
                     elif type(kwargs[k])==str and kwargs[k]=='raster':
                         if type(raster_etp_var_dic[k])==str:
@@ -154,13 +159,18 @@ class ETP(object):
                                 rast_band=1  
                         dataset = rs.open(rast_dir)
                         band = dataset.read(rast_band)
-                        kwargs_[k]=band[lat_t,lon_t]
+                        msk = dataset.read_masks(rast_band)
+                        if msk[lat_t,lon_t]==0: nodata_etp=True
+                        else:kwargs_[k]=band[lat_t,lon_t]
 
                     else: kwargs_[k]=kwargs[k]    
 
-                etp_t=ETP()
-                etp_t.add_ETP_method_point(method,**kwargs_)
-                etp_t=etp_t.exec_ETPs_point()
-                #define ETPs (calculated for each point for all time steps)
-                ds[var_name][time_step_st:time_step_fin,lat_t,lon_t]=etp_t #output from etp function
+                if nodata_etp==False:
+                    etp_t=ETP()
+                    etp_t.add_ETP_method_point(method,**kwargs_)
+                    etp_t=etp_t.exec_ETPs_point()
+                    #define ETPs (calculated for each point for all time steps)
+                    ds[var_name][time_step_st:time_step_fin,lat_t,lon_t]=etp_t #output from etp function
+                else: ds[var_name][time_step_st:time_step_fin,lat_t,lon_t]=np.full(ds[var_name][time_step_st:time_step_fin,lat_t,lon_t].shape,-9999)
+        
         return ds

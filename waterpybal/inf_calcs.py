@@ -25,6 +25,7 @@ class infiltration(object):
                 fdap=fdap+prec_plane[t-tt,:,:]
                 #append somewhere
             #to the ds
+            fdap[fdap<-9999]=-9999
             ds["five_day_acc_prec"][t,:,:]=fdap
         ds
 
@@ -40,7 +41,7 @@ class infiltration(object):
         #SC=3
         #HSG="B"
 
-        return float(cnt[(cnt["Land use"]==LU) & (cnt["Slope category"]==SC)][HSG])
+        return float(cnt[(cnt["Land use code"]==LU) & (cnt["Slope category"]==SC)][HSG])
     #-----------------------------------------
     def CN_AMC_modded(CN,ds,preferred_date_interval,amc1_coeffs=None,amc3_coeffs=None,dormant_thresh=None,growing_thresh=None,average_thresh=True,mon_list_dormant=None):
         #CN,ds,amc1_coeffs=None,amc3_coeffs=None,dormant_thresh=None,growing_thresh=None,average_thresh=True,mon_list_dormant=None
@@ -69,6 +70,7 @@ class infiltration(object):
         xyshape=ds["five_day_acc_prec"][0,:,:].data.shape
         for t in time_steps:
             five_day_acc_prec=ds["five_day_acc_prec"][t,:,:]
+            five_day_acc_prec[five_day_acc_prec==-9999]=np.nan
             if average_thresh==True:
                 pass
 
@@ -81,12 +83,15 @@ class infiltration(object):
                     thresh=growing_thresh
             CN_mod_list=list()
             for prec,CN_ in zip(five_day_acc_prec.flat,CN.flat):
-                #AMC1
-                if prec<thresh[0]: CN_mod=amc1_coeffs[0]*CN_^2 + amc1_coeffs[1]*CN_+amc1_coeffs[2]
-                #AMC3
-                elif prec>thresh[1]: CN_mod=amc3_coeffs[0]*CN_^2 + amc3_coeffs[1]*CN_+amc3_coeffs[2]
-                #AMC2
-                else: CN_mod=CN_
+                if np.isnan(prec)!=False:
+                    #AMC1
+                    if prec<thresh[0]: CN_mod=amc1_coeffs[0]*CN_^2 + amc1_coeffs[1]*CN_+amc1_coeffs[2]
+                    #AMC3
+                    elif prec>thresh[1]: CN_mod=amc3_coeffs[0]*CN_^2 + amc3_coeffs[1]*CN_+amc3_coeffs[2]
+                    #AMC2
+                    else: CN_mod=CN_
+                else:
+                    CN_mod=-9999
 
                 CN_mod_list.append(CN_mod)
 
@@ -113,6 +118,7 @@ class infiltration(object):
         #inf=P-Ia-Q
         inf=P-0.2*S-Q
         #inf[inf<0]=0
+        inf[P==-9999]=-9999
         ds["INF_Val"]=inf
         
         return  ds      
@@ -169,10 +175,10 @@ class infiltration(object):
     
     #-----------------------------------------
 
-    def Inf_calc(CN_table_dir,raster_dir,HSG_band,LU_band,ELEV_band,DEM_path_or_raster,DEM_or_raster,filled_dep,slope_range_list,amc1_coeffs,amc3_coeffs,dormant_thresh,growing_thresh,average_thresh,mon_list_dormant,preferred_date_interval):  
+    def Inf_calc(ds,CN_table_dir,raster_dir,HSG_band,LU_band,ELEV_band,DEM_path_or_raster,DEM_or_raster,filled_dep,slope_range_list,amc1_coeffs,amc3_coeffs,dormant_thresh,growing_thresh,average_thresh,mon_list_dormant,preferred_date_interval):  
         
         #1-from raster, read HSG, LU,read Slope and calculate slope catagory
-        HSG,SC,LU=infiltration.read_raster_DEM_HSG_LU(raster_dir,HSG_band,LU_band,ELEV_band,DEM_path_or_raster,DEM_or_raster,filled_dep,slope_range_list)
+        HSG,SC,LU,msk=infiltration.read_raster_DEM_HSG_LU(raster_dir,HSG_band,LU_band,ELEV_band,DEM_path_or_raster,DEM_or_raster,filled_dep,slope_range_list)
         #---------------
         # 2-read cn table db   for each point of the raster (array)
         #CN_table_dir=r"C:\Users\Ash kan\Documents\watbalpy\cn2.csv"
@@ -182,9 +188,12 @@ class infiltration(object):
         #SC=np.random.randint(low=1,high=5,size=(3,3,1))
         #HSG=np.array([["A","D","B"],["C","B","C"],["A","C","A"]])
         cn_l=list()
-        for HSG_,SC_,LU_ in zip(HSG.flat,SC.flat,LU.flat):
-            cn_l.append(infiltration.CNN(cnt,HSG_,SC_,LU_))
+        for HSG_,SC_,LU_,msk_ in zip(HSG.flat,SC.flat,LU.flat,msk.flat):
+            if msk_==0: cn_l.append(-9999)
+            else: cn_l.append(infiltration.CNN(cnt,HSG_,SC_,LU_))
         CN=np.array(cn_l).reshape(SC.shape)
+        
+        ds["CN_Val"]= np.repeat(CN[np.newaxis,:, : ], ds["time"].shape[0], axis=0)
         #---------------
         #calculate five day percs
         ds=infiltration.five_day_acc_prec(ds)
