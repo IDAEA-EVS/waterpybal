@@ -1,4 +1,4 @@
-from PyQt6 import QtWidgets,QtCore
+from PyQt6 import QtWidgets,QtCore,QtGui
 from var_spat_interpol import Ui_Dialog_var_spat_interpol
 from waterpybal.dataset_prep import netCDF_ds
 import pandas as pd
@@ -23,12 +23,63 @@ class Ui_Dialog_var_spat_interpol_(QtWidgets.QDialog):
         self.ds=None
         self.preferred_date_interval=None
         self.sam_raster_dir=None
+        self.single_point=False
+        self.sam_val=False
         ##################
         #Linear as default
         self.ui.comboBox_method.setCurrentIndex(3)
         self.met='linear'
         ###################
+        self.ui.checkBox.setStyleSheet("""
+            QCheckBox {
+                font-size: 13px;
+            }
+            QCheckBox::indicator { width: 15px; height: 15px;}
+            }
+        """)
+        self.ui.checkBox_variable_input.setStyleSheet("""
+            QCheckBox {
+                font-size: 13px;
+            }
+            QCheckBox::indicator { width: 15px; height: 15px;}
+            }
+        """)
+        ###################
+        #limit the sameval line edit
+        doub=QtGui.QDoubleValidator()
+        self.ui.lineEdit_same_val.setValidator(doub) 
+        self.ui.lineEdit_same_val.setMaxLength(15)
+        ###################
+        #first vars of the table
+        self.init_table()
+        #################
+        #same vale checkbox
+        self.ui.checkBox_variable_input.stateChanged.connect(lambda: self.variable_input())
 
+        #refresh
+        self.ui.toolButton_refresh.clicked.connect(lambda: self.updatelist_vars())
+        #Method combo box and table
+        self.ui.comboBox_method.currentTextChanged.connect(lambda: self.update_table())
+        ##################
+        
+        ##################
+        #to work when it is okeyed
+        self.ui.buttonBox_spat_interpol.accepted.connect(lambda: self.ok_clicked())
+    
+    #################
+    def variable_input(self):
+        if self.ui.checkBox_variable_input.isChecked():
+            self.sam_val=True
+            self.ui.groupBox_variable_input.setEnabled(False)
+            self.ui.groupBox.setEnabled(True)
+            self.updatelist_vars_same_val()
+
+        else:
+            self.sam_val=False
+            self.ui.groupBox_variable_input.setEnabled(True)
+            self.ui.groupBox.setEnabled(False)
+    #################        
+    def init_table(self):
         #set the tableWidget_intp_method_params table
         self.ui.tableWidget_intp_method_params.setRowCount(1)
         cellinfo=QtWidgets.QTableWidgetItem('radius')
@@ -36,16 +87,20 @@ class Ui_Dialog_var_spat_interpol_(QtWidgets.QDialog):
         self.ui.tableWidget_intp_method_params.setItem(0, 0, cellinfo)
         cellinfo=QtWidgets.QTableWidgetItem('0.0')
         self.ui.tableWidget_intp_method_params.setItem(0, 1, cellinfo)
-
-        #refresh
-        self.ui.toolButton_refresh.clicked.connect(lambda: self.updatelist_vars())
-        #Method combo box and table
-        self.ui.comboBox_method.currentTextChanged.connect(lambda: self.update_table())
-        ##################
-        #to work when it is okeyed
-        self.ui.buttonBox_spat_interpol.accepted.connect(lambda: self.ok_clicked())
-
-
+    #################
+    def single_point_mod(self):
+        
+        if self.single_point:
+            self.ui.lineEdit_xyraster.setEnabled(False)
+            self.ui.label_xy_raster.setEnabled(False)
+            self.ui.toolButton_browse_xy_raster.setEnabled(False)
+            self.ui.label_method.setEnabled(False)
+            self.ui.comboBox_method.setEnabled(False)
+            self.ui.tableWidget_intp_method_params.setEnabled(False)
+            self.ui.lineEdit_lat_col.setEnabled(False)
+            self.ui.lineEdit_lon_col.setEnabled(False)
+    
+    #################
     def update_table(self):
         
         self.ui.tableWidget_intp_method_params.setRowCount(0)
@@ -126,7 +181,8 @@ class Ui_Dialog_var_spat_interpol_(QtWidgets.QDialog):
     def set_samp_rast(self):
         #same sample raster as before as a default path
         self.ui.lineEdit_xyraster.setText(self.sam_raster_dir)
-
+    
+    #################
     #function to list the variables
     def updatelist_vars(self):
         self.ui.comboBox_var_name.clear()
@@ -153,6 +209,20 @@ class Ui_Dialog_var_spat_interpol_(QtWidgets.QDialog):
             
 
         except: pass
+    
+    
+    ###############
+    def updatelist_vars_same_val(self):
+        self.ui.comboBox_var_same_val.clear()
+        try:
+            #list of variables:
+
+            list_vars_ds=list(self.ds.variables.keys())
+            dims_list=["time_bnds","time","lat","lon","x","y"]
+            list_vars_ds=[n for n in list_vars_ds if n not in dims_list]
+            self.ui.comboBox_var_name.addItems(list_vars_ds)
+        
+        except: pass
     ###############
     #select csv
     def selectcsvFile(self):
@@ -160,6 +230,7 @@ class Ui_Dialog_var_spat_interpol_(QtWidgets.QDialog):
         self.fileName = QtWidgets.QFileDialog.getOpenFileName(caption='select a .CSV file',filter=filter)[0]
         
         self.ui.lineEdit_csv.setText(self.fileName)
+    
     ###############
     #select raster file
     def selectrastFile(self):
@@ -167,10 +238,51 @@ class Ui_Dialog_var_spat_interpol_(QtWidgets.QDialog):
         self.rastfileName = QtWidgets.QFileDialog.getOpenFileName(caption='select a raster file',filter=filter)[0]
         
         self.ui.lineEdit_xyraster.setText(self.rastfileName)
-############################
+    
+    ###############
     def ok_clicked(self):
-        #############
-        #read method and construc the str
+        
+        
+        if self.sam_val==False:
+
+            ######
+            multiply=True
+            if self.ui.checkBox.isChecked(): multiply=False
+
+            ######
+            preferred_date_interval=self.preferred_date_interval
+            interpolation_time_int=self.ui.comboBox_time_interval.currentText()
+            csv_dir=self.ui.lineEdit_csv.text()
+            time_csv_col=self.ui.lineEdit_time_col.text()
+            lat_csv_col=self.ui.lineEdit_lat_col.text()
+            lon_csv_col=self.ui.lineEdit_lon_col.text()    
+            var_name=self.ui.comboBox_var_name.currentText()
+            ras_sample_dir=self.ui.lineEdit_xyraster.text()
+
+            ######
+            if self.single_point==False:
+                method=self.method_str_construct(self)
+                self.ds=netCDF_ds.var_interpolation(self.ds,ras_sample_dir,csv_dir,time_csv_col,lat_csv_col,lon_csv_col,var_name,method,preferred_date_interval,interpolation_time_int,multiply)
+
+            else:
+                self.ds=netCDF_ds.var_introduction_from_csv(self.ds,csv_dir,time_csv_col,var_name,preferred_date_interval,interpolation_time_int,multiply)
+
+        else:
+            #same value for all timesteps and in all space
+            var_name=self.ui.comboBox_var_name.currentText()
+            self.ds[var_name][:,:,:]=float(self.ui.lineEdit_same_val.text())
+
+    '''def single_point_csv_config(self,csv_dir):
+        df=pd.read_csv(csv_dir)
+        df["lat"]=0
+        df["lon"]=0
+        csv_dir=r"single_point_internal_csv.csv"
+        df.to_csv(csv_dir)
+        return csv_dir'''
+
+    ###############
+    def method_str_construct(self):
+            #read method and construc the str
         num_of_rows=self.ui.tableWidget_intp_method_params.rowCount()
         parstr=''
         for i in range(0,num_of_rows):
@@ -179,21 +291,7 @@ class Ui_Dialog_var_spat_interpol_(QtWidgets.QDialog):
             parstr=parstr+':'+par_name+'='+par_val
         
         method=self.met+parstr+":nodata=-9999"
-        print (method)
-
-        ras_sample_dir=self.ui.lineEdit_xyraster.text()
-        csv_dir=self.ui.lineEdit_csv.text()
-        time_csv_col=self.ui.lineEdit_time_col.text()
-        lat_csv_col=self.ui.lineEdit_lat_col.text()
-        lon_csv_col=self.ui.lineEdit_lon_col.text()
-        var_name=self.ui.comboBox_var_name.currentText()
-        
-        preferred_date_interval=self.preferred_date_interval
-        #print ('preferred_date_interval',preferred_date_interval)
-        #print ()
-        interpolation_time_int=self.ui.comboBox_time_interval.currentText()
-        self.ds=netCDF_ds.var_interpolation(self.ds,ras_sample_dir,csv_dir,time_csv_col,lat_csv_col,lon_csv_col,var_name,method,preferred_date_interval,interpolation_time_int)
-
+        return method
 
 
 

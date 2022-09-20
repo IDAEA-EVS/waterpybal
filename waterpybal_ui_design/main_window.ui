@@ -6,13 +6,13 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>364</width>
+    <width>380</width>
     <height>376</height>
    </rect>
   </property>
   <property name="minimumSize">
    <size>
-    <width>340</width>
+    <width>380</width>
     <height>0</height>
    </size>
   </property>
@@ -199,7 +199,7 @@
         </property>
         <property name="minimumSize">
          <size>
-          <width>214</width>
+          <width>280</width>
           <height>0</height>
          </size>
         </property>
@@ -221,9 +221,15 @@
       </item>
       <item>
        <widget class="QLabel" name="label_to_lat_lon_time">
+        <property name="minimumSize">
+         <size>
+          <width>70</width>
+          <height>0</height>
+         </size>
+        </property>
         <property name="maximumSize">
          <size>
-          <width>60</width>
+          <width>100</width>
           <height>20</height>
          </size>
         </property>
@@ -249,6 +255,12 @@
           <verstretch>0</verstretch>
          </sizepolicy>
         </property>
+        <property name="minimumSize">
+         <size>
+          <width>280</width>
+          <height>0</height>
+         </size>
+        </property>
         <property name="maximumSize">
          <size>
           <width>16777215</width>
@@ -261,15 +273,21 @@
          </font>
         </property>
         <property name="text">
-         <string>Spatial interpolation of the variables</string>
+         <string>Variable introduction and spatial interpolation</string>
         </property>
        </widget>
       </item>
       <item>
        <widget class="QLabel" name="label_to_var_spat_interpol">
+        <property name="minimumSize">
+         <size>
+          <width>70</width>
+          <height>0</height>
+         </size>
+        </property>
         <property name="maximumSize">
          <size>
-          <width>60</width>
+          <width>100</width>
           <height>20</height>
          </size>
         </property>
@@ -290,6 +308,12 @@
           <verstretch>0</verstretch>
          </sizepolicy>
         </property>
+        <property name="minimumSize">
+         <size>
+          <width>280</width>
+          <height>0</height>
+         </size>
+        </property>
         <property name="maximumSize">
          <size>
           <width>16777215</width>
@@ -308,9 +332,15 @@
       </item>
       <item>
        <widget class="QLabel" name="label_to_var_from_tiff">
+        <property name="minimumSize">
+         <size>
+          <width>70</width>
+          <height>0</height>
+         </size>
+        </property>
         <property name="maximumSize">
          <size>
-          <width>60</width>
+          <width>100</width>
           <height>20</height>
          </size>
         </property>
@@ -331,6 +361,12 @@
           <verstretch>0</verstretch>
          </sizepolicy>
         </property>
+        <property name="minimumSize">
+         <size>
+          <width>280</width>
+          <height>0</height>
+         </size>
+        </property>
         <property name="maximumSize">
          <size>
           <width>16777215</width>
@@ -349,9 +385,15 @@
       </item>
       <item>
        <widget class="QLabel" name="label_to_swr">
+        <property name="minimumSize">
+         <size>
+          <width>70</width>
+          <height>0</height>
+         </size>
+        </property>
         <property name="maximumSize">
          <size>
-          <width>60</width>
+          <width>100</width>
           <height>20</height>
          </size>
         </property>
@@ -372,6 +414,12 @@
           <verstretch>0</verstretch>
          </sizepolicy>
         </property>
+        <property name="minimumSize">
+         <size>
+          <width>280</width>
+          <height>0</height>
+         </size>
+        </property>
         <property name="maximumSize">
          <size>
           <width>16777215</width>
@@ -390,9 +438,15 @@
       </item>
       <item>
        <widget class="QLabel" name="label_to_infiltration">
+        <property name="minimumSize">
+         <size>
+          <width>70</width>
+          <height>0</height>
+         </size>
+        </property>
         <property name="maximumSize">
          <size>
-          <width>60</width>
+          <width>100</width>
           <height>20</height>
          </size>
         </property>
@@ -413,6 +467,12 @@
           <verstretch>0</verstretch>
          </sizepolicy>
         </property>
+        <property name="minimumSize">
+         <size>
+          <width>280</width>
+          <height>0</height>
+         </size>
+        </property>
         <property name="maximumSize">
          <size>
           <width>16777215</width>
@@ -431,9 +491,15 @@
       </item>
       <item>
        <widget class="QLabel" name="label_to_etp">
+        <property name="minimumSize">
+         <size>
+          <width>70</width>
+          <height>0</height>
+         </size>
+        </property>
         <property name="maximumSize">
          <size>
-          <width>60</width>
+          <width>100</width>
           <height>20</height>
          </size>
         </property>
@@ -454,6 +520,12 @@
           <verstretch>0</verstretch>
          </sizepolicy>
         </property>
+        <property name="minimumSize">
+         <size>
+          <width>280</width>
+          <height>0</height>
+         </size>
+        </property>
         <property name="maximumSize">
          <size>
           <width>16777215</width>
@@ -472,9 +544,15 @@
       </item>
       <item>
        <widget class="QLabel" name="label_to_Balance">
+        <property name="minimumSize">
+         <size>
+          <width>70</width>
+          <height>0</height>
+         </size>
+        </property>
         <property name="maximumSize">
          <size>
-          <width>60</width>
+          <width>100</width>
           <height>20</height>
          </size>
         </property>
@@ -492,6 +570,12 @@
         <horstretch>0</horstretch>
         <verstretch>0</verstretch>
        </sizepolicy>
+      </property>
+      <property name="minimumSize">
+       <size>
+        <width>300</width>
+        <height>0</height>
+       </size>
       </property>
       <property name="maximumSize">
        <size>

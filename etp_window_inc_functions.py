@@ -15,6 +15,7 @@ class Ui_Dialog_etp_(QtWidgets.QDialog):
         ##############
         self.ds=None
         self.preferred_date_interval=None
+        self.single_point=False
         ##############
         self.etp_wpb_etp=ETP()
         self.methods_dic=self.etp_wpb_etp.methods_dic
@@ -85,13 +86,20 @@ class Ui_Dialog_etp_(QtWidgets.QDialog):
                 #lat parameter is an exception because lat & lon is defined 1D in dataset
                 if item[0] in ["lat", "lon"]:
                     combo_c1 = QtWidgets.QComboBox()
-                    combo_c1.addItems(["Constant","Raster"])
+                    if self.single_point:
+                        combo_c1.addItems(["Constant"])
+                    else:
+                        combo_c1.addItems(["Constant","Raster"])
                     self.ui.tableWidget_etp_method_params.setCellWidget(row, 1, combo_c1)
 
                 else:
                 #combobox
                     combo_c1 = QtWidgets.QComboBox()
-                    combo_c1.addItems(["Constant","Raster","Dataset"])
+                    if self.single_point:
+                        combo_c1.addItems(["Constant","Dataset"])
+                    else:
+                        combo_c1.addItems(["Constant","Raster","Dataset"])
+                    
                     self.ui.tableWidget_etp_method_params.setCellWidget(row, 1, combo_c1)
                 
                 if item[1]!='obl':

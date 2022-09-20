@@ -4,8 +4,11 @@ import numpy as np
 import rasterio as rs
 class PRU(object):
 
+
+
+
     @staticmethod
-    def PRu_calc(ds,time_steps,raster_PRU_dir=None,raster_bands_dic=None):
+    def PRu_calc(ds,time_steps,raster_PRU_dir=None,raster_bands_dic_or_val=None):
         #camp capacity = cc
         #permanent wilting point = pwp
         #root radial thikness = rrt
@@ -26,11 +29,11 @@ class PRU(object):
                 rrt=ds["rrt"][time_steps[t],:,:].data
             elif time_steps != "all":
                 src=rs.open(raster_PRU_dir)
-                msk = src.read_masks(raster_bands_dic["pwp"])
-                pwp=src.read(raster_bands_dic["pwp"])
+                msk = src.read_masks(raster_bands_dic_or_val["pwp"])
+                pwp=src.read(raster_bands_dic_or_val["pwp"])
                 pwp[msk==0]=np.nan
-                cc=src.read(raster_bands_dic["cc"])
-                rrt=src.read(raster_bands_dic["rrt"])
+                cc=src.read(raster_bands_dic_or_val["cc"])
+                rrt=src.read(raster_bands_dic_or_val["rrt"])
                 src.close()
 
             pru_sh=(cc-pwp)*rrt*1000 #1000 to convert it to mm

@@ -1,3 +1,4 @@
+import csv
 import os
 import netCDF4 as nc
 import numpy as np
@@ -12,12 +13,15 @@ import datetime as dt
 class netCDF_ds(object):
     
     @staticmethod
-    def var_generation(dir,tunit,lats_np,lons_np,times_np,time_b1,time_b2,ds_values_dic=None):
+    def var_generation(dir,tunit,lats_np,lons_np,times_np,time_b1,time_b2,ds_values_dic=None,urban_ds=False):
         
-        inputs_dic={"Prec_Val":"mm","CN_Val":"No_Unit","INF_Val":"mm","ETP_Val":"mm","PRu_Val":"mm","pwp":"no_unit","cc":"no_unit","rrt":"no_unit"}
+        inputs_dic={"Prec_Val":"mm","Runoff_Val":"mm","Irig_Val":"mm","CN_Val":"No_Unit","INF_Val":"mm","ETP_Val":"mm","PRu_Val":"mm","pwp":"no_unit","cc":"no_unit","rrt":"no_unit"}
         outputs_dic={"ETR_Val":"mm","Def_Val":"mm","Rec_Val":"mm","Ru_Val":"mm","five_day_acc_prec":"mm","CN_mod":"no_unit"}
+        urban_dic={"wat_cons":"mm","wat_net_loss":"%","urb_dir_evap":"%","urb_indir_evap":"%","sew_net_loss_low":"%","sew_net_loss_high":"%","prec_sewage_threshold":"mm","runoff_to_sewage":"%","dir_infil":"%","wat_supp_wells":"mm","wat_supp_wells_loss":"%","wat_other":"%","urban_to_ds_inf_etp_ratio":"%"}
+        
         if type(ds_values_dic)==dict: inputs_dic= {**inputs_dic,**ds_values_dic}
-
+        if urban_ds: inputs_dic={**inputs_dic,**urban_dic}
+        
         ds=nc.Dataset(dir,'w',format='NETCDF4')
         #create dimensions
         ds.createDimension("time",None) #None: unlimited dimension
@@ -142,15 +146,11 @@ class netCDF_ds(object):
         return lat,lon,time_v,time_b1,time_b2,dtype,tunit
     
     @staticmethod
-    def match_date(new_dic,preferred_date_interval,new_time_int,ds,var_name):
+    def match_date(new_dic,preferred_date_interval,new_time_int,ds,var_name,multiply):
         
-        #print ("new_dic:\n",new_dic)
+        ds_date_interval=netCDF_ds.dtimechanger(preferred_date_interval)
 
-        if preferred_date_interval=='datetime64[h]': ds_date_interval='datetime64[m]'
-        elif preferred_date_interval=='datetime64[D]': ds_date_interval='datetime64[h]'
-        elif preferred_date_interval=='datetime64[M]': ds_date_interval='datetime64[D]'
         
-        print (preferred_date_interval)
         time=ds["time"][:].data #numbers
         time=time.astype(ds_date_interval)
 
@@ -163,31 +163,20 @@ class netCDF_ds(object):
             if preferred_date_interval==new_time_int or (preferred_date_interval in ['datetime64[D]', 'datetime64[M]'] and new_time_int=='datetime64[h]') or (preferred_date_interval=='datetime64[M]' and new_time_int=='datetime64[D]'):
                 #origin = np.array("1970-01-01",dtype=preferred_date_interval)
                 time_temp=time.astype(preferred_date_interval)
-                
-                '''if preferred_date_interval=='datetime64[h]': 
-                    #dt_delt= np.timedelta64(30,'m')  
-                    time_temp=origin+time.astype('datetime64[m]')
-                elif preferred_date_interval=='datetime64[D]':
-                    #dt_delt= np.timedelta64(12,'h')
-                    time_temp=origin+time.astype('datetime64[h]')
-                elif preferred_date_interval=='datetime64[M]':
-                    #dt_delt= np.timedelta64(15,'D')
-                    time_temp=origin+time.astype('datetime64[D]')
-                else: print ("match_date function error - 1!")'''
-                            
+         
             else:
 
-                if preferred_date_interval=='datetime64[h]' and new_time_int=='datetime64[D]': #hour to daily
-                    arr=arr/24
-                elif preferred_date_interval=='datetime64[h]' and new_time_int=='datetime64[M]': #hour to month
-                    arr=arr/720
-                elif preferred_date_interval=='datetime64[D]' and new_time_int=='datetime64[M]': #day to month
-                    arr=arr/30
+                if multiply==True:  
+                    if preferred_date_interval=='datetime64[h]' and new_time_int=='datetime64[D]': #hour to daily
+                        arr=arr/24
+                    elif preferred_date_interval=='datetime64[h]' and new_time_int=='datetime64[M]': #hour to month
+                        arr=arr/720
+                    elif preferred_date_interval=='datetime64[D]' and new_time_int=='datetime64[M]': #day to month
+                        arr=arr/30
                 else: print ("match_date function error - 2!")    
                 
                 #origin = np.array("1970-01-01",dtype=new_time_int)
-                #print (time.astype(new_time_int))
-                #print (origin)
+
                 time_temp=time.astype(new_time_int)
 
             u=np.where(time_temp == date_dt)
@@ -201,7 +190,7 @@ class netCDF_ds(object):
         return ds
     
     @staticmethod
-    def var_interpolation(ds,ras_sample_dir,csv_dir,time_csv_col,lat_csv_col,lon_csv_col,var_name,method,preferred_date_interval,interpolation_time_int):
+    def var_interpolation(ds,ras_sample_dir,csv_dir,time_csv_col,lat_csv_col,lon_csv_col,var_name,method,preferred_date_interval,interpolation_time_int,multiply):
         '''
         method: "nearest" - "invdist:power=2:radius1=100:radius2=800" - "linear" - "average:radius1=100:radius2=800:angle=20"-"minimum:radius1=100:radius2=800:angle=20"
         '''
@@ -240,19 +229,17 @@ class netCDF_ds(object):
         df=pd.read_csv(csv_dir)
         df[time_csv_col]=np.array(pd.to_datetime(df[time_csv_col]))
         df=df.set_index(time_csv_col)
-        #print (df)
         '''else:
             df=df_fin
         '''
 
 
         np_interpolated_dic=dict()
+        np_interpolated_dic_cntr=dict()
         
         #datetime64
         time_tt=np.array(df.index.unique())
-        #print ("time_tt",time_tt)
         for i in time_tt:
-            #print ("i,type i",i, type(i))
             #delete existing files
             if os.path.exists("temp_tiff.tiff"): os.remove("temp_tiff.tiff")
             if os.path.exists("temp_csv.csv"): os.remove("temp_csv.csv")
@@ -293,20 +280,24 @@ class netCDF_ds(object):
 
 
             ###########
-            if i in np_interpolated_dic: #to make average if not fits
+            # #to make average if not fits
+            if i in np_interpolated_dic: 
 
-                np_interpolated_dic[i]=(np_interpolated_dic[i]+rast)/2
+                np_interpolated_dic[i]=(np_interpolated_dic[i]+rast)
+                np_interpolated_dic_cntr[i]=np_interpolated_dic_cntr[i]+1
             else:
                 np_interpolated_dic[i]=rast
+                np_interpolated_dic_cntr[i]=1
+            
+            for date,val in np_interpolated_dic_cntr.items():
+                np_interpolated_dic[date]=np_interpolated_dic[date]/val
 
             src_temp.close()            
 
         #store in netcdf
-        #time=ds["time"][:].data
-
 
         
-        ds=netCDF_ds.match_date(new_dic=np_interpolated_dic,preferred_date_interval=preferred_date_interval,new_time_int=interpolation_time_int,ds=ds,var_name=var_name)
+        ds=netCDF_ds.match_date(new_dic=np_interpolated_dic,preferred_date_interval=preferred_date_interval,new_time_int=interpolation_time_int,ds=ds,var_name=var_name,multiply=multiply)
 
         '''elif time_interpolation==True: #add the data to ds in case time interpolation is True and space interpolation is false
             #create a temporal csv pf just one timestep
@@ -326,7 +317,7 @@ class netCDF_ds(object):
         return ds
     
     @staticmethod
-    def var_introduction_from_tiffs(ds,folder_dir,var_name,preferred_date_interval):
+    def var_introduction_from_tiffs(ds,folder_dir,var_name,preferred_date_interval,multiply):
 
         import glob
         tifs = glob.glob(os.path.join(folder_dir,"*"))
@@ -351,6 +342,81 @@ class netCDF_ds(object):
             else: rast_dic[d]=arr
             src_temp.close()
 
-        ds=netCDF_ds.match_date(new_dic=rast_dic,preferred_date_interval=preferred_date_interval,new_time_int=date_interval,ds=ds,var_name=var_name)
+        ds=netCDF_ds.match_date(new_dic=rast_dic,preferred_date_interval=preferred_date_interval,new_time_int=date_interval,ds=ds,var_name=var_name,multiply=multiply)
         return ds
 
+    @staticmethod
+    def var_introduction_from_csv(ds,csv_dir,time_csv_col,var_name,preferred_date_interval,interpolation_time_int,multiply):
+        print (ds)
+        print ("inside var_introduction_from_csv")
+        if interpolation_time_int in ["Daily",'datetime64[D]']: interpolation_time_int='datetime64[D]'
+        elif interpolation_time_int in ["Monthly",'datetime64[M]']: interpolation_time_int='datetime64[M]'
+        elif interpolation_time_int in ["Hourly",'datetime64[h]']: interpolation_time_int='datetime64[h]'  
+        #group the csv in timesteps
+        df=pd.read_csv(csv_dir)
+        df[time_csv_col]=np.array(pd.to_datetime(df[time_csv_col]))
+        df=df.drop_duplicates(subset=time_csv_col)
+        df=df.set_index(time_csv_col) 
+        df=df[[var_name] ]
+        ##################
+        np_interpolated_dic=dict()
+        np_interpolated_dic_cntr=dict()
+        
+        #datetime64
+        time_tt=np.array(df.index.unique())   
+
+        if interpolation_time_int!=preferred_date_interval:
+            for i in time_tt:
+            
+            
+        
+                ###########
+                df_t=df[df.index==i]
+                # #to make average if not fits
+                if i in np_interpolated_dic: 
+
+                    np_interpolated_dic[i]=(np_interpolated_dic[i]+df_t)
+                    np_interpolated_dic_cntr[i]=np_interpolated_dic_cntr[i]+1
+                else:
+                    np_interpolated_dic[i]=df_t
+                    np_interpolated_dic_cntr[i]=1
+                
+                for date,val in np_interpolated_dic_cntr.items():
+                    np_interpolated_dic[date]=np_interpolated_dic[date]/val
+
+            ds=netCDF_ds.match_date(new_dic=np_interpolated_dic,preferred_date_interval=preferred_date_interval,new_time_int=interpolation_time_int,ds=ds,var_name=var_name,multiply=multiply)
+            
+        else:
+            #select df times that exist in the dataframe
+            ds_date_interval=netCDF_ds.dtimechanger(preferred_date_interval)
+            
+            
+            time=ds["time"][:].data #numbers
+            
+            time=time.astype(ds_date_interval)
+            time=time.astype(interpolation_time_int)
+            
+            ds_time_pd=pd.DataFrame(time,dtype=interpolation_time_int,columns=[time_csv_col])
+            
+            ds_time_pd[time_csv_col]=np.array(pd.to_datetime(ds_time_pd[time_csv_col]))
+            
+            arr=ds_time_pd.merge(df ,how='left', on=time_csv_col)
+
+            arr=np.nan_to_num(arr[var_name],nan=-9999) 
+            arr=arr.reshape(ds[var_name].shape)
+            print (ds)
+
+            print ("arr.shape",arr.shape)
+            print ("ds[var_name].shape",ds[var_name].shape)
+
+            ds[var_name][: ,:,:]=arr
+
+            
+        print (ds)
+        return ds
+
+    def dtimechanger(preferred_date_interval):
+        if preferred_date_interval=='datetime64[h]': ds_date_interval='datetime64[m]'
+        elif preferred_date_interval=='datetime64[D]': ds_date_interval='datetime64[h]'
+        elif preferred_date_interval=='datetime64[M]': ds_date_interval='datetime64[D]'
+        return ds_date_interval 

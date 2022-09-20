@@ -1,0 +1,5 @@
+pyqt6-tools designer
+pyuic6 -x filename.ui -o filename.py
+
+
+

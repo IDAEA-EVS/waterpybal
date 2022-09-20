@@ -12,7 +12,7 @@ from PyQt6 import QtCore, QtGui, QtWidgets
 class Ui_Dialog_open_dataset(object):
     def setupUi(self, Dialog_open_dataset):
         Dialog_open_dataset.setObjectName("Dialog_open_dataset")
-        Dialog_open_dataset.resize(350, 185)
+        Dialog_open_dataset.resize(366, 190)
         self.verticalLayout = QtWidgets.QVBoxLayout(Dialog_open_dataset)
         self.verticalLayout.setObjectName("verticalLayout")
         self.horizontalLayout = QtWidgets.QHBoxLayout()
@@ -52,6 +52,17 @@ class Ui_Dialog_open_dataset(object):
         self.toolButton_open.setObjectName("toolButton_open")
         self.horizontalLayout.addWidget(self.toolButton_open)
         self.verticalLayout.addLayout(self.horizontalLayout)
+        self.horizontalLayout_4 = QtWidgets.QHBoxLayout()
+        self.horizontalLayout_4.setObjectName("horizontalLayout_4")
+        self.checkBox_single_point = QtWidgets.QCheckBox(Dialog_open_dataset)
+        font = QtGui.QFont()
+        font.setPointSize(10)
+        self.checkBox_single_point.setFont(font)
+        self.checkBox_single_point.setObjectName("checkBox_single_point")
+        self.horizontalLayout_4.addWidget(self.checkBox_single_point)
+        spacerItem = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Policy.Expanding, QtWidgets.QSizePolicy.Policy.Minimum)
+        self.horizontalLayout_4.addItem(spacerItem)
+        self.verticalLayout.addLayout(self.horizontalLayout_4)
         self.horizontalLayout_2 = QtWidgets.QHBoxLayout()
         self.horizontalLayout_2.setObjectName("horizontalLayout_2")
         self.label_sample_raster = QtWidgets.QLabel(Dialog_open_dataset)
@@ -95,8 +106,8 @@ class Ui_Dialog_open_dataset(object):
         self.comboBox_time_interval.addItem("")
         self.comboBox_time_interval.addItem("")
         self.horizontalLayout_3.addWidget(self.comboBox_time_interval)
-        spacerItem = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Policy.Expanding, QtWidgets.QSizePolicy.Policy.Minimum)
-        self.horizontalLayout_3.addItem(spacerItem)
+        spacerItem1 = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Policy.Expanding, QtWidgets.QSizePolicy.Policy.Minimum)
+        self.horizontalLayout_3.addItem(spacerItem1)
         self.verticalLayout.addLayout(self.horizontalLayout_3)
         self.buttonBox = QtWidgets.QDialogButtonBox(Dialog_open_dataset)
         self.buttonBox.setOrientation(QtCore.Qt.Orientation.Horizontal)
@@ -115,6 +126,7 @@ class Ui_Dialog_open_dataset(object):
         Dialog_open_dataset.setWindowTitle(_translate("Dialog_open_dataset", "Open Dataset"))
         self.label_open_dataset.setText(_translate("Dialog_open_dataset", "&Open dataset"))
         self.toolButton_open.setText(_translate("Dialog_open_dataset", "..."))
+        self.checkBox_single_point.setText(_translate("Dialog_open_dataset", "Single Point"))
         self.label_sample_raster.setText(_translate("Dialog_open_dataset", "Sample Raster"))
         self.toolButton_browse_xy_raster.setText(_translate("Dialog_open_dataset", "..."))
         self.label_time_interval.setText(_translate("Dialog_open_dataset", "Time interval: "))
@@ -123,11 +135,11 @@ class Ui_Dialog_open_dataset(object):
         self.comboBox_time_interval.setItemText(2, _translate("Dialog_open_dataset", "Hourly"))
 
 
-'''if __name__ == "__main__":
+if __name__ == "__main__":
     import sys
     app = QtWidgets.QApplication(sys.argv)
     Dialog_open_dataset = QtWidgets.QDialog()
     ui = Ui_Dialog_open_dataset()
     ui.setupUi(Dialog_open_dataset)
     Dialog_open_dataset.show()
-    sys.exit(app.exec())'''
+    sys.exit(app.exec())

@@ -22,6 +22,15 @@ class Ui_Dialog_var_from_tiff_(QtWidgets.QDialog):
         ##############
         #to work when it is okeyed
         self.ui.buttonBox_from_tiff.accepted.connect(lambda: self.ok_clicked())
+
+        #########################
+        self.ui.checkBox.setStyleSheet("""
+            QCheckBox {
+                font-size: 13px;
+            }
+            QCheckBox::indicator { width: 15px; height: 15px;}
+            }
+        """)
     #function to list the variables
     def updatelist_vars(self):
         try:
@@ -40,5 +49,8 @@ class Ui_Dialog_var_from_tiff_(QtWidgets.QDialog):
         folder_dir=self.ui.lineEdit_var_path.text()
         var_name=self.ui.comboBox.currentText()
         preferred_date_interval=self.preferred_date_interval
-        
-        self.ds=netCDF_ds.var_introduction_from_tiffs(self.ds,folder_dir,var_name,preferred_date_interval)
+        if self.ui.checkBox.isChecked()==False:
+            multiply=True
+        if self.ui.checkBox.isChecked()==True:
+            multiply=False
+        self.ds=netCDF_ds.var_introduction_from_tiffs(self.ds,folder_dir,var_name,preferred_date_interval,multiply)
