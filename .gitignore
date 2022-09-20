@@ -12,6 +12,7 @@
 *.zip
 *.csv
 *.vrt
+*.png
 .qt_for_python
 input
 __pycache__
