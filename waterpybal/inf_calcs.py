@@ -1,7 +1,9 @@
+from cmath import sqrt
 from turtle import shape
 import numpy as np
 import pandas as pd
 import netCDF4 as nc
+import math
 #Infiltration function:
 #precipitation-runoff (curvenumber)
 class infiltration(object):
@@ -111,7 +113,7 @@ class infiltration(object):
         return ds
 
     #-----------------------------------------
-    def runoff_infilt_calc(ds,cn_var):
+    def runoff_infilt_calc(ds,cn_var,advanced_cn,advanced_cn_dic):
         #Ia=0.2*S (Initial abstraction)
         #S (potential max retention) calculation from the curve number
         #Q runoff
@@ -128,15 +130,31 @@ class infiltration(object):
         ##########
         P_Irig=P+Irig
         ##########
-        S=(25400/CN_mod)-254
-        Ia=0.2*S
-        ##########
-        Q=np.zeros(CN_mod.shape)
-        ##########
-        P_bool=P_Irig>Ia
-        P_bool[P_Irig==np.nan]==False
-        P_bool[CN_mod==np.nan]==False
-        Q[P_bool]=(P_Irig[P_bool]-Ia[P_bool])*(P_Irig[P_bool]-Ia[P_bool])/(P_Irig[P_bool]+0.8*S[P_bool])
+        #calculate runoff
+        if advanced_cn==False:
+            S=(25400/CN_mod)-254
+            Ia=0.2*S
+            ##########
+            Q=np.zeros(CN_mod.shape)
+            ##########
+            P_bool=P_Irig>Ia
+            P_bool[P_Irig==np.nan]==False
+            P_bool[CN_mod==np.nan]==False
+            Q[P_bool]=(P_Irig[P_bool]-Ia[P_bool])*(P_Irig[P_bool]-Ia[P_bool])/(P_Irig[P_bool]+0.8*S[P_bool])
+        else:
+
+            S,Q=infiltration.adv_runoff_calc(
+                advanced_cn_dic["landa"],
+                CN_mod,
+                advanced_cn_dic["A"],
+                advanced_cn_dic["B"],
+                advanced_cn_dic["C"],
+                advanced_cn_dic["D"],
+                advanced_cn_dic["x"],
+                advanced_cn_dic["y"],
+                advanced_cn_dic["z"])
+
+
         #inf=P-Ia-Q
         inf=P_Irig-Ia-Q
         inf[P_Irig==np.nan]==np.nan
@@ -201,7 +219,7 @@ class infiltration(object):
     
     #-----------------------------------------
 
-    def Inf_calc(ds,CN_table_dir,raster_dir,HSG_band,LU_band,ELEV_band,DEM_path_or_raster,DEM_or_raster,filled_dep,slope_range_list,amc1_coeffs,amc3_coeffs,dormant_thresh,growing_thresh,average_thresh,mon_list_dormant,preferred_date_interval,corrected_cn,single_cn_val,cn_val):  
+    def Inf_calc(ds,CN_table_dir,raster_dir,HSG_band,LU_band,ELEV_band,DEM_path_or_raster,DEM_or_raster,filled_dep,slope_range_list,amc1_coeffs,amc3_coeffs,dormant_thresh,growing_thresh,average_thresh,mon_list_dormant,preferred_date_interval,corrected_cn,single_cn_val,cn_val,advanced_cn,advanced_cn_dic):  
         
 
         if single_cn_val==False:
@@ -226,7 +244,8 @@ class infiltration(object):
             ds["CN_Val"][:,:,:]= CN_all
             #---------------
             #calculate five day percs
-            ds=infiltration.five_day_acc_prec_f(ds,msk)
+            if corrected_cn==True:
+                ds=infiltration.five_day_acc_prec_f(ds,msk)
 
 
         #single cn value defined by user
@@ -243,7 +262,7 @@ class infiltration(object):
 
 
         #calculate infiltr
-        ds,Ia=infiltration.runoff_infilt_calc(ds,cn_var)
+        ds,Ia=infiltration.runoff_infilt_calc(ds,cn_var,advanced_cn,advanced_cn_dic)
     
          
             
@@ -288,4 +307,28 @@ class infiltration(object):
         return ds
 
     #-----------------------------------------
-    
+    #advanced runoff calculation
+    def adv_runoff_calc(landa,CN_mod,A,B,C,D,x,y,z):
+        #SCS-CN METHOD REVISITED S.K. Mishra1, P. Suresh Babu2, V.P. Singh3
+        #formulas calculated by ashkan for this function
+        #Equation (2.12) is valid for P ≥ Ia, Q = 0 otherwise.
+        #proposed solution between Q and S: user defined polynomial-like function
+
+        #--------------------
+        
+        #calculate S from CN
+        S= A * np.power(CN_mod,x) + B * np.power(CN_mod,y) + C * z + D
+
+        #calculate Q
+
+        numerator= 2*landa * ( S * landa -1)
+        
+        denominator= 1- landa - 2 *  math.sqrt( landa )
+
+        Q= numerator/denominator
+
+        if Q<0: Q=0
+
+        return S,Q
+        
+

@@ -4,7 +4,7 @@ import numpy as np
 
 
 
-class urban_infiltration_calcs():
+class urban_cycle_infiltration_calcs():
     
 
     # inputs:
@@ -54,7 +54,7 @@ class urban_infiltration_calcs():
         
         sew_input=val_sewage_input_before_runoff+val_runoff_to_sewage + wat_other
 
-        val_sew_net_out,val_sew_net_loss_infiltration=urban_infiltration_calcs.sewage_loss(sew_net_loss_low,sew_net_loss_high,sew_input,prec,prec_sewage_threshold)
+        val_sew_net_out,val_sew_net_loss_infiltration=urban_cycle_infiltration_calcs.sewage_loss(sew_net_loss_low,sew_net_loss_high,sew_input,prec,prec_sewage_threshold)
 
         
         val_dir_infil=(prec+irrig)*(dir_infil/100)
@@ -97,11 +97,11 @@ class urban_infiltration_calcs():
         if ds["lat"].shape[0]==1 and ds["lon"].shape[0]==1:
             urban_raster_np=np.array([[0]])
         else:
-            urban_raster_np=urban_infiltration_calcs.read_rast(urban_area_raster_dir)
+            urban_raster_np=urban_cycle_infiltration_calcs.read_rast(urban_area_raster_dir)
         
         
         if dataset_raster_dir_or_value=="Raster":
-            input_raster_np=urban_infiltration_calcs.read_rast(input_var)
+            input_raster_np=urban_cycle_infiltration_calcs.read_rast(input_var)
             input_raster_np[np.isnan(urban_raster_np)]=np.nan
         
         
@@ -113,7 +113,7 @@ class urban_infiltration_calcs():
             input_raster_np= np.full(urban_raster_np.shape, np.nan) 
             input_raster_np[~np.isnan(urban_raster_np)]=float(input_var)
 
-        ds=urban_infiltration_calcs.inp_to_ds(input_raster_np,ds,variable_name)
+        ds=urban_cycle_infiltration_calcs.inp_to_ds(input_raster_np,ds,variable_name)
         
         return ds
     
@@ -143,7 +143,7 @@ class urban_infiltration_calcs():
             input_var=v["input_var"]
             dataset_raster_dir_or_value=v["dataset_raster_dir_or_value"]
 
-            ds=urban_infiltration_calcs.urban_input_raster_or_value(ds,urban_area_raster_dir,variable_name, input_var ,dataset_raster_dir_or_value)
+            ds=urban_cycle_infiltration_calcs.urban_input_raster_or_value(ds,urban_area_raster_dir,variable_name, input_var ,dataset_raster_dir_or_value)
         
         #Append data to the variables
         time_steps=[ n for n in range(0,len(ds["time"][:].data))]
@@ -174,7 +174,7 @@ class urban_infiltration_calcs():
             wat_other=ds["wat_other"][time_t,:,:].data
             
 
-            INF_Val,ETP_Val,Runoff_Val=urban_infiltration_calcs.urban_infiltration_np(prec,irrig,wat_cons,wat_net_loss,urb_dir_evap,urb_indir_evap,sew_net_loss_low,sew_net_loss_high,prec_sewage_threshold,runoff_to_sewage,dir_infil,wat_supp_wells,wat_supp_wells_loss,wat_other)            
+            INF_Val,ETP_Val,Runoff_Val=urban_cycle_infiltration_calcs.urban_infiltration_np(prec,irrig,wat_cons,wat_net_loss,urb_dir_evap,urb_indir_evap,sew_net_loss_low,sew_net_loss_high,prec_sewage_threshold,runoff_to_sewage,dir_infil,wat_supp_wells,wat_supp_wells_loss,wat_other)            
             
             INF_Val_list.append(INF_Val)
             ETP_Val_list.append(ETP_Val)
@@ -183,7 +183,7 @@ class urban_infiltration_calcs():
         #append to NETCDF
         urban_results_list=[INF_Val_list,ETP_Val_list,Runoff_Val_list]
         
-        ds=urban_infiltration_calcs.infilt_to_ds(ds,urban_area_raster_dir,urban_results_list,urban_to_ds_inf_etp_ratio)
+        ds=urban_cycle_infiltration_calcs.infilt_to_ds(ds,urban_area_raster_dir,urban_results_list,urban_to_ds_inf_etp_ratio)
         
         return ds 
     
@@ -195,7 +195,7 @@ class urban_infiltration_calcs():
         if ds["lat"].shape[0]==1 and ds["lon"].shape[0]==1:
             urban_raster_np=np.array([[0]])
         else:
-            urban_raster_np=urban_infiltration_calcs.read_rast(urban_area_raster_dir)
+            urban_raster_np=urban_cycle_infiltration_calcs.read_rast(urban_area_raster_dir)
 
         urban_raster_3d=np.repeat(urban_raster_np[np.newaxis,:, : ], ds["time"].shape[0], axis=0)
 
@@ -215,9 +215,9 @@ class urban_infiltration_calcs():
             
         return ds
 
-class urban_CN_correction():
+class urban_Composite_CN_correction():
 
-
+    #there are problems in the next 2 functions. revise
     def connected_imperv_area_correction(CN_Prev,Con_Imp_area_perc):
 
         composite_CN=CN_Prev+(98-CN_Prev)*Con_Imp_area_perc/100
@@ -225,14 +225,14 @@ class urban_CN_correction():
         return composite_CN
 
         
-    def unconnected_imperv_area_correction(CN_Prev,Uncon_Imp_area_perc,Imp_area_perc):
+    def unconnected_imperv_area_correction(CN_Prev,Uncon_Imp_area_perc,Total_imp_area_perc):
 
-        if Imp_area_perc >30:
-            composite_CN=urban_CN_correction.connected_imperv_area_correction(CN_Prev,Uncon_Imp_area_perc)
+        if Total_imp_area_perc >30:
+            composite_CN=urban_Composite_CN_correction.connected_imperv_area_correction(CN_Prev,Uncon_Imp_area_perc)
         
         else:
 
-            input_to_t2=(1-Uncon_Imp_area_perc/Imp_area_perc)*1.7*Imp_area_perc
+            input_to_t2=(1-Uncon_Imp_area_perc/Total_imp_area_perc)*1.7*Total_imp_area_perc
 
 
             composite_CN=CN_Prev + (120-CN_Prev) * input_to_t2/460

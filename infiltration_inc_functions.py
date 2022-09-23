@@ -1,7 +1,9 @@
+from ast import arguments
+from gc import isenabled
 from PyQt6 import QtWidgets,QtGui,QtCore
-from infiltration import Ui_Dialog_infiltration
+from ui_infiltration_new import Ui_Dialog_infiltration
 from waterpybal.inf_calcs import infiltration
-from waterpybal.urban_infiltration import urban_infiltration_calcs
+from waterpybal.urban_infiltration import urban_cycle_infiltration_calcs,urban_Composite_CN_correction
 
 
 class Ui_Dialog_infiltration_(QtWidgets.QDialog):
@@ -14,59 +16,240 @@ class Ui_Dialog_infiltration_(QtWidgets.QDialog):
         
         self.ui.setupUi(self)
 
-        self.table_maker()
         self.show()
         
         #################
+        #set variables
         self.ds=None
         self.preferred_date_interval=None
         self.single_point=False
         self.urban_ds=False
         ##############
+        #connect the clicks to functions
+        self.clickconnect()
+
+        ##################
+        #limit the line edits with validators:
+        self.lineeditvalidator()
+        ##################
+        #set style sheet
+        self.stylesheetset()
+
+
+    ########################################################################################################
+    ########################################################################################################
+    ########################################################################################################
+
+    #connect the clicks to functions
+    def clickconnect(self):
         #browse button
         self.ui.toolButton_browse_cn_csv.clicked.connect(lambda: self.selectcsvFile())
         ##############
-        #browse raster button
-        self.ui.toolButton_browse_cn_raster.clicked.connect(lambda: self.selectrastFilecn())
+        #browse raster button curve number
+        self.ui.toolButton_browse_cn_raster.clicked.connect(lambda: self.selectrast(self.ui.lineEdit_cn_raster))
         ##################
-        #browse raster button
-        self.ui.toolButton_browse_urban_zone_raster.clicked.connect(lambda: self.selectrastFileurban())
+        #browse raster button urban raster
+        self.ui.toolButton_browse_urban_zone_raster.clicked.connect(lambda: self.selectrast(self.ui.lineEdit_urban_zone_raster))
         ##################
-        #to work when it is okeyed
-        self.ui.buttonBox.accepted.connect(lambda: self.ok_clicked())
+        #browse composite cn con.imp. area
+        self.ui.toolButton_browse_cn_urban_cia_raster.clicked.connect(lambda: self.selectrast(self.ui.lineEdit_cn_urban_cia_raster))
+        ##################
+        #browse composite cn con.imp. area
+        self.ui.toolButton_browse_cn_urban_uncia_total_raster.clicked.connect(lambda: self.selectrast(self.ui.lineEdit_cn_urban_uncia_total_raster))
+        ##################
+        #browse composite cn con.imp. area
+        self.ui.toolButton_browse_cn_urban_uncia_raster.clicked.connect(lambda: self.selectrast(self.ui.lineEdit_cn_urban_uncia_raster))
         ##################
         #direct cn value introduction (single point and etc)
-        self.ui.checkBox_cn_value.stateChanged.connect(lambda:self.cn_val_state())
-        #limit the year to ints and 4 digits
-        onlyInt=QtGui.QIntValidator()
-        self.ui.lineEdit_elev.setValidator(onlyInt) 
-        self.ui.lineEdit_lu.setValidator(onlyInt) 
-        self.ui.lineEdit_hsg.setValidator(onlyInt) 
-        self.ui.lineEdit_elev.setMaxLength(4)
-        self.ui.lineEdit_lu.setMaxLength(4)
-        self.ui.lineEdit_hsg.setMaxLength(4)
-        self.ui.groupBox_curve_number.setStyleSheet("""
-            
-            QGroupBox::indicator { width: 15px; height: 15px;}
-            }
-        """)
+        self.ui.checkBox_cn_value.stateChanged.connect(lambda:self.single_cn_val_state())
+        ##############
+        self.ui.checkBox_adv_cn.stateChanged.connect(lambda:self.adv_cn_state())
+        ##############
+        self.ui.checkBox_urban_cn_correction.stateChanged.connect(lambda:self.urban_cn_composit_state())
+        ##############
+        self.ui.checkBox_cia_cn_composite.stateChanged.connect(lambda:self.cia_cn_composite_state())
+        self.ui.checkBox_uncia_cn_composite.stateChanged.connect(lambda:self.uncia_cn_composite_state())
+        ##############
+        self.ui.checkBox_urban_cycle.stateChanged.connect(lambda:self.urbancycle_state())
 
-        self.ui.checkBox_cn_value.setStyleSheet("""
-            
-            QCheckBox::indicator { width: 15px; height: 15px;}
-            }
-        """)
-        self.ui.groupBox_urban.setStyleSheet("""
-            
-            QGroupBox::indicator { width: 15px; height: 15px;}
-            }
-        """)
-        onlydoub=QtGui.QDoubleValidator()
-        self.ui.lineEdit_CN_Val.setValidator(onlydoub) 
-        self.ui.lineEdit_CN_Val.setMaxLength(4) 
 
-        #################
+
+        #to work when it is okeyed
+        self.ui.buttonBox.accepted.connect(lambda: self.ok_clicked())    
+    ##############################################################################
+    ##############################################################################
+    def urbancycle_state(self):
+        if self.ui.checkBox_urban_cycle.isChecked():
+            self.ui.tableWidget_urban.setEnabled(True)
+        else: self.ui.tableWidget_urban.setEnabled(False)
+
+    #############################
+    def cia_cn_composite_state(self):
+        if self.ui.checkBox_cia_cn_composite.isChecked():
+            
+            #checkbox ucia
+            self.ui.checkBox_uncia_cn_composite.setChecked(False)
+            self.uncia_cn_composite_state() #to the uncia_cn_composite_state else
+
+
+            self.ui.label_cn_urban_cia_raster.setEnabled(True)
+            self.ui.lineEdit_cn_urban_cia_raster.setEnabled(True)
+            self.ui.toolButton_browse_cn_urban_cia_raster.setEnabled(True)
+        else:
+            self.ui.label_cn_urban_cia_raster.setEnabled(False)
+            self.ui.lineEdit_cn_urban_cia_raster.setEnabled(False)
+            self.ui.toolButton_browse_cn_urban_cia_raster.setEnabled(False)
+
+            self.ui.checkBox_uncia_cn_composite.setEnabled(True)
+
+    #############################
+    def uncia_cn_composite_state(self):
+        if self.ui.checkBox_uncia_cn_composite.isChecked():
+            #line total ucia
+            self.ui.label_cn_urban_uncia_total_raster.setEnabled(True)
+            self.ui.lineEdit_cn_urban_uncia_total_raster.setEnabled(True)
+            self.ui.toolButton_browse_cn_urban_uncia_total_raster.setEnabled(True)
+            #line _cn_urban_uncia_raster
+            self.ui.label_cn_urban_uncia_raster.setEnabled(True)
+            self.ui.lineEdit_cn_urban_uncia_raster.setEnabled(True)
+            self.ui.toolButton_browse_cn_urban_uncia_raster.setEnabled(True)
+            
+            #disable connected
+            self.ui.checkBox_cia_cn_composite.setChecked(False)
+            self.ui.label_cn_urban_cia_raster.setEnabled(False)
+            self.ui.lineEdit_cn_urban_cia_raster.setEnabled(False)
+            self.ui.toolButton_browse_cn_urban_cia_raster.setEnabled(False)
+
+        else:
+            #line total ucia
+            self.ui.label_cn_urban_uncia_total_raster.setEnabled(False)
+            self.ui.lineEdit_cn_urban_uncia_total_raster.setEnabled(False)
+            self.ui.toolButton_browse_cn_urban_uncia_total_raster.setEnabled(False)
+            #line _cn_urban_uncia_raster
+            self.ui.label_cn_urban_uncia_raster.setEnabled(False)
+            self.ui.lineEdit_cn_urban_uncia_raster.setEnabled(False)
+            self.ui.toolButton_browse_cn_urban_uncia_raster.setEnabled(False)
+            
+            #enable connected
+            if self.ui.checkBox_cia_cn_composite.isEnabled()==False:
+                self.ui.checkBox_cia_cn_composite.setEnabled(True)
+
+    #############################
+    def urban_cn_composit_state(self):
+        if self.ui.checkBox_urban_cn_correction.isChecked():
+            self.ui.groupBox_urban_cn_correction.setEnabled(True)
         
+        else: self.ui.groupBox_urban_cn_correction.setEnabled(False)
+    #############################
+    def adv_cn_state(self):
+        if self.ui.checkBox_adv_cn.isChecked():
+            self.ui.groupBox_adv_cn.setEnabled(True)
+
+        else: self.ui.groupBox_adv_cn.setEnabled(False)
+    #############################    
+    #the direct cn value introduction state change
+    def single_cn_val_state(self):
+        if self.ui.checkBox_cn_value.isChecked():
+            
+            self.single_cn_val=True
+
+            #enable single cn val groupbox
+            self.ui.label_cn_val.setEnabled(True)
+            self.ui.lineEdit_CN_Val.setEnabled(True)
+            #disable curve number groupbox
+            self.ui.groupBox_curve_number.setChecked(False)
+            self.ui.groupBox_curve_number.setEnabled(False)
+            #disable composite urban cn
+            self.ui.checkBox_urban_cn_correction.setChecked(False)
+            self.ui.checkBox_urban_cn_correction.setEnabled(False)
+            self.ui.groupBox_urban_cn_correction.setEnabled(False)
+            
+
+        
+        
+        if self.ui.checkBox_cn_value.isChecked()==False:
+            
+            #disable single cn val groupbox
+            self.ui.label_cn_val.setEnabled(False)
+            self.ui.lineEdit_CN_Val.setEnabled(False)
+            
+            self.single_cn_val=False
+
+            if self.single_point==False:
+                #enable curve number groupbox
+                self.ui.groupBox_curve_number.setEnabled(True)
+
+                #enable composite urban cn
+                self.ui.checkBox_urban_cn_correction.setChecked(True)
+                self.ui.checkBox_urban_cn_correction.setEnabled(True)
+                self.ui.groupBox_urban_cn_correction.setEnabled(True)
+            
+            
+            
+    ##############################################################################
+    ##############################################################################
+    #check for daily timesteps - used in the main window - 1
+    def check_timesteps(self):
+        
+        self.Calc_CN=True
+        # CN method not available
+        if self.preferred_date_interval not in ["datetime64[D]","daily","Daily"]:
+            self.Calc_CN=False
+            
+            #curve number groupbox
+            self.ui.groupBox_curve_number.setChecked(False)
+            self.ui.groupBox_curve_number.setEnabled(False) 
+
+            #single cn value
+            self.ui.checkBox_cn_value.setChecked(False)  
+            self.ui.checkBox_cn_value.setEnabled(False)
+            self.ui.label_cn_val.setEnabled(False)
+            self.ui.lineEdit_CN_Val.setEnabled(False)
+               
+            
+            #urban composite cn correction
+            self.ui.checkBox_urban_cn_correction.setEnabled(False)
+            self.ui.groupBox_urban_cn_correction.setEnabled(False)
+                                    
+    ##########################
+    #check if urban is enabled in the netcdf dataset - used in the main window - 2
+    def check_urban(self):
+        if self.urban_ds:
+
+            self.ui.groupBox_urban.setEnabled(True) 
+            self.ui.groupBox_urban.setChecked(False)   
+            
+            self.ui.lineEdit_urban_zone_raster.setEnabled(True) 
+            self.ui.toolButton_browse_urban_zone_raster.setEnabled(True) 
+            self.ui.label_urban_zone_raster.setEnabled(True) 
+            self.ui.checkBox_urban_cycle.setEnabled(True)
+            self.ui.tableWidget_urban.setEnabled(True) 
+    
+    ##########################
+#if single point is true enable and disable options - used in the main window - 3
+    def check_single_point(self):
+        if self.single_point:
+
+            #disable  cn groupbox
+            self.ui.groupBox_curve_number.setChecked(False)
+            self.ui.groupBox_curve_number.setEnabled(False) 
+            
+            #enable and check single cn value
+            self.ui.checkBox_cn_value.setChecked(True)
+            self.ui.checkBox_cn_value.setEnabled(True)
+            self.single_cn_val=True
+
+            #disable raster introduction for urban area
+            self.ui.lineEdit_urban_zone_raster.setEnabled(False) 
+            self.ui.toolButton_browse_urban_zone_raster.setEnabled(False) 
+            self.ui.label_urban_zone_raster.setEnabled(False) 
+
+            #urban composite cn correction
+            self.ui.checkBox_urban_cn_correction.setEnabled(False)
+            self.ui.groupBox_urban_cn_correction.setEnabled(False)
+    
+    ##########################
+    #urban table maker    
     def table_maker(self):
         _translate = QtCore.QCoreApplication.translate
         
@@ -123,73 +306,13 @@ class Ui_Dialog_infiltration_(QtWidgets.QDialog):
                 item.setText(_translate("Dialog_infiltration", "100"))
         ####
         self.ui.tableWidget_urban.setSortingEnabled(__sortingEnabled)
-
-    ##########################
-    def cn_val_state(self):
-        if self.ui.checkBox_cn_value.isChecked():
-            self.ui.label_cn_val.setEnabled(True)
-            self.ui.lineEdit_CN_Val.setEnabled(True)
-            self.ui.groupBox_curve_number.setChecked(False)
-            self.ui.groupBox_curve_number.setEnabled(False)
-            self.single_cn_val=True
-
-        
-        
-        if self.ui.checkBox_cn_value.isChecked()==False:
-            self.ui.label_cn_val.setEnabled(False)
-            self.ui.lineEdit_CN_Val.setEnabled(False)
-            
-            if self.single_point==False:
-                self.ui.groupBox_curve_number.setEnabled(True)
-                self.ui.groupBox_curve_number.setChecked(True)
-            
-            self.single_cn_val=False
-            
-
     
     ##########################
-    def check_single_point(self):
-        if self.single_point:
-
-            self.ui.groupBox_corrected_cn.setChecked(False)
-            self.ui.groupBox_raster.setChecked(False)
-            self.ui.groupBox_curve_number.setChecked(False)
-            self.ui.groupBox_curve_number.setEnabled(False) 
-            
-            self.ui.checkBox_cn_value.setChecked(True)
-            self.single_cn_val=True
-
-            self.ui.lineEdit_urban_zone_raster.setEnabled(False) 
-            self.ui.toolButton_browse_urban_zone_raster.setEnabled(False) 
-            self.ui.label_urban_zone_raster.setEnabled(False) 
-    ##########################
-    def check_timesteps(self):
-        
-        self.Calc_CN=True
-        # CN method not available
-        if self.preferred_date_interval not in ["datetime64[D]","daily","Daily"]:
-            self.Calc_CN=False
-            self.ui.groupBox_curve_number.setChecked(False)
-            self.ui.checkBox_cn_value.setChecked(False)  
-            self.ui.groupBox_corrected_cn.setChecked(False)            
-            self.ui.groupBox_raster.setChecked(False)            
-          
-            self.ui.groupBox_curve_number.setEnabled(False)    
-            self.ui.checkBox_cn_value.setEnabled(False)
-            self.ui.label_cn_val.setEnabled(False)
-            self.ui.lineEdit_CN_Val.setEnabled(False)
-    ##########################
-    def check_urban(self):
-        if self.urban_ds:
-             
-            self.ui.label_urban_zone_raster.setEnabled(True) 
-            self.ui.tableWidget_urban.setEnabled(True) 
-            
-            self.ui.groupBox_urban.setEnabled(True) 
-            self.ui.groupBox_urban.setChecked(False)
-        
-    ##########################
+    #update the urban table - used in the main window - 4
     def update_urban_table(self):
+        
+        self.table_maker()
+
         
         for row in range(0,13):
             combo_c1 = QtWidgets.QComboBox()
@@ -198,39 +321,16 @@ class Ui_Dialog_infiltration_(QtWidgets.QDialog):
             else:
                 combo_c1.addItems(["Constant","Raster","Dataset"])
             self.ui.tableWidget_urban.setCellWidget(row, 1, combo_c1)
-    ##########################
-    def selectcsvFile(self):
-        filter = "CSV(*.csv)"
-        self.fileName = QtWidgets.QFileDialog.getOpenFileName(caption='select a .CSV file',filter=filter)[0]
-        
-        self.ui.lineEdit_cn_csv.setText(self.fileName)
-    ##########################
-    #select raster file cn
-    def selectrastFilecn(self):
-        filter = "Raster(*.tif)"
-        self.rastfileName = QtWidgets.QFileDialog.getOpenFileName(caption='select a raster file',filter=filter)[0]
-        
-        self.ui.lineEdit_cn_raster.setText(self.rastfileName)
-    ##########################
-    #select raster file urban
-    def selectrastFileurban(self):
-        filter = "Raster(*.tif)"
-        self.rastfileName = QtWidgets.QFileDialog.getOpenFileName(caption='select a raster file',filter=filter)[0]
-        
-        self.ui.lineEdit_urban_zone_raster.setText(self.rastfileName)    
-    ##########################
+    
+    ##############################################################################
+    ##############################################################################
+    #main
     def ok_clicked(self):
+        
         #calculating infiltration
-        CN_table_dir=self.ui.lineEdit_cn_csv.text()
-        raster_dir=self.ui.lineEdit_cn_raster.text()
-        HSG_band=self.ui.lineEdit_hsg.text()
-        LU_band=self.ui.lineEdit_lu.text()
-        ELEV_band=self.ui.lineEdit_elev.text()
-        DEM_or_raster="raster"
-        DEM_path_or_raster=raster_dir
-        filled_dep=True
-        try: slope_range_list=[float(n) for n in self.ui.lineEdit_slope.text().split(',')]
-        except: slope_range_list=list()
+
+        
+        
 
         if self.ui.groupBox_corrected_cn.isChecked():
     
@@ -242,21 +342,11 @@ class Ui_Dialog_infiltration_(QtWidgets.QDialog):
             if self.ui.comboBox_average.currentText()=='Yes': average_thresh=True
             else: average_thresh=False
             corrected_cn=True
-            print ("groupBox_corrected_cn is true")
 
         else:
-            amc1_coeffs=None
-            amc3_coeffs=None
-            dormant_thresh=None
-            growing_thresh=None
-            mon_list_dormant=None
-            average_thresh=None
+            amc1_coeffs,amc3_coeffs,dormant_thresh,growing_thresh,mon_list_dormant,average_thresh=None,None,None,None,None,None
             corrected_cn=False
-
-            print ("groupBox_corrected_cn is false")
-
-        preferred_date_interval=self.preferred_date_interval
-        
+    
         threshold=self.ui.lineEdit__max_infilt.text()
         
         #check for self.Calc_CN:
@@ -270,10 +360,36 @@ class Ui_Dialog_infiltration_(QtWidgets.QDialog):
             else: 
                 self.cn_val=None
 
-            self.ds,Ia=infiltration.Inf_calc(self.ds,CN_table_dir,raster_dir,HSG_band,LU_band,ELEV_band,DEM_path_or_raster,DEM_or_raster,filled_dep,slope_range_list,amc1_coeffs,amc3_coeffs,dormant_thresh,growing_thresh,average_thresh,mon_list_dormant,preferred_date_interval,corrected_cn,self.single_cn_val,self.cn_val)
+            #check for advanced cn calculation
+            advanced_cn=False
+            advanced_cn_dic=dict()
+            if self.ui.checkBox_adv_cn.isChecked() and self.ui.groupBox_adv_cn.isEnabled():
+                advanced_cn_dic=self.advanced_cn_dic_gen()
+                advanced_cn=True
+
+            ########################
+            ########################
+            # inf calc arguments
+            
+            #slope range list
+            try: slope_range_list=[float(n) for n in self.ui.lineEdit_slope.text().split(',')]
+            except: slope_range_list=list()
+            
+            CN_table_dir=self.ui.lineEdit_cn_csv.text()
+            HSG_band=self.ui.lineEdit_hsg.text()
+            LU_band=self.ui.lineEdit_lu.text()
+            ELEV_band=self.ui.lineEdit_elev.text()
+            DEM_or_raster="raster"
+            raster_dir=self.ui.lineEdit_cn_raster.text()
+            DEM_path_or_raster=raster_dir
+            filled_dep=True
+            preferred_date_interval=self.preferred_date_interval
+            
+            self.ds,Ia=infiltration.Inf_calc(self.ds,CN_table_dir,raster_dir,HSG_band,LU_band,ELEV_band,DEM_path_or_raster,DEM_or_raster,filled_dep,slope_range_list,amc1_coeffs,amc3_coeffs,dormant_thresh,growing_thresh,average_thresh,mon_list_dormant,preferred_date_interval,corrected_cn,self.single_cn_val,self.cn_val,advanced_cn,advanced_cn_dic)
             # max infiltration threshold per timestep
             var_inp="INF_Val"
             var_out="INF_Val"
+            ########################
 
         else:
             # max infiltration threshold per timestep
@@ -282,16 +398,54 @@ class Ui_Dialog_infiltration_(QtWidgets.QDialog):
             Ia=None
 
         if self.ui.groupBox_urban.isChecked():
-            variables_dic=self.urban_inf_dic_gen()
-            urban_area_raster_dir=self.ui.lineEdit_urban_zone_raster.text()
+            ##########################
+            #composite curve number
+            if self.ui.checkBox_urban_cn_correction.isChecked() and self.ui.groupBox_urban_cn_correction.isEnabled() and self.ui.checkBox_adv_cn.isChecked()==False and self.ui.groupBox_adv_cn.isEnabled()==False:
+                
+                #connected imp. area cn correction
+                if self.ui.checkBox_cia_cn_composite.isChecked() and self.ui.lineEdit_cn_urban_cia_raster.isEnabled():
+                    cia_raster=self.ui.lineEdit_cn_urban_cia_raster.text()
 
-            self.ds=urban_infiltration_calcs.urban_infiltration_main(self.ds,urban_area_raster_dir,variables_dic) 
+                    ??urban_Composite_CN_correction.cia_main(cia_raster)
 
+                #unconnected imp.area cn correction
+                if self.ui.checkBox_uncia_cn_composite.isChecked() and self.ui.lineEdit_cn_urban_uncia_total_raster.isEnabled() and self.ui.lineEdit_cn_urban_uncia_raster.isEnabled():
+                    tia_raster=self.ui.lineEdit_cn_urban_uncia_total_raster.text()
+                    ucia_raster=self.ui.lineEdit_cn_urban_uncia_raster.text()
 
+                    ??urban_Composite_CN_correction.ucia_main(tia_raster,ucia_raster)
+
+            
+            #urban cycle
+            if self.ui.checkBox_urban_cycle.isChecked() and self.ui.tableWidget_urban.isEnabled():
+                variables_dic=self.urban_inf_dic_gen()
+                urban_area_raster_dir=self.ui.lineEdit_urban_zone_raster.text()
+                self.ds=urban_cycle_infiltration_calcs.urban_infiltration_main(self.ds,urban_area_raster_dir,variables_dic) 
+
+        ##############################################################################
+        #apply the max infiltration threshold and calculate runoff
         self.ds=infiltration.max_inf_threshold(self.ds,var_inp,var_out,threshold) 
         self.ds=infiltration.runoff_calc(self.ds,Ia)
-
+    
+    ##############################################################################
+    ##############################################################################
+    #select thew csv file
+    def selectcsvFile(self):
+        filter = "CSV(*.csv)"
+        self.fileName = QtWidgets.QFileDialog.getOpenFileName(caption='select a .CSV file',filter=filter)[0]
+        
+        self.ui.lineEdit_cn_csv.setText(self.fileName)
+    
     ##########################
+    #select raster file cn
+    def selectrast(self,lineeditobject):
+        filter = "Raster(*.tif)"
+        self.rastfileName = QtWidgets.QFileDialog.getOpenFileName(caption='select a raster file',filter=filter)[0]
+        
+        lineeditobject.setText(self.rastfileName)
+    
+    ##########################
+    #to generate the dictionary of the urban cycle
     def urban_inf_dic_gen(self):
         num_of_rows=self.ui.tableWidget_urban.rowCount()
         variables_dic={}
@@ -328,5 +482,66 @@ class Ui_Dialog_infiltration_(QtWidgets.QDialog):
             variables_dic[variable_name]=var_dic
         
         return variables_dic
+
+    ##########################
+    #to generate the dictionary of the advanced CN
+    def advanced_cn_dic_gen(self):
+        advanced_cn_dic=dict()
+        advanced_cn_dic["landa"]=float(self.ui.lineEdit_landa.text())
+        advanced_cn_dic["A"]=float(self.ui.lineEdit_a.text())
+        advanced_cn_dic["B"]=float(self.ui.lineEdit_b.text())
+        advanced_cn_dic["C"]=float(self.ui.lineEdit_c.text())
+        advanced_cn_dic["D"]=float(self.ui.lineEdit_d.text())
+        advanced_cn_dic["x"]=float(self.ui.lineEdit_x.text())
+        advanced_cn_dic["y"]=float(self.ui.lineEdit_y.text())
+        advanced_cn_dic["z"]=float(self.ui.lineEdit_z.text())
+        return advanced_cn_dic
+
+    ##########################
+    #to limit the lineedits
+    def lineeditvalidator(self):
+        # elev lu hsg
+        onlyInt=QtGui.QIntValidator()
+        self.ui.lineEdit_elev.setValidator(onlyInt) 
+        self.ui.lineEdit_lu.setValidator(onlyInt) 
+        self.ui.lineEdit_hsg.setValidator(onlyInt) 
+        self.ui.lineEdit_elev.setMaxLength(4)
+        self.ui.lineEdit_lu.setMaxLength(4)
+        self.ui.lineEdit_hsg.setMaxLength(4)
+        
+        onlydoub=QtGui.QDoubleValidator()
+
+        #cn value
+        self.ui.lineEdit_CN_Val.setValidator(onlydoub) 
+        self.ui.lineEdit_CN_Val.setMaxLength(4) 
+
+        #a,b,c,d,x,y,z,landa
+        self.ui.lineEdit_a.setValidator(onlydoub)
+        self.ui.lineEdit_b.setValidator(onlydoub)
+        self.ui.lineEdit_c.setValidator(onlydoub)
+        self.ui.lineEdit_d.setValidator(onlydoub)
+        self.ui.lineEdit_x.setValidator(onlydoub)
+        self.ui.lineEdit_y.setValidator(onlydoub)
+        self.ui.lineEdit_z.setValidator(onlydoub)
+        self.ui.lineEdit_landa.setValidator(onlydoub)
+
+    ##########################
+    #to define the style of the group boxes and check boxes
+    def stylesheetset(self):
+
+        #for groupbox:
+        for i in [self.ui.groupBox_curve_number,self.ui.groupBox_urban]:
+
+            i.setStyleSheet("""
+                QGroupBox::indicator { width: 15px; height: 15px;}
+                }
+            """)
+
+        #for checkbox:
+        for i in [self.ui.checkBox_cn_value,self.ui.checkBox_adv_cn,self.ui.checkBox_cia_cn_composite,self.ui.checkBox_uncia_cn_composite,self.ui.checkBox_urban_cn_correction,self.ui.checkBox_urban_cycle]:
+            i.setStyleSheet("""
+                QCheckBox::indicator { width: 15px; height: 15px;}
+                }
+            """)
 
 
