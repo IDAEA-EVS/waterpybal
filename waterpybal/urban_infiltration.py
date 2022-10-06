@@ -238,3 +238,68 @@ class urban_Composite_CN_correction():
             composite_CN=CN_Prev + (120-CN_Prev) * input_to_t2/460
 
         return composite_CN
+
+    def cia_main(cia_raster,ds,corrected_cn):
+
+        #Prev CN
+        if corrected_cn==True:
+            cn_var="CN_mod"
+        else:
+            cn_var="CN_Val"
+
+        CN_Prev_3d=ds[cn_var][:,:,:].data
+        CN_Prev_3d[CN_Prev_3d==-9999]=np.nan
+        ##########
+        #Connected Imperv Area rater
+        ciaop=rs.open(cia_raster)
+        cia_np=ciaop.read(1)
+        msk = ciaop.read_masks(1)
+        cia_np[msk==0]=np.nan
+        cia_3d=np.repeat(cia_np[np.newaxis,:, : ], ds["time"].shape[0], axis=0)
+        ##########
+
+        composite_CN=urban_Composite_CN_correction.connected_imperv_area_correction(CN_Prev_3d,cia_3d)
+
+        ds_vals=ds[cn_var][:,:,:].data
+        ds_vals[~np.isnan(cia_3d)]=composite_CN[~np.isnan(cia_3d)]
+        ds_vals=np.nan_to_num(ds_vals,nan=-9999)
+        ds[cn_var][:,:,:]=ds_vals
+
+
+        return ds
+
+    def ucia_main(tia_raster,ucia_raster,ds,corrected_cn):
+        #Prev CN
+        if corrected_cn==True:
+            cn_var="CN_mod"
+        else:
+            cn_var="CN_Val"
+
+        CN_Prev_3d=ds[cn_var][:,:,:].data
+        CN_Prev_3d[CN_Prev_3d==-9999]=np.nan
+        ##########
+        #Connected Imperv Area rater
+        uciaop=rs.open(ucia_raster)
+        ucia_np=uciaop.read(1)
+        msk = uciaop.read_masks(1)
+        ucia_np[msk==0]=np.nan
+        ucia_3d=np.repeat(ucia_np[np.newaxis,:, : ], ds["time"].shape[0], axis=0)
+        ##########
+        #Connected Imperv Area rater
+        tiaop=rs.open(tia_raster)
+        tia_np=tiaop.read(1)
+        msk = tiaop.read_masks(1)
+        tia_np[msk==0]=np.nan
+        tia_3d=np.repeat(tia_np[np.newaxis,:, : ], ds["time"].shape[0], axis=0)
+        ##########
+
+        composite_CN=urban_Composite_CN_correction.unconnected_imperv_area_correction(CN_Prev_3d,ucia_3d,tia_3d)
+        
+        
+        ds_vals=ds[cn_var][:,:,:].data
+        ds_vals[~np.isnan(tia_3d)]=composite_CN[~np.isnan(tia_3d)]
+        ds_vals=np.nan_to_num(ds_vals,nan=-9999)
+        ds[cn_var][:,:,:]=ds_vals
+
+        return ds
+

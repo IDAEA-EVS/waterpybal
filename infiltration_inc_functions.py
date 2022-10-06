@@ -1,5 +1,3 @@
-from ast import arguments
-from gc import isenabled
 from PyQt6 import QtWidgets,QtGui,QtCore
 from ui_infiltration_new import Ui_Dialog_infiltration
 from waterpybal.inf_calcs import infiltration
@@ -180,7 +178,7 @@ class Ui_Dialog_infiltration_(QtWidgets.QDialog):
                 self.ui.groupBox_curve_number.setEnabled(True)
 
                 #enable composite urban cn
-                self.ui.checkBox_urban_cn_correction.setChecked(True)
+                self.ui.checkBox_urban_cn_correction.setChecked(False)
                 self.ui.checkBox_urban_cn_correction.setEnabled(True)
                 self.ui.groupBox_urban_cn_correction.setEnabled(True)
             
@@ -224,9 +222,12 @@ class Ui_Dialog_infiltration_(QtWidgets.QDialog):
             self.ui.label_urban_zone_raster.setEnabled(True) 
             self.ui.checkBox_urban_cycle.setEnabled(True)
             self.ui.tableWidget_urban.setEnabled(True) 
+
+            self.ui.checkBox_urban_cn_correction.setEnabled(True)
+            self.ui.groupBox_urban_cn_correction.setEnabled(True)
     
     ##########################
-#if single point is true enable and disable options - used in the main window - 3
+    #if single point is true enable and disable options - used in the main window - 3
     def check_single_point(self):
         if self.single_point:
 
@@ -405,15 +406,14 @@ class Ui_Dialog_infiltration_(QtWidgets.QDialog):
                 #connected imp. area cn correction
                 if self.ui.checkBox_cia_cn_composite.isChecked() and self.ui.lineEdit_cn_urban_cia_raster.isEnabled():
                     cia_raster=self.ui.lineEdit_cn_urban_cia_raster.text()
-
-                    ??urban_Composite_CN_correction.cia_main(cia_raster)
-
+                    
+                    self.ds=urban_Composite_CN_correction.cia_main(cia_raster,self.ds,corrected_cn)
                 #unconnected imp.area cn correction
                 if self.ui.checkBox_uncia_cn_composite.isChecked() and self.ui.lineEdit_cn_urban_uncia_total_raster.isEnabled() and self.ui.lineEdit_cn_urban_uncia_raster.isEnabled():
                     tia_raster=self.ui.lineEdit_cn_urban_uncia_total_raster.text()
                     ucia_raster=self.ui.lineEdit_cn_urban_uncia_raster.text()
 
-                    ??urban_Composite_CN_correction.ucia_main(tia_raster,ucia_raster)
+                    self.ds=urban_Composite_CN_correction.ucia_main(tia_raster,ucia_raster,self.ds,corrected_cn)
 
             
             #urban cycle

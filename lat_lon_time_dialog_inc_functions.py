@@ -15,6 +15,7 @@ class lat_lon_time_dialog_(QtWidgets.QDialog):
         self.ui = Ui_Dialog_lat_lon_time()
         
         self.ui.setupUi(self)
+        self.single_p_checked()
         self.show()
         ##############
 
