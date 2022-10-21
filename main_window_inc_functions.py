@@ -1,6 +1,6 @@
-from PyQt6 import QtWidgets
+from PyQt6 import QtWidgets,QtCore
 from balance_inc_functions import Ui_balance_Dialog_
-from main_window import Ui_MainWindow  # importing our generated file
+from waterpybal_ui_py.main_window import Ui_MainWindow  # importing our generated file
 from lat_lon_time_dialog_inc_functions import lat_lon_time_dialog_
 from var_spat_interpol_inc_functions import Ui_Dialog_var_spat_interpol_
 from var_from_tiff_inc_functions import Ui_Dialog_var_from_tiff_
@@ -9,10 +9,11 @@ from infiltration_inc_functions import Ui_Dialog_infiltration_
 from etp_window_inc_functions import Ui_Dialog_etp_
 from open_dataset_inc_functions import Ui_Dialog_open_dataset_
 from visual_inc_functions import Ui_Dialog_visual_
-from qErrorHandler import UncaughtHook
+from waterpybal_ui_py.qErrorHandler import UncaughtHook
 import os
 import sys
 import netCDF4 as nc
+from gui_help.gui_help_load import loadhelp
 
 class waterpybalMainwindow(QtWidgets.QMainWindow):
 
@@ -44,6 +45,11 @@ class waterpybalMainwindow(QtWidgets.QMainWindow):
         self.ui.pushButton_to_Balance.clicked.connect(self.open_bal)
         self.ui.pushButton_to_visualization.clicked.connect(self.open_visual)
         self.ui.pushButton_save_dataset.clicked.connect(self.save_close)
+        loadhelp(self,"main_window_help.md")
+
+
+
+
 
 
     #######################################
@@ -203,7 +209,7 @@ class waterpybalMainwindow(QtWidgets.QMainWindow):
             self.ui.label_to_var_spat_interpol.setText("In process")
             self.ui_interpol=Ui_Dialog_var_spat_interpol_()
             self.ui_interpol.ds=self.ds
-            print ("self.single_point",self.single_point)
+            self.ui_interpol.ds_size_calc()
             self.ui_interpol.single_point=self.single_point
             self.ui_interpol.single_point_mod()
             self.ui_interpol.preferred_date_interval=self.preferred_date_interval

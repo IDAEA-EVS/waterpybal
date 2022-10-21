@@ -1,7 +1,9 @@
 from PyQt6 import QtWidgets,QtCore,QtGui
-from var_spat_interpol import Ui_Dialog_var_spat_interpol
+from waterpybal_ui_py.var_spat_interpol import Ui_Dialog_var_spat_interpol
 from waterpybal.dataset_prep import netCDF_ds
 import pandas as pd
+import netCDF4 as nc
+from gui_help.gui_help_load import loadhelp
 
 class Ui_Dialog_var_spat_interpol_(QtWidgets.QDialog):
 
@@ -25,6 +27,7 @@ class Ui_Dialog_var_spat_interpol_(QtWidgets.QDialog):
         self.sam_raster_dir=None
         self.single_point=False
         self.sam_val=False
+        self.nc_ds=False
         ##################
         #Linear as default
         self.ui.comboBox_method.setCurrentIndex(3)
@@ -44,6 +47,13 @@ class Ui_Dialog_var_spat_interpol_(QtWidgets.QDialog):
             QCheckBox::indicator { width: 15px; height: 15px;}
             }
         """)
+        self.ui.checkBox_nc.setStyleSheet("""
+            QCheckBox {
+                font-size: 13px;
+            }
+            QCheckBox::indicator { width: 15px; height: 15px;}
+            }
+        """)        
         ###################
         #limit the sameval line edit
         doub=QtGui.QDoubleValidator()
@@ -53,11 +63,20 @@ class Ui_Dialog_var_spat_interpol_(QtWidgets.QDialog):
         #first vars of the table
         self.init_table()
         #################
-        #same vale checkbox
+        #same value checkbox
         self.ui.checkBox_variable_input.stateChanged.connect(lambda: self.variable_input())
+        #################
+        # nc checkbox statechange
+        self.ui.checkBox_nc.stateChanged.connect(lambda: self.nc_checkbox_state())
+        #################
+        #nc refresh
+        self.ui.toolButton_refresh_nc.clicked.connect(lambda: self.updatelist_vars("nc"))
+        #nc open
+        self.ui.toolButton_browse_nc.clicked.connect(lambda:self.selectncFile())
 
+        #################
         #refresh
-        self.ui.toolButton_refresh.clicked.connect(lambda: self.updatelist_vars())
+        self.ui.toolButton_refresh.clicked.connect(lambda: self.updatelist_vars("csv"))
         #Method combo box and table
         self.ui.comboBox_method.currentTextChanged.connect(lambda: self.update_table())
         ##################
@@ -66,18 +85,57 @@ class Ui_Dialog_var_spat_interpol_(QtWidgets.QDialog):
         #to work when it is okeyed
         self.ui.buttonBox_spat_interpol.accepted.connect(lambda: self.ok_clicked())
     
+
+        loadhelp(self,"var_intro_interpol_help.md")
+
+    #################
+    def ds_size_calc(self):
+        self.ui.label_3.setText(list(self.ds.dimensions.values())[0].name)
+        self.ui.label_4.setText(list(self.ds.dimensions.values())[1].name)
+        self.ui.label_5.setText(list(self.ds.dimensions.values())[2].name)
+        self.ui.label_longx.setText(str(list(self.ds.dimensions.values())[0].size))
+        self.ui.label_laty.setText(str(list(self.ds.dimensions.values())[1].size))
+        self.ui.label_time.setText(str(list(self.ds.dimensions.values())[2].size))
+    #################
+    def nc_checkbox_state(self):
+        if self.ui.checkBox_nc.isChecked():
+            self.nc_ds=True
+            self.ui.groupBox_2.setEnabled(True)
+
+            
+            #same value
+            self.sam_val=False
+            self.ui.groupBox.setEnabled(False)
+            self.ui.checkBox_variable_input.setChecked(False)
+            
+            #raster
+            self.ui.groupBox_variable_input.setEnabled(False)        
+        
+        else:
+            self.nc_ds=False
+            self.ui.groupBox_2.setEnabled(False)
+            self.ui.groupBox_variable_input.setEnabled(True)
+
     #################
     def variable_input(self):
         if self.ui.checkBox_variable_input.isChecked():
             self.sam_val=True
-            self.ui.groupBox_variable_input.setEnabled(False)
             self.ui.groupBox.setEnabled(True)
+            #.nc
+            self.ui.checkBox_nc.setChecked(False)
+            self.ui.groupBox_2.setEnabled(False)
+            self.nc_ds=False
+
             self.updatelist_vars_same_val()
+
+            #raster
+            self.ui.groupBox_variable_input.setEnabled(False)
 
         else:
             self.sam_val=False
-            self.ui.groupBox_variable_input.setEnabled(True)
             self.ui.groupBox.setEnabled(False)
+            self.ui.groupBox_variable_input.setEnabled(True)
+
     #################        
     def init_table(self):
         #set the tableWidget_intp_method_params table
@@ -184,8 +242,9 @@ class Ui_Dialog_var_spat_interpol_(QtWidgets.QDialog):
     
     #################
     #function to list the variables
-    def updatelist_vars(self):
+    def updatelist_vars(self,csv_or_nc):
         self.ui.comboBox_var_name.clear()
+        self.ui.comboBox_var_name_nc.clear()
         try:
             #list of variables:
 
@@ -199,15 +258,38 @@ class Ui_Dialog_var_spat_interpol_(QtWidgets.QDialog):
             dims_list=["time_bnds","time","lat","lon","x","y"]
             list_vars_ds=[n for n in list_vars_ds if n not in dims_list]
             #------
-            #read csv heads
-            csv_dir=self.ui.lineEdit_csv.text()
-            df=pd.read_csv(csv_dir)
-            list_vars_excel=list(df.head())
+            if csv_or_nc=="csv":
+                #read csv heads
+                csv_dir=self.ui.lineEdit_csv.text()
+                df=pd.read_csv(csv_dir)
+                list_vars_filtered=list(df.head())
+                list_vars=[n for n in list_vars_ds if n in list_vars_filtered]
+                self.ui.comboBox_var_name.addItems(list_vars)
             #-----
-            list_vars=[n for n in list_vars_ds if n in list_vars_excel]
-            self.ui.comboBox_var_name.addItems(list_vars)
-            
+            elif csv_or_nc=="nc":
+                print ("in nc!!!")
+                self.ui.label_longx_new.clear()
+                self.ui.label_laty_new.clear()
+                self.ui.label_time_new.clear()
+                self.ui.label_6.clear()
+                self.ui.label_7.clear()
+                self.ui.label_8.clear()
 
+                nc_ds_tmp_dir=self.ui.lineEdit_nc.text()
+                nc_ds_tmp=nc.Dataset(nc_ds_tmp_dir,'r+',format='NETCDF4')
+                list_vars_filtered=list(nc_ds_tmp.variables.keys())
+                list_vars=[n for n in list_vars_ds if n in list_vars_filtered]
+                self.ui.comboBox_var_name_nc.addItems(list_vars)
+
+                self.ui.label_longx_new.setText(str(list(nc_ds_tmp.dimensions.values())[0].size))
+                self.ui.label_laty_new.setText(str(list(nc_ds_tmp.dimensions.values())[1].size))
+                self.ui.label_time_new.setText(str(list(nc_ds_tmp.dimensions.values())[2].size))
+                self.ui.label_6.setText(list(nc_ds_tmp.dimensions.values())[0].name)
+                self.ui.label_7.setText(list(nc_ds_tmp.dimensions.values())[1].name)
+                self.ui.label_8.setText(list(nc_ds_tmp.dimensions.values())[2].name)
+
+                nc_ds_tmp.close()
+     
         except: pass
     
     
@@ -220,7 +302,7 @@ class Ui_Dialog_var_spat_interpol_(QtWidgets.QDialog):
             list_vars_ds=list(self.ds.variables.keys())
             dims_list=["time_bnds","time","lat","lon","x","y"]
             list_vars_ds=[n for n in list_vars_ds if n not in dims_list]
-            self.ui.comboBox_var_name.addItems(list_vars_ds)
+            self.ui.comboBox_var_same_val.addItems(list_vars_ds)
         
         except: pass
     ###############
@@ -240,10 +322,16 @@ class Ui_Dialog_var_spat_interpol_(QtWidgets.QDialog):
         self.ui.lineEdit_xyraster.setText(self.rastfileName)
     
     ###############
+    def selectncFile(self):
+        filter = "NETCDF(*.nc)"
+        self.ncfileName = QtWidgets.QFileDialog.getOpenFileName(caption='select a .nc file',filter=filter)[0]
+        
+        self.ui.lineEdit_nc.setText(self.ncfileName)
+    ###############
     def ok_clicked(self):
         
         
-        if self.sam_val==False:
+        if self.sam_val==False and self.nc_ds==False:
 
             ######
             multiply=True
@@ -267,10 +355,17 @@ class Ui_Dialog_var_spat_interpol_(QtWidgets.QDialog):
             else:
                 self.ds=netCDF_ds.var_introduction_from_csv(self.ds,csv_dir,time_csv_col,var_name,preferred_date_interval,interpolation_time_int,multiply)
 
-        else:
+        elif self.sam_val==True and self.nc_ds==False:
             #same value for all timesteps and in all space
             var_name=self.ui.comboBox_var_name.currentText()
             self.ds[var_name][:,:,:]=float(self.ui.lineEdit_same_val.text())
+        
+        elif self.sam_val==False and self.nc_ds==True:
+            #nc
+            var_name=self.ui.comboBox_var_name_nc.currentText
+            new_nc_dir=self.ui.lineEdit_nc.text()
+            self.ds=netCDF_ds.var_introduction_from_nc(new_nc_dir,self.ds,var_name)
+
 
     '''def single_point_csv_config(self,csv_dir):
         df=pd.read_csv(csv_dir)

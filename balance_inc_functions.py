@@ -1,5 +1,5 @@
 from PyQt6 import QtWidgets,QtGui
-from balance import Ui_balance_Dialog
+from waterpybal_ui_py.balance import Ui_balance_Dialog
 from waterpybal.balance_calcs import balance #meth balance_calculation_main
 import sys
 

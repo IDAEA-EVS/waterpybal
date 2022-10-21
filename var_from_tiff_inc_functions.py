@@ -1,5 +1,5 @@
 from PyQt6 import QtWidgets
-from var_from_tiff import Ui_Dialog_var_from_tiff
+from waterpybal_ui_py.var_from_tiff import Ui_Dialog_var_from_tiff
 from waterpybal.dataset_prep import netCDF_ds
 
 

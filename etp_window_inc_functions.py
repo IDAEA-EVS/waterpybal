@@ -1,7 +1,9 @@
 from PyQt6 import QtWidgets,QtCore
-from etp_window import Ui_Dialog_etp
+from waterpybal_ui_py.etp_window import Ui_Dialog_etp
 from waterpybal.etp_calcs import ETP
 import sys
+from gui_help.gui_help_load import loadhelp
+
 class Ui_Dialog_etp_(QtWidgets.QDialog):
 
     def __init__(self):
@@ -27,6 +29,9 @@ class Ui_Dialog_etp_(QtWidgets.QDialog):
         ##################
         #to work when it is okeyed
         self.ui.buttonBox.accepted.connect(lambda: self.ok_clicked())
+
+        loadhelp(self,"etp_help.md")
+
     
     def ok_clicked(self):
         num_of_rows=self.ui.tableWidget_etp_method_params.rowCount()

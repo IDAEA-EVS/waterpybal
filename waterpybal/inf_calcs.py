@@ -199,7 +199,7 @@ class infiltration(object):
         return slope
     
     #-----------------------------------------
-    def read_raster_DEM_HSG_LU(raster_dir,HSG_band,LU_band,ELEV_band,DEM_path_or_raster,DEM_or_raster,filled_dep,slope_range_list):
+    def read_raster_DEM_HSG_LU(raster_dir,HSG_band,LU_band,ELEV_or_HC_band,DEM_path_or_raster,DEM_or_raster,filled_dep,slope_range_list,SC_or_HC):
         import rasterio as rs
         if slope_range_list==None: slope_range_list=[1,5,10,20]
         data=rs.open(raster_dir)
@@ -207,30 +207,34 @@ class infiltration(object):
         LU=data.read(LU_band)
         data_elev=None
         msk = data.read_masks(1)
-        if ELEV_band!=None and DEM_or_raster=="raster":
-            #elevation as a raster
-            data_elev=data.read(ELEV_band)
-            SC=infiltration.slope_catagory(DEM_path_or_raster=data_elev,DEM_or_raster="raster",slope_range_list=slope_range_list,filled_dep=filled_dep)
+        if SC_or_HC=="SC":
+            if ELEV_or_HC_band!=None and DEM_or_raster=="raster":
+                #elevation as a raster
+                data_elev=data.read(ELEV_or_HC_band)
+                SC=infiltration.slope_catagory(DEM_path_or_raster=data_elev,DEM_or_raster="raster",slope_range_list=slope_range_list,filled_dep=filled_dep)
+            else:
+                #elevation as a dem
+                SC=infiltration.slope_catagory(DEM_path_or_raster=DEM_path_or_raster,DEM_or_raster="DEM",slope_range_list=slope_range_list,filled_dep=filled_dep)
         else:
-            #elevation as a dem
-            SC=infiltration.slope_catagory(DEM_path_or_raster=DEM_path_or_raster,DEM_or_raster="DEM",slope_range_list=slope_range_list,filled_dep=filled_dep)
+            SC=data.read(ELEV_or_HC_band)
+
 
         return HSG,SC,LU,msk
     
     #-----------------------------------------
 
-    def Inf_calc(ds,CN_table_dir,raster_dir,HSG_band,LU_band,ELEV_band,DEM_path_or_raster,DEM_or_raster,filled_dep,slope_range_list,amc1_coeffs,amc3_coeffs,dormant_thresh,growing_thresh,average_thresh,mon_list_dormant,preferred_date_interval,corrected_cn,single_cn_val,cn_val,advanced_cn,advanced_cn_dic):  
+    def Inf_calc(ds,CN_table_dir,raster_dir,HSG_band,LU_band,ELEV_band,DEM_path_or_raster,DEM_or_raster,filled_dep,slope_range_list,amc1_coeffs,amc3_coeffs,dormant_thresh,growing_thresh,average_thresh,mon_list_dormant,preferred_date_interval,corrected_cn,single_cn_val,cn_val,advanced_cn,advanced_cn_dic,SC_or_HC):  
         
 
         if single_cn_val==False:
             ds=infiltration.Irig_calc(ds)
 
             #1-from raster, read HSG, LU,read Slope and calculate slope catagory
-            HSG,SC,LU,msk=infiltration.read_raster_DEM_HSG_LU(raster_dir,int(HSG_band),int(LU_band),int(ELEV_band),DEM_path_or_raster,DEM_or_raster,filled_dep,slope_range_list)
+            HSG,SC,LU,msk=infiltration.read_raster_DEM_HSG_LU(raster_dir,int(HSG_band),int(LU_band),int(ELEV_band),DEM_path_or_raster,DEM_or_raster,filled_dep,slope_range_list,SC_or_HC=SC_or_HC)
             #---------------
             # 2-read cn table db   for each point of the raster (array)
             #CN_table_dir=r"C:\Users\Ash kan\Documents\watbalpy\cn2.csv"
-            cnt=pd.read_csv(CN_table_dir)
+            cnt=pd.read_excel(CN_table_dir)
             #LU=np.array(cnt[["Land use"]])[:9].reshape(3,3,1)
             #Ru0=np.random.uniform(low=0,high=10,size=(3,3,1))
             #SC=np.random.randint(low=1,high=5,size=(3,3,1))

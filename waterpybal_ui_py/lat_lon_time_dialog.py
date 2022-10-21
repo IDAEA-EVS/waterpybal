@@ -12,10 +12,12 @@ from PyQt6 import QtCore, QtGui, QtWidgets
 class Ui_Dialog_lat_lon_time(object):
     def setupUi(self, Dialog_lat_lon_time):
         Dialog_lat_lon_time.setObjectName("Dialog_lat_lon_time")
-        Dialog_lat_lon_time.resize(500, 490)
-        Dialog_lat_lon_time.setMinimumSize(QtCore.QSize(500, 490))
-        Dialog_lat_lon_time.setMaximumSize(QtCore.QSize(750, 730))
-        self.verticalLayout_8 = QtWidgets.QVBoxLayout(Dialog_lat_lon_time)
+        Dialog_lat_lon_time.resize(550, 490)
+        Dialog_lat_lon_time.setMinimumSize(QtCore.QSize(550, 490))
+        Dialog_lat_lon_time.setMaximumSize(QtCore.QSize(1000, 730))
+        self.horizontalLayout_6 = QtWidgets.QHBoxLayout(Dialog_lat_lon_time)
+        self.horizontalLayout_6.setObjectName("horizontalLayout_6")
+        self.verticalLayout_8 = QtWidgets.QVBoxLayout()
         self.verticalLayout_8.setObjectName("verticalLayout_8")
         self.groupBox_spatialtemporal = QtWidgets.QGroupBox(Dialog_lat_lon_time)
         font = QtGui.QFont()
@@ -450,6 +452,31 @@ class Ui_Dialog_lat_lon_time(object):
         self.buttonBox.setStandardButtons(QtWidgets.QDialogButtonBox.StandardButton.Cancel|QtWidgets.QDialogButtonBox.StandardButton.Ok)
         self.buttonBox.setObjectName("buttonBox")
         self.verticalLayout_8.addWidget(self.buttonBox)
+        self.horizontalLayout_6.addLayout(self.verticalLayout_8)
+        self.groupBox_help = QtWidgets.QGroupBox(Dialog_lat_lon_time)
+        self.groupBox_help.setMinimumSize(QtCore.QSize(150, 0))
+        self.groupBox_help.setMaximumSize(QtCore.QSize(250, 16777215))
+        font = QtGui.QFont()
+        font.setPointSize(9)
+        self.groupBox_help.setFont(font)
+        self.groupBox_help.setAutoFillBackground(False)
+        self.groupBox_help.setStyleSheet("QGroupBox{border:2px solid gray;border-radius:1px;margin-top: 1ex;}\n"
+"QGroupBox::title{subcontrol-origin: margin;subcontrol-position:top center;padding:0 3px;}")
+        self.groupBox_help.setTitle("Help")
+        self.groupBox_help.setFlat(False)
+        self.groupBox_help.setObjectName("groupBox_help")
+        self.verticalLayout_9 = QtWidgets.QVBoxLayout(self.groupBox_help)
+        self.verticalLayout_9.setObjectName("verticalLayout_9")
+        self.textBrowser_help = QtWidgets.QTextBrowser(self.groupBox_help)
+        self.textBrowser_help.setAutoFillBackground(True)
+        self.textBrowser_help.setStyleSheet("background-color: rgb(240, 240, 240)")
+        self.textBrowser_help.setFrameShape(QtWidgets.QFrame.Shape.WinPanel)
+        self.textBrowser_help.setFrameShadow(QtWidgets.QFrame.Shadow.Sunken)
+        self.textBrowser_help.setLineWidth(0)
+        self.textBrowser_help.setReadOnly(True)
+        self.textBrowser_help.setObjectName("textBrowser_help")
+        self.verticalLayout_9.addWidget(self.textBrowser_help)
+        self.horizontalLayout_6.addWidget(self.groupBox_help)
 
         self.retranslateUi(Dialog_lat_lon_time)
         self.buttonBox.accepted.connect(Dialog_lat_lon_time.accept)
@@ -613,6 +640,11 @@ class Ui_Dialog_lat_lon_time(object):
         item.setText(_translate("Dialog_lat_lon_time", "Var. Unit"))
         self.toolButton_new_3.setText(_translate("Dialog_lat_lon_time", "New"))
         self.toolButton_remove_3.setText(_translate("Dialog_lat_lon_time", "Remove"))
+        self.textBrowser_help.setHtml(_translate("Dialog_lat_lon_time", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
+"<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">\n"
+"p, li { white-space: pre-wrap; }\n"
+"</style></head><body style=\" font-family:\'MS Shell Dlg 2\'; font-size:8.1pt; font-weight:400; font-style:normal;\">\n"
+"<p align=\"justify\" style=\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><br /></p></body></html>"))
 
 
 if __name__ == "__main__":

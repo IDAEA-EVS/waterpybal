@@ -1,7 +1,8 @@
 from PyQt6 import QtWidgets,QtGui,QtCore
-from ui_infiltration_new import Ui_Dialog_infiltration
+from waterpybal_ui_py.infiltration import Ui_Dialog_infiltration
 from waterpybal.inf_calcs import infiltration
 from waterpybal.urban_infiltration import urban_cycle_infiltration_calcs,urban_Composite_CN_correction
+from gui_help.gui_help_load import loadhelp
 
 
 class Ui_Dialog_infiltration_(QtWidgets.QDialog):
@@ -32,6 +33,11 @@ class Ui_Dialog_infiltration_(QtWidgets.QDialog):
         ##################
         #set style sheet
         self.stylesheetset()
+        ##################
+        #set cn table
+        self.ui.lineEdit_cn_csv.setText("curve_number_standard_table.xls")
+
+        loadhelp(self,"infiltration_help.md")
 
 
     ########################################################################################################
@@ -40,6 +46,8 @@ class Ui_Dialog_infiltration_(QtWidgets.QDialog):
 
     #connect the clicks to functions
     def clickconnect(self):
+        #slope cat checkbox statchange
+        self.ui.checkBox_slope_cat.stateChanged.connect(lambda: self.slopecat_statchange())
         #browse button
         self.ui.toolButton_browse_cn_csv.clicked.connect(lambda: self.selectcsvFile())
         ##############
@@ -76,6 +84,14 @@ class Ui_Dialog_infiltration_(QtWidgets.QDialog):
         self.ui.buttonBox.accepted.connect(lambda: self.ok_clicked())    
     ##############################################################################
     ##############################################################################
+    def slopecat_statchange(self):
+        if self.ui.checkBox_slope_cat.isChecked():
+            self.ui.label_slope.setEnabled(True)
+            self.ui.lineEdit_slope.setEnabled(True)
+        else:
+            self.ui.label_slope.setEnabled(False)
+            self.ui.lineEdit_slope.setEnabled(False)
+    #############################
     def urbancycle_state(self):
         if self.ui.checkBox_urban_cycle.isChecked():
             self.ui.tableWidget_urban.setEnabled(True)
@@ -181,7 +197,6 @@ class Ui_Dialog_infiltration_(QtWidgets.QDialog):
                 self.ui.checkBox_urban_cn_correction.setChecked(False)
                 self.ui.checkBox_urban_cn_correction.setEnabled(True)
                 self.ui.groupBox_urban_cn_correction.setEnabled(True)
-            
             
             
     ##############################################################################
@@ -335,10 +350,10 @@ class Ui_Dialog_infiltration_(QtWidgets.QDialog):
 
         if self.ui.groupBox_corrected_cn.isChecked():
     
-            amc1_coeffs=[float(n) for n in self.ui.lineEdit_amc1.text().split(',')]
-            amc3_coeffs=[float(n) for n in self.ui.lineEdit_amc3.text().split(',')]
-            dormant_thresh=[float(n) for n in self.ui.lineEdit_dormant.text().split(',')]
-            growing_thresh=[float(n) for n in self.ui.lineEdit_growing.text().split(',')]
+            amc1_coeffs=[float(n) for n in [self.ui.lineEdit_amc1_a.text(),self.ui.lineEdit_amc1_b.text(),self.ui.lineEdit_amc1_c.text()]]
+            amc3_coeffs=[float(n) for n in [self.ui.lineEdit_amc3_a.text(),self.ui.lineEdit_amc3_b.text(),self.ui.lineEdit_amc3_c.text()]]
+            dormant_thresh=[float(n) for n in [self.ui.lineEdit_dormant_1.text(),self.ui.lineEdit_dormant_3.text()]]
+            growing_thresh=[float(n) for n in [self.ui.lineEdit_grow_1.text(),self.ui.lineEdit_grow_3.text()]]
             mon_list_dormant=[float(n) for n in self.ui.lineEdit_dormant_month.text().split(',')]
             if self.ui.comboBox_average.currentText()=='Yes': average_thresh=True
             else: average_thresh=False
@@ -372,10 +387,7 @@ class Ui_Dialog_infiltration_(QtWidgets.QDialog):
             ########################
             # inf calc arguments
             
-            #slope range list
-            try: slope_range_list=[float(n) for n in self.ui.lineEdit_slope.text().split(',')]
-            except: slope_range_list=list()
-            
+
             CN_table_dir=self.ui.lineEdit_cn_csv.text()
             HSG_band=self.ui.lineEdit_hsg.text()
             LU_band=self.ui.lineEdit_lu.text()
@@ -385,8 +397,15 @@ class Ui_Dialog_infiltration_(QtWidgets.QDialog):
             DEM_path_or_raster=raster_dir
             filled_dep=True
             preferred_date_interval=self.preferred_date_interval
-            
-            self.ds,Ia=infiltration.Inf_calc(self.ds,CN_table_dir,raster_dir,HSG_band,LU_band,ELEV_band,DEM_path_or_raster,DEM_or_raster,filled_dep,slope_range_list,amc1_coeffs,amc3_coeffs,dormant_thresh,growing_thresh,average_thresh,mon_list_dormant,preferred_date_interval,corrected_cn,self.single_cn_val,self.cn_val,advanced_cn,advanced_cn_dic)
+            #Hydrologic condition (HC) or slope catagory (SC) & slope range list
+            if self.ui.checkBox_slope_cat.isChecked(): 
+                SC_or_HC="SC"
+                slope_range_list=[float(n) for n in self.ui.lineEdit_slope.text().split(',')]
+            else:
+                SC_or_HC="HC"
+                slope_range_list=list()
+                
+            self.ds,Ia=infiltration.Inf_calc(self.ds,CN_table_dir,raster_dir,HSG_band,LU_band,ELEV_band,DEM_path_or_raster,DEM_or_raster,filled_dep,slope_range_list,amc1_coeffs,amc3_coeffs,dormant_thresh,growing_thresh,average_thresh,mon_list_dormant,preferred_date_interval,corrected_cn,self.single_cn_val,self.cn_val,advanced_cn,advanced_cn_dic,SC_or_HC)
             # max infiltration threshold per timestep
             var_inp="INF_Val"
             var_out="INF_Val"
@@ -538,7 +557,7 @@ class Ui_Dialog_infiltration_(QtWidgets.QDialog):
             """)
 
         #for checkbox:
-        for i in [self.ui.checkBox_cn_value,self.ui.checkBox_adv_cn,self.ui.checkBox_cia_cn_composite,self.ui.checkBox_uncia_cn_composite,self.ui.checkBox_urban_cn_correction,self.ui.checkBox_urban_cycle]:
+        for i in [self.ui.checkBox_cn_value,self.ui.checkBox_adv_cn,self.ui.checkBox_cia_cn_composite,self.ui.checkBox_uncia_cn_composite,self.ui.checkBox_urban_cn_correction,self.ui.checkBox_urban_cycle,self.ui.checkBox_slope_cat]:
             i.setStyleSheet("""
                 QCheckBox::indicator { width: 15px; height: 15px;}
                 }

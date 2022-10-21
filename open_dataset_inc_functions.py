@@ -1,6 +1,6 @@
 from PyQt6 import QtWidgets,QtGui
 
-from open_dataset import Ui_Dialog_open_dataset
+from .waterpybal_ui_py.open_dataset import Ui_Dialog_open_dataset
 import os
 import sys
 import netCDF4 as nc

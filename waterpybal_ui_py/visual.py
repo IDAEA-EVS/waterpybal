@@ -12,9 +12,12 @@ from PyQt6 import QtCore, QtGui, QtWidgets
 class Ui_Dialog_visual(object):
     def setupUi(self, Dialog_visual):
         Dialog_visual.setObjectName("Dialog_visual")
-        Dialog_visual.resize(539, 552)
+        Dialog_visual.resize(800, 590)
+        Dialog_visual.setMinimumSize(QtCore.QSize(800, 590))
         Dialog_visual.setMaximumSize(QtCore.QSize(1500, 1000))
-        self.verticalLayout_5 = QtWidgets.QVBoxLayout(Dialog_visual)
+        self.horizontalLayout_24 = QtWidgets.QHBoxLayout(Dialog_visual)
+        self.horizontalLayout_24.setObjectName("horizontalLayout_24")
+        self.verticalLayout_5 = QtWidgets.QVBoxLayout()
         self.verticalLayout_5.setObjectName("verticalLayout_5")
         self.horizontalLayout_9 = QtWidgets.QHBoxLayout()
         self.horizontalLayout_9.setObjectName("horizontalLayout_9")
@@ -656,6 +659,30 @@ class Ui_Dialog_visual(object):
         self.horizontalLayout_22.addWidget(self.pushButton_report_excel)
         self.verticalLayout_4.addLayout(self.horizontalLayout_22)
         self.verticalLayout_5.addWidget(self.groupBox_report)
+        self.horizontalLayout_24.addLayout(self.verticalLayout_5)
+        self.groupBox_help = QtWidgets.QGroupBox(Dialog_visual)
+        self.groupBox_help.setMinimumSize(QtCore.QSize(150, 0))
+        font = QtGui.QFont()
+        font.setPointSize(9)
+        self.groupBox_help.setFont(font)
+        self.groupBox_help.setAutoFillBackground(False)
+        self.groupBox_help.setStyleSheet("QGroupBox{border:2px solid gray;border-radius:1px;margin-top: 1ex;}\n"
+"QGroupBox::title{subcontrol-origin: margin;subcontrol-position:top center;padding:0 3px;}")
+        self.groupBox_help.setTitle("Help")
+        self.groupBox_help.setFlat(False)
+        self.groupBox_help.setObjectName("groupBox_help")
+        self.horizontalLayout_23 = QtWidgets.QHBoxLayout(self.groupBox_help)
+        self.horizontalLayout_23.setObjectName("horizontalLayout_23")
+        self.textBrowser_help = QtWidgets.QTextBrowser(self.groupBox_help)
+        self.textBrowser_help.setAutoFillBackground(True)
+        self.textBrowser_help.setStyleSheet("background-color: rgb(240, 240, 240)")
+        self.textBrowser_help.setFrameShape(QtWidgets.QFrame.Shape.WinPanel)
+        self.textBrowser_help.setFrameShadow(QtWidgets.QFrame.Shadow.Sunken)
+        self.textBrowser_help.setLineWidth(0)
+        self.textBrowser_help.setReadOnly(True)
+        self.textBrowser_help.setObjectName("textBrowser_help")
+        self.horizontalLayout_23.addWidget(self.textBrowser_help)
+        self.horizontalLayout_24.addWidget(self.groupBox_help)
         self.label_dataset_dir.setBuddy(self.lineEdit_dataset_path)
         self.label_save_path.setBuddy(self.lineEdit_dataset_path)
         self.label_regions_raster.setBuddy(self.lineEdit_dataset_path)
@@ -830,6 +857,11 @@ class Ui_Dialog_visual(object):
         self.toolButton_refresh_regions_raster.setText(_translate("Dialog_visual", "refresh"))
         self.label_region.setText(_translate("Dialog_visual", "Region"))
         self.pushButton_report_excel.setText(_translate("Dialog_visual", "Generate Excel Report"))
+        self.textBrowser_help.setHtml(_translate("Dialog_visual", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
+"<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">\n"
+"p, li { white-space: pre-wrap; }\n"
+"</style></head><body style=\" font-family:\'MS Shell Dlg 2\'; font-size:8.1pt; font-weight:400; font-style:normal;\">\n"
+"<p align=\"justify\" style=\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><br /></p></body></html>"))
 
 
 if __name__ == "__main__":

@@ -12,12 +12,18 @@ from PyQt6 import QtCore, QtGui, QtWidgets
 class Ui_Dialog_swr(object):
     def setupUi(self, Dialog_swr):
         Dialog_swr.setObjectName("Dialog_swr")
-        Dialog_swr.resize(400, 168)
-        Dialog_swr.setMinimumSize(QtCore.QSize(400, 0))
-        self.verticalLayout_3 = QtWidgets.QVBoxLayout(Dialog_swr)
+        Dialog_swr.resize(600, 228)
+        Dialog_swr.setMinimumSize(QtCore.QSize(600, 0))
+        self.horizontalLayout_11 = QtWidgets.QHBoxLayout(Dialog_swr)
+        self.horizontalLayout_11.setObjectName("horizontalLayout_11")
+        self.verticalLayout_3 = QtWidgets.QVBoxLayout()
         self.verticalLayout_3.setObjectName("verticalLayout_3")
+        self.checkBox_raster = QtWidgets.QCheckBox(Dialog_swr)
+        self.checkBox_raster.setObjectName("checkBox_raster")
+        self.verticalLayout_3.addWidget(self.checkBox_raster)
         self.groupBox_raster = QtWidgets.QGroupBox(Dialog_swr)
-        self.groupBox_raster.setCheckable(True)
+        self.groupBox_raster.setTitle("")
+        self.groupBox_raster.setCheckable(False)
         self.groupBox_raster.setObjectName("groupBox_raster")
         self.verticalLayout = QtWidgets.QVBoxLayout(self.groupBox_raster)
         self.verticalLayout.setObjectName("verticalLayout")
@@ -98,9 +104,10 @@ class Ui_Dialog_swr(object):
         self.horizontalLayout_8.addLayout(self.horizontalLayout)
         self.verticalLayout.addLayout(self.horizontalLayout_8)
         self.verticalLayout_3.addWidget(self.groupBox_raster)
-        spacerItem = QtWidgets.QSpacerItem(20, 1, QtWidgets.QSizePolicy.Policy.Minimum, QtWidgets.QSizePolicy.Policy.Expanding)
+        spacerItem = QtWidgets.QSpacerItem(20, 13, QtWidgets.QSizePolicy.Policy.Minimum, QtWidgets.QSizePolicy.Policy.Expanding)
         self.verticalLayout_3.addItem(spacerItem)
         self.groupBox_single_values = QtWidgets.QGroupBox(Dialog_swr)
+        self.groupBox_single_values.setEnabled(False)
         self.groupBox_single_values.setTitle("")
         self.groupBox_single_values.setObjectName("groupBox_single_values")
         self.verticalLayout_2 = QtWidgets.QVBoxLayout(self.groupBox_single_values)
@@ -165,6 +172,30 @@ class Ui_Dialog_swr(object):
         self.buttonBox.setStandardButtons(QtWidgets.QDialogButtonBox.StandardButton.Cancel|QtWidgets.QDialogButtonBox.StandardButton.Ok)
         self.buttonBox.setObjectName("buttonBox")
         self.verticalLayout_3.addWidget(self.buttonBox)
+        self.horizontalLayout_11.addLayout(self.verticalLayout_3)
+        self.groupBox_help = QtWidgets.QGroupBox(Dialog_swr)
+        self.groupBox_help.setMinimumSize(QtCore.QSize(150, 0))
+        font = QtGui.QFont()
+        font.setPointSize(9)
+        self.groupBox_help.setFont(font)
+        self.groupBox_help.setAutoFillBackground(False)
+        self.groupBox_help.setStyleSheet("QGroupBox{border:2px solid gray;border-radius:1px;margin-top: 1ex;}\n"
+"QGroupBox::title{subcontrol-origin: margin;subcontrol-position:top center;padding:0 3px;}")
+        self.groupBox_help.setTitle("Help")
+        self.groupBox_help.setFlat(False)
+        self.groupBox_help.setObjectName("groupBox_help")
+        self.horizontalLayout_10 = QtWidgets.QHBoxLayout(self.groupBox_help)
+        self.horizontalLayout_10.setObjectName("horizontalLayout_10")
+        self.textBrowser_help = QtWidgets.QTextBrowser(self.groupBox_help)
+        self.textBrowser_help.setAutoFillBackground(True)
+        self.textBrowser_help.setStyleSheet("background-color: rgb(240, 240, 240)")
+        self.textBrowser_help.setFrameShape(QtWidgets.QFrame.Shape.WinPanel)
+        self.textBrowser_help.setFrameShadow(QtWidgets.QFrame.Shadow.Sunken)
+        self.textBrowser_help.setLineWidth(0)
+        self.textBrowser_help.setReadOnly(True)
+        self.textBrowser_help.setObjectName("textBrowser_help")
+        self.horizontalLayout_10.addWidget(self.textBrowser_help)
+        self.horizontalLayout_11.addWidget(self.groupBox_help)
 
         self.retranslateUi(Dialog_swr)
         self.buttonBox.accepted.connect(Dialog_swr.accept)
@@ -174,7 +205,7 @@ class Ui_Dialog_swr(object):
     def retranslateUi(self, Dialog_swr):
         _translate = QtCore.QCoreApplication.translate
         Dialog_swr.setWindowTitle(_translate("Dialog_swr", "Soil Water Reserve Calculation"))
-        self.groupBox_raster.setTitle(_translate("Dialog_swr", "Raster"))
+        self.checkBox_raster.setText(_translate("Dialog_swr", "Raster"))
         self.label_csv.setText(_translate("Dialog_swr", "File path (raster)"))
         self.toolButton_browse_csv.setText(_translate("Dialog_swr", "..."))
         self.label_cc.setText(_translate("Dialog_swr", "CC Band"))
@@ -183,13 +214,8 @@ class Ui_Dialog_swr(object):
         self.label_cc_2.setText(_translate("Dialog_swr", "CC Value"))
         self.label_pwp_2.setText(_translate("Dialog_swr", "PWP Value"))
         self.label_rrt_2.setText(_translate("Dialog_swr", "RRT Value"))
-
-
-if __name__ == "__main__":
-    import sys
-    app = QtWidgets.QApplication(sys.argv)
-    Dialog_swr = QtWidgets.QDialog()
-    ui = Ui_Dialog_swr()
-    ui.setupUi(Dialog_swr)
-    Dialog_swr.show()
-    sys.exit(app.exec())
+        self.textBrowser_help.setHtml(_translate("Dialog_swr", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
+"<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">\n"
+"p, li { white-space: pre-wrap; }\n"
+"</style></head><body style=\" font-family:\'MS Shell Dlg 2\'; font-size:8.1pt; font-weight:400; font-style:normal;\">\n"
+"<p align=\"justify\" style=\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><br /></p></body></html>"))

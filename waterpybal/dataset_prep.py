@@ -415,6 +415,14 @@ class netCDF_ds(object):
         print (ds)
         return ds
 
+
+    def var_introduction_from_nc(new_nc_dir,ds,var_name):
+        
+        ds_temp=nc.Dataset(new_nc_dir,'r+',format='NETCDF')
+        ds[var_name][: ,:,:]=ds_temp["var_name"][:,:,:]
+        return ds
+
+
     def dtimechanger(preferred_date_interval):
         if preferred_date_interval=='datetime64[h]': ds_date_interval='datetime64[m]'
         elif preferred_date_interval=='datetime64[D]': ds_date_interval='datetime64[h]'

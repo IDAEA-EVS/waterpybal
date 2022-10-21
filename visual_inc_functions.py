@@ -1,7 +1,8 @@
 from PyQt6 import QtWidgets,QtGui
-from visual import Ui_Dialog_visual
+from waterpybal_ui_py.visual import Ui_Dialog_visual
 from waterpybal.post_processing import post_process
 import netCDF4 as nc
+from gui_help.gui_help_load import loadhelp
 
 
 class Ui_Dialog_visual_(QtWidgets.QDialog):
@@ -67,6 +68,8 @@ class Ui_Dialog_visual_(QtWidgets.QDialog):
         self.ui.checkBox_regions_raster.stateChanged.connect(lambda:self.regions_checkboxclicked())
         self.ui.toolButton_refresh_regions_raster.clicked.connect(lambda:self.update_regions())
         self.ui.toolButton_regions_raster.clicked.connect(lambda:self.selectrastFile())
+
+        loadhelp(self,"visual_output_help.md")
         
         
     

@@ -1,5 +1,6 @@
 from PyQt6 import QtWidgets,QtGui
-from swr_window import Ui_Dialog_swr
+from gui_help.gui_help_load import loadhelp
+from waterpybal_ui_py.swr_window import Ui_Dialog_swr
 from waterpybal.pru_calcs import PRU
 
 
@@ -19,9 +20,10 @@ class Ui_Dialog_swr_(QtWidgets.QDialog):
         #browse raster button
         self.ui.toolButton_browse_csv.clicked.connect(lambda: self.selectrastFile())
         ##################
-        self.ui.groupBox_raster.setStyleSheet("""
-            
-            QGroupBox::indicator { width: 15px; height: 15px;}
+
+        self.ui.checkBox_raster.setStyleSheet("""
+
+            QCheckBox::indicator { width: 15px; height: 15px;}
             }
         """)
         ##################
@@ -44,13 +46,32 @@ class Ui_Dialog_swr_(QtWidgets.QDialog):
         self.ui.lineEdit_pwp_val.setMaxLength(5)
         self.ui.lineEdit_rrt_val.setMaxLength(5)
         #################
+        self.ui.checkBox_raster.stateChanged.connect(lambda: self.statechange_checkBox_raster())
         
+
+        loadhelp(self,"swr_help.md")
+
+    #################
+    def statechange_checkBox_raster(self):
+        if self.ui.checkBox_raster.isChecked():
+            self.ui.groupBox_raster.setEnabled(True)
+            self.ui.groupBox_single_values.setEnabled(False)
+        else:
+            self.ui.groupBox_raster.setEnabled(False)
+            self.ui.groupBox_single_values.setEnabled(True)
+
 
     #################
     def single_point_mod(self):
         if self.single_point:
-            self.ui.groupBox_raster.setChecked(False)
+            self.ui.checkBox_raster.setChecked(False)
+            self.ui.checkBox_raster.setEnabled(False)
             self.ui.groupBox_raster.setEnabled(False)
+            self.ui.groupBox_single_values.setEnabled(True)
+        else:
+            self.ui.checkBox_raster.setChecked(True)
+            self.ui.checkBox_raster.setEnabled(True)
+            self.ui.groupBox_raster.setEnabled(True)
     ###############
     #select raster file
     def selectrastFile(self):
@@ -63,8 +84,8 @@ class Ui_Dialog_swr_(QtWidgets.QDialog):
         raster_PRU_dir=self.ui.lineEdit_csv.text()
         #######
         raster_bands_dic_or_val={}
-        print ("self.ui.groupBox_raster.isChecked",self.ui.groupBox_raster.isChecked())
-        if self.ui.groupBox_raster.isChecked():
+
+        if self.ui.checkBox_raster.isChecked():
             raster_bands_dic_or_val['pwp']=int(self.ui.lineEdit_pwp.text())
             raster_bands_dic_or_val['cc']=int(self.ui.lineEdit_cc.text())
             raster_bands_dic_or_val['rrt']=int(self.ui.lineEdit_rrt.text())

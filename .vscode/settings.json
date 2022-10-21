@@ -1,0 +1,5 @@
+{
+    "python.analysis.extraPaths": [
+        "./waterpybal_ui_py"
+    ]
+}

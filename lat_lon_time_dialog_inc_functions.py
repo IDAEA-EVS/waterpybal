@@ -1,9 +1,10 @@
 from PyQt6 import QtWidgets,QtGui
 
-from lat_lon_time_dialog import Ui_Dialog_lat_lon_time
+from waterpybal_ui_py.lat_lon_time_dialog import Ui_Dialog_lat_lon_time
 import os
 import sys
 from waterpybal.dataset_prep import netCDF_ds
+from gui_help.gui_help_load import loadhelp
 
 
 class lat_lon_time_dialog_(QtWidgets.QDialog):
@@ -55,6 +56,9 @@ class lat_lon_time_dialog_(QtWidgets.QDialog):
         """)
         #define dir for var_generation function
         self.dir=""
+
+        loadhelp(self,"new_dataset_properties_help.md")
+
 
     ##########################
     def single_p_checked(self):
