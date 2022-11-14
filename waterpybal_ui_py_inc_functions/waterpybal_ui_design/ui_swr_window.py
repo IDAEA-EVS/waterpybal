@@ -24,12 +24,21 @@ class Ui_Dialog_swr(object):
     def setupUi(self, Dialog_swr):
         if not Dialog_swr.objectName():
             Dialog_swr.setObjectName(u"Dialog_swr")
-        Dialog_swr.resize(600, 228)
+        Dialog_swr.resize(902, 241)
         Dialog_swr.setMinimumSize(QSize(600, 0))
         self.horizontalLayout_11 = QHBoxLayout(Dialog_swr)
         self.horizontalLayout_11.setObjectName(u"horizontalLayout_11")
         self.verticalLayout_3 = QVBoxLayout()
         self.verticalLayout_3.setObjectName(u"verticalLayout_3")
+        self.checkbox_ds_vals = QCheckBox(Dialog_swr)
+        self.checkbox_ds_vals.setObjectName(u"checkbox_ds_vals")
+
+        self.verticalLayout_3.addWidget(self.checkbox_ds_vals)
+
+        self.verticalSpacer = QSpacerItem(20, 18, QSizePolicy.Minimum, QSizePolicy.Expanding)
+
+        self.verticalLayout_3.addItem(self.verticalSpacer)
+
         self.checkBox_raster = QCheckBox(Dialog_swr)
         self.checkBox_raster.setObjectName(u"checkBox_raster")
 
@@ -138,9 +147,9 @@ class Ui_Dialog_swr(object):
 
         self.verticalLayout_3.addWidget(self.groupBox_raster)
 
-        self.verticalSpacer = QSpacerItem(20, 13, QSizePolicy.Minimum, QSizePolicy.Expanding)
+        self.verticalSpacer_2 = QSpacerItem(20, 18, QSizePolicy.Minimum, QSizePolicy.Expanding)
 
-        self.verticalLayout_3.addItem(self.verticalSpacer)
+        self.verticalLayout_3.addItem(self.verticalSpacer_2)
 
         self.groupBox_single_values = QGroupBox(Dialog_swr)
         self.groupBox_single_values.setObjectName(u"groupBox_single_values")
@@ -262,6 +271,7 @@ class Ui_Dialog_swr(object):
 
     def retranslateUi(self, Dialog_swr):
         Dialog_swr.setWindowTitle(QCoreApplication.translate("Dialog_swr", u"Soil Water Reserve Calculation", None))
+        self.checkbox_ds_vals.setText(QCoreApplication.translate("Dialog_swr", u"Use the dataset CC, PWP & RRT values", None))
         self.checkBox_raster.setText(QCoreApplication.translate("Dialog_swr", u"Raster", None))
         self.groupBox_raster.setTitle("")
         self.label_csv.setText(QCoreApplication.translate("Dialog_swr", u"File path (raster)", None))

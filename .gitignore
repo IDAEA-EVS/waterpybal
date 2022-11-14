@@ -14,4 +14,8 @@
 *.png
 .qt_for_python
 input
+*.exe
 __pycache__
+build
+dist
+.vscode

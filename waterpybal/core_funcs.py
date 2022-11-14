@@ -10,9 +10,6 @@ import netCDF4 as nc
 
 dir=r"C:\Users\Ash kan\Documents\watbalpy\test5212.nc"
 
-#lats_np=np.linspace(-3.0, 3.0, 15)
-#lons_np=np.linspace(-4.0, 4.0, 30)
-#times_np=data.iloc[0:16].index
 lat_lon_type="raster"
 lat_lon_source=r'C:\Users\Ash kan\Downloads\s2a_l2a_fishbourne.tif'
 time_source=r"C:\Users\Ash kan\Documents\watbalpy\klima_daily_4_steps.csv"

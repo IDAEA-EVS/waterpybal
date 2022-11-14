@@ -1,13 +1,13 @@
-from cmath import sqrt
-from turtle import shape
 import numpy as np
 import pandas as pd
 import netCDF4 as nc
 import math
 #Infiltration function:
 #precipitation-runoff (curvenumber)
-class infiltration(object):
-
+class infiltration_functions(object):
+    '''
+        The class containing the methods to use in infiltration class 
+    '''
     def five_day_acc_prec_f(ds,msk):
         #to be used for AMC1 or 2 or 3
         time_steps=[ n for n in range(0,ds["time"].shape[0])]
@@ -143,7 +143,7 @@ class infiltration(object):
             Q[P_bool]=(P_Irig[P_bool]-Ia[P_bool])*(P_Irig[P_bool]-Ia[P_bool])/(P_Irig[P_bool]+0.8*S[P_bool])
         else:
 
-            S,Q=infiltration.adv_runoff_calc(
+            S,Q=infiltration_functions.adv_runoff_calc(
                 advanced_cn_dic["landa"],
                 CN_mod,
                 advanced_cn_dic["A"],
@@ -201,7 +201,7 @@ class infiltration(object):
     #-----------------------------------------
     def read_raster_DEM_HSG_LU(raster_dir,HSG_band,LU_band,ELEV_or_HC_band,DEM_path_or_raster,DEM_or_raster,filled_dep,slope_range_list,SC_or_HC):
         import rasterio as rs
-        if slope_range_list==None: slope_range_list=[1,5,10,20]
+        if slope_range_list==None: slope_range_list=[1,5,10]
         data=rs.open(raster_dir)
         HSG=data.read(HSG_band)
         LU=data.read(LU_band)
@@ -211,88 +211,17 @@ class infiltration(object):
             if ELEV_or_HC_band!=None and DEM_or_raster=="raster":
                 #elevation as a raster
                 data_elev=data.read(ELEV_or_HC_band)
-                SC=infiltration.slope_catagory(DEM_path_or_raster=data_elev,DEM_or_raster="raster",slope_range_list=slope_range_list,filled_dep=filled_dep)
+                SC=infiltration_functions.slope_catagory(DEM_path_or_raster=data_elev,DEM_or_raster="raster",slope_range_list=slope_range_list,filled_dep=filled_dep)
             else:
                 #elevation as a dem
-                SC=infiltration.slope_catagory(DEM_path_or_raster=DEM_path_or_raster,DEM_or_raster="DEM",slope_range_list=slope_range_list,filled_dep=filled_dep)
+                SC=infiltration_functions.slope_catagory(DEM_path_or_raster=DEM_path_or_raster,DEM_or_raster="DEM",slope_range_list=slope_range_list,filled_dep=filled_dep)
         else:
             SC=data.read(ELEV_or_HC_band)
 
 
         return HSG,SC,LU,msk
     
-    #-----------------------------------------
 
-    def Inf_calc(ds,CN_table_dir,raster_dir,HSG_band,LU_band,ELEV_band,DEM_path_or_raster,DEM_or_raster,filled_dep,slope_range_list,amc1_coeffs,amc3_coeffs,dormant_thresh,growing_thresh,average_thresh,mon_list_dormant,preferred_date_interval,corrected_cn,single_cn_val,cn_val,advanced_cn,advanced_cn_dic,SC_or_HC):  
-        
-
-        if single_cn_val==False:
-            ds=infiltration.Irig_calc(ds)
-
-            #1-from raster, read HSG, LU,read Slope and calculate slope catagory
-            HSG,SC,LU,msk=infiltration.read_raster_DEM_HSG_LU(raster_dir,int(HSG_band),int(LU_band),int(ELEV_band),DEM_path_or_raster,DEM_or_raster,filled_dep,slope_range_list,SC_or_HC=SC_or_HC)
-            #---------------
-            # 2-read cn table db   for each point of the raster (array)
-            #CN_table_dir=r"C:\Users\Ash kan\Documents\watbalpy\cn2.csv"
-            cnt=pd.read_excel(CN_table_dir)
-            #LU=np.array(cnt[["Land use"]])[:9].reshape(3,3,1)
-            #Ru0=np.random.uniform(low=0,high=10,size=(3,3,1))
-            #SC=np.random.randint(low=1,high=5,size=(3,3,1))
-            #HSG=np.array([["A","D","B"],["C","B","C"],["A","C","A"]])
-            cn_l=list()
-            for HSG_,SC_,LU_,msk_ in zip(HSG.flat,SC.flat,LU.flat,msk.flat):
-                if msk_==0 or SC_==-9999: cn_l.append(-9999)
-                else: cn_l.append(infiltration.CNN(cnt,HSG_,SC_,LU_))
-            CN=np.array(cn_l,dtype='float32').reshape(SC.shape)
-            CN_all=np.repeat(CN[np.newaxis,:, : ], ds["time"].shape[0], axis=0)
-            ds["CN_Val"][:,:,:]= CN_all
-            #---------------
-            #calculate five day percs
-            if corrected_cn==True:
-                ds=infiltration.five_day_acc_prec_f(ds,msk)
-
-
-        #single cn value defined by user
-        else:
-            corrected_cn==False
-            ds["CN_Val"][:,:,:]=cn_val
-        #---------------
-        #calculate cn_amc_modded
-        if corrected_cn==True:
-            infiltration.CN_AMC_modded(CN,ds,preferred_date_interval,msk,amc1_coeffs,amc3_coeffs,dormant_thresh,growing_thresh,average_thresh,mon_list_dormant)
-            cn_var="CN_mod"
-        else:
-            cn_var="CN_Val"
-
-
-        #calculate infiltr
-        ds,Ia=infiltration.runoff_infilt_calc(ds,cn_var,advanced_cn,advanced_cn_dic)
-    
-         
-            
-        return ds,Ia
-
-    #-----------------------------------------    
-    def max_inf_threshold(ds,var_inp,var_out,threshold):
-        if threshold is not None and threshold not in [" ","  ",""]:
-            threshold=float(threshold)
-            cn=ds[var_inp][:,:,:].data
-            cn[cn>threshold]=threshold
-            ds[var_out][:,:,:]= cn
-        return ds
-    
-    #-----------------------------------------
-    def  runoff_calc(ds,Ia):
-        if Ia is not None:
-            runoff=ds["Irig_Val"][:,:,:].data+ds["Prec_Val"][:,:,:].data-ds["INF_Val"][:,:,:].data-Ia
-        else:
-            runoff=ds["Irig_Val"][:,:,:].data+ds["Prec_Val"][:,:,:].data-ds["INF_Val"][:,:,:].data
-
-        runoff[runoff<0]=0
-        ds["Runoff_Val"][:,:,:]=runoff
-
-        return ds
-    
     #-----------------------------------------
     #zero values of irigation if it is not defined
     def Irig_calc(ds):
@@ -335,4 +264,315 @@ class infiltration(object):
 
         return S,Q
         
+    #-----------------------------------------
 
+class infiltration(object):
+    '''
+    # class inf_calcs.infiltration()
+    The class to calculate the infiltration
+
+    **Methods**
+
+        > ds, Ia = Inf_calc(ds,CN_table_dir,raster_dir,HSG_band,LU_band,ELEV_or_HC_band,DEM_path_or_raster,DEM_or_raster,filled_dep,slope_range_list,amc1_coeffs,amc3_coeffs,dormant_thresh,growing_thresh,average_thresh,mon_list_dormant,preferred_date_interval,corrected_cn,single_cn_val,cn_val,advanced_cn,advanced_cn_dic,SC_or_HC)
+        
+        > ds = runoff_calc(ds,Ia)
+        
+        > ds = max_inf_threshold(ds,var_inp,var_out,threshold)
+        
+    ---
+    ---
+
+    '''
+    def Inf_calc(ds,CN_table_dir,raster_dir,HSG_band,LU_band,ELEV_or_HC_band,preferred_date_interval,corrected_cn=False, single_cn_val=False,cn_val=None,advanced_cn_dic=None,advanced_cn=False, filled_dep=True, slope_range_list=None, amc1_coeffs=None, amc3_coeffs=None, dormant_thresh=None, growing_thresh=None, average_thresh=False, mon_list_dormant=None, SC_or_HC="HC", DEM_or_raster="raster" ,DEM_path_or_raster=None):  
+        '''
+            ## inf_calcs.infiltration.Inf_calc()
+
+            ds, Ia = Inf_calc(ds,CN_table_dir,raster_dir,HSG_band,LU_band,ELEV_or_HC_band,DEM_path_or_raster,DEM_or_raster,filled_dep,slope_range_list,amc1_coeffs,amc3_coeffs,dormant_thresh,growing_thresh,average_thresh,mon_list_dormant,preferred_date_interval,corrected_cn,single_cn_val,cn_val,advanced_cn,advanced_cn_dic,SC_or_HC)
+
+            The method to calculate the infiltration
+
+
+            **Parameters**
+
+                -ds netCDF dataset
+
+                    waterpybal netcdf dataset.
+
+                ---
+                CN_table_dir str
+
+                    Path to the curve number xls table
+                ---
+                raster_dir str
+
+                    The multiband raster path, containing the HSG_band,LU_band and ELEV_or_HC_band
+
+                ---
+                HSG_band int
+                    Hydrologic Soil Group raster band
+
+                ---
+                LU_band int
+
+                    Land Use Group raster band
+
+                ---
+                ELEV_or_HC_band int
+
+                    Elevation (Slope) Catagory or Hydrologic Condition raster band 
+
+                ---
+                DEM_path_or_raster None or str
+
+                    Path to the DEM to calculate the Slope catagories. If there is no slope catagory in the curve number table (Hydrologic condition), ir the elevations 
+                    are introduced as a band in the multibandraster instead of a DEM, DEM_path_or_raster have to be None
+
+                ---
+                DEM_or_raster str default "raster"
+
+                    "raster" or "DEM". If *SC_or_HC* is "HC", DEM_or_raster will be ignored.
+
+                ---
+                filled_dep default True
+
+                    If to Fill Depressions in calculating elevations or not. If *SC_or_HC* is "HC", it will be ignored.
+
+                ---
+                slope_range_list None or list default None
+
+                    If None, slope_range_list=[1,5,10]. List of boundaries of the Slope Catagories.
+
+
+                ---
+                amc1_coeffs None or list default None
+
+                    If None, amc1_coeffs=[0.0069,0.2575,0]. Coefficient of Antecedent Moisture Condition (AMC) 1 Formula as a list.
+
+                ---
+                amc3_coeffs None or list default None
+
+                    If None, amc1_coeffs=[-0.0086,1.8338,0]. Coefficient of Antecedent Moisture Condition (AMC) 3 Formula as a list.
+
+                ---
+                dormant_thresh None or list default None
+
+                    If None, dormant_thresh=[12.7,27.9]. Dormant months AMC1 and AMC3 thresholds.
+
+                ---
+                growing_thresh None or list default None
+
+                    If None, growing_thresh=[36.6,53.3]. Growing months AMC1 and AMC3 thresholds.
+
+                ---
+                average_thresh bool default False
+
+                    To use an average of growing and dormant months to identify AMC1 and AMC3.
+
+                ---
+                mon_list_dormant None or list default None
+                
+                    if None, mon_list_dormant=[10,11,12,1,2,3]. List of dormant month. Rest of the month will be growing month.
+
+                ---
+                preferred_date_interval dtype str
+
+                    Time interval of the dataset as a dtype.
+
+                ---
+                corrected_cn None or bool default None
+
+                    If the Antecedent Moisture Condition (AMC) corrections have to be applied
+
+                ---
+                single_cn_val bool default False
+
+                    To use a single CN value for the whole dataset
+                ---
+                cn_val None or float default None
+
+                    single CN value. Ignored if single_cn_val is False
+
+
+                ---
+                advanced_cn bool default False
+
+                    If the advanced curve number options are gonna be used. The variables are defined in advanced_cn_dic
+
+                ---
+                advanced_cn_dic None or dic default None
+                    A dictionary to change the Ia and the formula of the curve number, containing the following keys and their respective values:
+                    
+                    advanced_cn_dic.keys(): "landa", "A","B","C","D","x","y","z"
+
+                    Formulas:
+                        
+                        S= A * CN_mod^x + B * CN_mod^y + C * z + D
+
+                        S= landa * Ia
+
+
+
+                ---
+                SC_or_HC str default "HC"
+
+                    If Hydrologic Condition (default) or Slope Catagory (SC) is defined in the curve number table
+
+                ---
+
+            **Returns**
+
+                -ds netCDF dataset
+
+                    waterpybal netcdf dataset.
+
+                - Ia numpy array
+
+                    Initial abstraction
+                ---
+                ---
+        
+        '''
+
+        if single_cn_val==False:
+            ds=infiltration_functions.Irig_calc(ds)
+
+            #1-from raster, read HSG, LU,read Slope and calculate slope catagory
+            HSG,SC,LU,msk=infiltration_functions.read_raster_DEM_HSG_LU(raster_dir,int(HSG_band),int(LU_band),int(ELEV_or_HC_band),DEM_path_or_raster,DEM_or_raster,filled_dep,slope_range_list,SC_or_HC=SC_or_HC)
+            #---------------
+            # 2-read cn table db   for each point of the raster (array)
+            #CN_table_dir=r"C:\Users\Ash kan\Documents\watbalpy\cn2.csv"
+            cnt=pd.read_excel(CN_table_dir)
+            #LU=np.array(cnt[["Land use"]])[:9].reshape(3,3,1)
+            #Ru0=np.random.uniform(low=0,high=10,size=(3,3,1))
+            #SC=np.random.randint(low=1,high=5,size=(3,3,1))
+            #HSG=np.array([["A","D","B"],["C","B","C"],["A","C","A"]])
+            cn_l=list()
+            for HSG_,SC_,LU_,msk_ in zip(HSG.flat,SC.flat,LU.flat,msk.flat):
+                if msk_==0 or SC_==-9999: cn_l.append(-9999)
+                else: cn_l.append(infiltration_functions.CNN(cnt,HSG_,SC_,LU_))
+            CN=np.array(cn_l,dtype='float32').reshape(SC.shape)
+            CN_all=np.repeat(CN[np.newaxis,:, : ], ds["time"].shape[0], axis=0)
+            ds["CN_Val"][:,:,:]= CN_all
+            #---------------
+            #calculate five day percs
+            if corrected_cn==True:
+                ds=infiltration_functions.five_day_acc_prec_f(ds,msk)
+
+
+        #single cn value defined by user
+        else:
+            corrected_cn==False
+            ds["CN_Val"][:,:,:]=cn_val
+        #---------------
+        #calculate cn_amc_modded
+        if corrected_cn==True:
+            infiltration_functions.CN_AMC_modded(CN,ds,preferred_date_interval,msk,amc1_coeffs,amc3_coeffs,dormant_thresh,growing_thresh,average_thresh,mon_list_dormant)
+            cn_var="CN_mod"
+        else:
+            cn_var="CN_Val"
+
+
+        #calculate infiltr
+        ds,Ia=infiltration_functions.runoff_infilt_calc(ds,cn_var,advanced_cn,advanced_cn_dic)
+    
+         
+            
+        return ds,Ia
+
+    #-----------------------------------------    
+    def  runoff_calc(ds,Ia=None):
+        '''
+            ## inf_calcs.infiltration.runoff_calc()
+
+            ds = runoff_calc(ds,Ia=None)
+
+            The method to calculate the runoff in the database. Initial abstraction is None if the
+            curve number is not calculated by the waterpybal.
+            
+            If "runoff_Val" is imported directly to the dataset this method do not have to used.
+
+
+
+            **Parameters**
+
+                - ds netCDF dataset
+
+                    waterpybal netcdf dataset.
+                
+                ---
+                - Ia    None or numpy array default None
+
+                    Initial abstraction. 
+                    If None, runoff= Prec +Irrig - Infilt
+                    If not None, runoff= Prec +Irrig - Infilt - Ia
+                ---
+
+            **Returns**
+
+                -ds netCDF dataset
+
+                    waterpybal netcdf dataset.
+            
+            ---
+            ---
+        '''
+
+        runoff=ds["Irig_Val"][:,:,:].data+ds["Prec_Val"][:,:,:].data-ds["INF_Val"][:,:,:].data
+        if Ia is not None:
+            runoff=runoff-Ia
+        else:
+            pass
+
+        runoff[runoff<0]=0
+        ds["Runoff_Val"][:,:,:]=runoff
+
+        return ds    
+
+    #-----------------------------------------
+    def max_inf_threshold(ds,var_inp,var_out,threshold):
+        '''
+            ## inf_calcs.infiltration.max_inf_threshold()
+
+            ds = max_inf_threshold(ds,var_inp,var_out,threshold)
+
+            The method to force a threshold to an specific variable. Normally used for "INF_Val"
+            to limit maximum infiltration values.
+
+            **Parameters**
+
+                - ds netCDF dataset
+
+                    waterpybal netcdf dataset.
+                
+                ---
+                - var_inp str
+
+                    Input variable to limit. "INF_Val" is used normally.
+                ---
+                - var_out str
+
+                    Out variable to save the variable. "INF_Val" or "Prec_Val" is used normally.
+                ---
+                - threshold float
+
+                    threshold value
+                ---
+
+            **Returns**
+
+                -ds netCDF dataset
+
+                    waterpybal netcdf dataset.
+            
+            ---
+            ---
+        '''
+
+        if threshold is not None and threshold not in [" ","  ",""]:
+            threshold=float(threshold)
+            cn=ds[var_inp][:,:,:].data
+            cn[cn>threshold]=threshold
+            ds[var_out][:,:,:]= cn
+        return ds
+    
+    #-----------------------------------------

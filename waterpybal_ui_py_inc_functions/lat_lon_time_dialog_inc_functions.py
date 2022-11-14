@@ -1,9 +1,9 @@
 from PyQt6 import QtWidgets,QtGui
 
-from waterpybal_ui_py.lat_lon_time_dialog import Ui_Dialog_lat_lon_time
+from .waterpybal_ui_py.lat_lon_time_dialog import Ui_Dialog_lat_lon_time
 import os
 import sys
-from waterpybal.dataset_prep import netCDF_ds
+from waterpybal.dataset_prep import dataset_gen
 from gui_help.gui_help_load import loadhelp
 
 
@@ -20,6 +20,9 @@ class lat_lon_time_dialog_(QtWidgets.QDialog):
         self.show()
         ##############
 
+        loadhelp(self,"new_dataset_properties_help.md")
+        
+        ##############
         #to work when it is okeyed
         self.ui.buttonBox.accepted.connect(lambda: self.ok_clicked())
         
@@ -57,7 +60,7 @@ class lat_lon_time_dialog_(QtWidgets.QDialog):
         #define dir for var_generation function
         self.dir=""
 
-        loadhelp(self,"new_dataset_properties_help.md")
+        
 
 
     ##########################
@@ -110,18 +113,24 @@ class lat_lon_time_dialog_(QtWidgets.QDialog):
 
             
             lat_lon_type="raster"
-            lat,lon,time_v,time_b1,time_b2,dtype,tunit=netCDF_ds.ds_dimensions(
-                    lat_lon_type=lat_lon_type,
-                    lat_lon_source=self.sam_raster_dir,
-                    time_source=None,
-                    time_type=time_type,
-                    lat_name=None,
-                    lon_name=None,
-                    time_name=None,
-                    border_res_dic=None,
-                    time_dic=time_dic,
-                    preferred_date_interval=preferred_date_interval
-                )
+
+            dataset_cl=dataset_gen()
+                        
+            
+            dtype=dataset_cl.ds_dimensions(
+
+                lat_lon_type=lat_lon_type,
+                lat_lon_source=self.sam_raster_dir,
+                time_source=None,
+                time_type=time_type,
+                preferred_date_interval=preferred_date_interval,
+                lat_name=None,
+                lon_name=None,
+                time_name=None,
+                border_res_dic=None,
+                time_dic=time_dic   
+            )
+
         else:
             
             lat_lon_type="border_res_dic"
@@ -134,27 +143,28 @@ class lat_lon_time_dialog_(QtWidgets.QDialog):
                 "height":1
             }
 
-            lat,lon,time_v,time_b1,time_b2,dtype,tunit=netCDF_ds.ds_dimensions(
-                    lat_lon_type=lat_lon_type,
-                    lat_lon_source=None,
-                    time_source=None,
-                    time_type=time_type,
-                    lat_name="lat",
-                    lon_name="lon",
-                    time_name=None,
-                    border_res_dic=border_res_dic,
-                    time_dic=time_dic,
-                    preferred_date_interval=preferred_date_interval
-                )
+            dataset_cl=dataset_gen()
 
+            dtype=dataset_cl.ds_dimensions(
+                lat_lon_type=lat_lon_type,
+                lat_lon_source=None,
+                time_source=None,
+                time_type=time_type,
+                preferred_date_interval=preferred_date_interval,
+                lat_name="lat",
+                lon_name="lon",
+                time_name=None,
+                border_res_dic=border_res_dic,
+                time_dic=time_dic
+            )
+
+        self.preferred_date_interval=dtype
 
         ds_values_dic=self.new_var_to_ds()
         
+        self.ds=dataset_cl.var_generation(dir=self.dir,ds_values_dic=ds_values_dic,urban_ds=self.urban_ds)
 
-        self.ds=netCDF_ds.var_generation(dir=self.dir,tunit=tunit,lats_np=lat,lons_np=lon,times_np=time_v,time_b1=time_b1,time_b2=time_b2,ds_values_dic=ds_values_dic,urban_ds=self.urban_ds)
-        self.preferred_date_interval=dtype
-
-        print (self.ds)
+        #print (self.ds)
 
     #######
     def new_var_to_ds(self):

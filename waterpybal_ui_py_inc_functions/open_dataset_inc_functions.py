@@ -16,6 +16,8 @@ class Ui_Dialog_open_dataset_(QtWidgets.QDialog):
         
         self.ui.setupUi(self)
         self.show()
+        
+        self.single_point=False
         ##############
         self.ui.toolButton_open.clicked.connect(lambda: self.open_ds())
         self.ui.toolButton_browse_xy_raster.clicked.connect(lambda:self.selectrastFile())

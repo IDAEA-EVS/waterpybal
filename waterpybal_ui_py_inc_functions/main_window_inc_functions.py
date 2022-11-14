@@ -1,18 +1,31 @@
-from PyQt6 import QtWidgets,QtCore
-from balance_inc_functions import Ui_balance_Dialog_
-from waterpybal_ui_py.main_window import Ui_MainWindow  # importing our generated file
-from lat_lon_time_dialog_inc_functions import lat_lon_time_dialog_
-from var_spat_interpol_inc_functions import Ui_Dialog_var_spat_interpol_
-from var_from_tiff_inc_functions import Ui_Dialog_var_from_tiff_
-from swr_window_inc_functions import Ui_Dialog_swr_
-from infiltration_inc_functions import Ui_Dialog_infiltration_
-from etp_window_inc_functions import Ui_Dialog_etp_
-from open_dataset_inc_functions import Ui_Dialog_open_dataset_
-from visual_inc_functions import Ui_Dialog_visual_
-from waterpybal_ui_py.qErrorHandler import UncaughtHook
+from PyQt6 import QtWidgets,QtCore,QtGui
+
+'''from main import (Ui_MainWindow,
+    UncaughtHook,
+    loadhelp,
+    Ui_balance_Dialog_,
+    lat_lon_time_dialog_,
+    Ui_Dialog_var_spat_interpol_,
+    Ui_Dialog_var_from_tiff_,
+    Ui_Dialog_swr_,
+    Ui_Dialog_infiltration_,
+    Ui_Dialog_etp_, 
+    Ui_Dialog_open_dataset_,
+    Ui_Dialog_visual_)'''
+from .balance_inc_functions import Ui_balance_Dialog_
+from .lat_lon_time_dialog_inc_functions import lat_lon_time_dialog_
+from .var_spat_interpol_inc_functions import Ui_Dialog_var_spat_interpol_
+from .var_from_tiff_inc_functions import Ui_Dialog_var_from_tiff_
+from .swr_window_inc_functions import Ui_Dialog_swr_
+from .infiltration_inc_functions import Ui_Dialog_infiltration_
+from .etp_window_inc_functions import Ui_Dialog_etp_
+from .open_dataset_inc_functions import Ui_Dialog_open_dataset_
+from .visual_inc_functions import Ui_Dialog_visual_
 import os
 import sys
 import netCDF4 as nc
+from .waterpybal_ui_py.main_window import Ui_MainWindow
+from .waterpybal_ui_py.qErrorHandler import UncaughtHook
 from gui_help.gui_help_load import loadhelp
 
 class waterpybalMainwindow(QtWidgets.QMainWindow):
@@ -24,16 +37,35 @@ class waterpybalMainwindow(QtWidgets.QMainWindow):
         self.ui = Ui_MainWindow()
         
         self.ui.setupUi(self)
-        ##############        
+        self.show()
+        ############## 
+        # to disable buttons initially       
+        self.statbuttons(False)
         ##############
-        self.ds=None
-        self.preferred_date_interval=None
-        self.sam_raster_dir=None
-        self.ds_dir=None
-        self.win_open=False
-        self.single_point=False
-        self.urban_ds=False
+        #define variables:
+        self.def_vars()
+
         ###############
+        #click connect
+        self.click_connect()
+        
+        ###############
+        #load main page help
+        loadhelp(self,"main_window_help.md")
+    
+    #######################################
+    #disable buttons
+    def statbuttons(self,enabled):
+        self.ui.pushButton_to_var_spat_interpol.setEnabled(enabled)
+        self.ui.pushButton_to_var_from_tiff.setEnabled(enabled)
+        self.ui.pushButton_to_swr.setEnabled(enabled)
+        self.ui.pushButton_to_infiltration.setEnabled(enabled)
+        self.ui.pushButton_to_etp.setEnabled(enabled)
+        self.ui.pushButton_to_Balance.setEnabled(enabled)
+        self.ui.pushButton_save_dataset.setEnabled(enabled)
+    #######################################
+    #click connects
+    def click_connect(self):
         self.ui.toolButton_path.clicked.connect(self.selectFolder)
         self.ui.pushButton_open_dataset.clicked.connect(self.open_dataset)
         self.ui.pushButton_to_lat_lon_time.clicked.connect(self.open_lat_lon)  
@@ -45,13 +77,17 @@ class waterpybalMainwindow(QtWidgets.QMainWindow):
         self.ui.pushButton_to_Balance.clicked.connect(self.open_bal)
         self.ui.pushButton_to_visualization.clicked.connect(self.open_visual)
         self.ui.pushButton_save_dataset.clicked.connect(self.save_close)
-        loadhelp(self,"main_window_help.md")
-
-
-
-
-
-
+    #######################################
+    #define variables:
+    def def_vars(self):
+        self.ds=None
+        self.preferred_date_interval=None
+        self.sam_raster_dir=None
+        self.ds_dir=None
+        self.win_open=False
+        self.single_point=False
+        self.urban_ds=False
+        self.enablebuttons=False
     #######################################
     def open_visual(self):
         if self.win_open==False: #to just have one window open!
@@ -128,7 +164,6 @@ class waterpybalMainwindow(QtWidgets.QMainWindow):
             # create a global instance of our class to register the hook
             qt_exception_hook = UncaughtHook()
             #########
-            
             self.ui.label_to_infiltration.setText("In process")
             self.ui_infilt=Ui_Dialog_infiltration_()
             self.ui_infilt.ds=self.ds
@@ -255,9 +290,16 @@ class waterpybalMainwindow(QtWidgets.QMainWindow):
 
                 self.ui.label_to_lat_lon_time.setText("Done")
                 self.win_open=False
+
+                #enable buttons
+                self.statbuttons(True)
             else:
                 self.ui.label_to_lat_lon_time.setText("")
                 self.win_open=False
+
+                #disable buttons
+                self.statbuttons(False)
+
 
     #######################################
     def open_dataset(self):
@@ -309,8 +351,16 @@ class waterpybalMainwindow(QtWidgets.QMainWindow):
                     msgBox.setStandardButtons(QtWidgets.QMessageBox.StandardButton.Ok)
                     msgBox.exec()
                 
-            
-            else: self.win_open=False
+                
+                #enable buttons
+                self.statbuttons(True)
+
+
+            else: 
+                self.win_open=False
+
+                #disable buttons
+                self.statbuttons(False)
     
     #######################################
     def selectFolder(self):
@@ -356,10 +406,10 @@ class waterpybalMainwindow(QtWidgets.QMainWindow):
 
 
 
-app = QtWidgets.QApplication(sys.argv)
+'''app = QtWidgets.QApplication(sys.argv)
 
 application = waterpybalMainwindow()
 
 application.show()
 
-sys.exit(app.exec())
+sys.exit(app.exec())'''

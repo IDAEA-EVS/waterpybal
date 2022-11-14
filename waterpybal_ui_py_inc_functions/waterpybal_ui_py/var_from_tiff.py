@@ -12,9 +12,11 @@ from PyQt6 import QtCore, QtGui, QtWidgets
 class Ui_Dialog_var_from_tiff(object):
     def setupUi(self, Dialog_var_from_tiff):
         Dialog_var_from_tiff.setObjectName("Dialog_var_from_tiff")
-        Dialog_var_from_tiff.resize(391, 200)
-        Dialog_var_from_tiff.setMaximumSize(QtCore.QSize(16777215, 200))
-        self.verticalLayout = QtWidgets.QVBoxLayout(Dialog_var_from_tiff)
+        Dialog_var_from_tiff.resize(760, 200)
+        Dialog_var_from_tiff.setMaximumSize(QtCore.QSize(16777215, 300))
+        self.horizontalLayout_4 = QtWidgets.QHBoxLayout(Dialog_var_from_tiff)
+        self.horizontalLayout_4.setObjectName("horizontalLayout_4")
+        self.verticalLayout = QtWidgets.QVBoxLayout()
         self.verticalLayout.setObjectName("verticalLayout")
         self.label_from_tiffs = QtWidgets.QLabel(Dialog_var_from_tiff)
         font = QtGui.QFont()
@@ -90,6 +92,30 @@ class Ui_Dialog_var_from_tiff(object):
         self.buttonBox_from_tiff.setStandardButtons(QtWidgets.QDialogButtonBox.StandardButton.Cancel|QtWidgets.QDialogButtonBox.StandardButton.Ok)
         self.buttonBox_from_tiff.setObjectName("buttonBox_from_tiff")
         self.verticalLayout.addWidget(self.buttonBox_from_tiff)
+        self.horizontalLayout_4.addLayout(self.verticalLayout)
+        self.groupBox_help = QtWidgets.QGroupBox(Dialog_var_from_tiff)
+        self.groupBox_help.setMinimumSize(QtCore.QSize(150, 0))
+        font = QtGui.QFont()
+        font.setPointSize(9)
+        self.groupBox_help.setFont(font)
+        self.groupBox_help.setAutoFillBackground(False)
+        self.groupBox_help.setStyleSheet("QGroupBox{border:2px solid gray;border-radius:1px;margin-top: 1ex;}\n"
+"QGroupBox::title{subcontrol-origin: margin;subcontrol-position:top center;padding:0 3px;}")
+        self.groupBox_help.setTitle("Help")
+        self.groupBox_help.setFlat(False)
+        self.groupBox_help.setObjectName("groupBox_help")
+        self.verticalLayout_4 = QtWidgets.QVBoxLayout(self.groupBox_help)
+        self.verticalLayout_4.setObjectName("verticalLayout_4")
+        self.textBrowser_help = QtWidgets.QTextBrowser(self.groupBox_help)
+        self.textBrowser_help.setAutoFillBackground(True)
+        self.textBrowser_help.setStyleSheet("background-color: rgb(240, 240, 240)")
+        self.textBrowser_help.setFrameShape(QtWidgets.QFrame.Shape.WinPanel)
+        self.textBrowser_help.setFrameShadow(QtWidgets.QFrame.Shadow.Sunken)
+        self.textBrowser_help.setLineWidth(0)
+        self.textBrowser_help.setReadOnly(True)
+        self.textBrowser_help.setObjectName("textBrowser_help")
+        self.verticalLayout_4.addWidget(self.textBrowser_help)
+        self.horizontalLayout_4.addWidget(self.groupBox_help)
 
         self.retranslateUi(Dialog_var_from_tiff)
         self.buttonBox_from_tiff.accepted.connect(Dialog_var_from_tiff.accept)
@@ -105,6 +131,11 @@ class Ui_Dialog_var_from_tiff(object):
         self.label_var_name.setText(_translate("Dialog_var_from_tiff", "Variable name"))
         self.checkBox.setText(_translate("Dialog_var_from_tiff", "In case time interval of .CSV is not the same as the Database, Use the \n"
 "same values for valid time steps(EX: Temp. vs accumulated precipitation)"))
+        self.textBrowser_help.setHtml(_translate("Dialog_var_from_tiff", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
+"<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">\n"
+"p, li { white-space: pre-wrap; }\n"
+"</style></head><body style=\" font-family:\'MS Shell Dlg 2\'; font-size:8.1pt; font-weight:400; font-style:normal;\">\n"
+"<p align=\"justify\" style=\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><br /></p></body></html>"))
 
 
 if __name__ == "__main__":

@@ -1,6 +1,6 @@
 from PyQt6 import QtWidgets,QtCore,QtGui
-from waterpybal_ui_py.var_spat_interpol import Ui_Dialog_var_spat_interpol
-from waterpybal.dataset_prep import netCDF_ds
+from .waterpybal_ui_py.var_spat_interpol import Ui_Dialog_var_spat_interpol
+from waterpybal.dataset_prep import variable_management
 import pandas as pd
 import netCDF4 as nc
 from gui_help.gui_help_load import loadhelp
@@ -245,7 +245,7 @@ class Ui_Dialog_var_spat_interpol_(QtWidgets.QDialog):
     def updatelist_vars(self,csv_or_nc):
         self.ui.comboBox_var_name.clear()
         self.ui.comboBox_var_name_nc.clear()
-        try:
+        #try:
             #list of variables:
 
             
@@ -254,43 +254,43 @@ class Ui_Dialog_var_spat_interpol_(QtWidgets.QDialog):
             #ds=nc.Dataset(dir,'r',format='NETCDF4')
             
             #ds heads
-            list_vars_ds=list(self.ds.variables.keys())
-            dims_list=["time_bnds","time","lat","lon","x","y"]
-            list_vars_ds=[n for n in list_vars_ds if n not in dims_list]
-            #------
-            if csv_or_nc=="csv":
-                #read csv heads
-                csv_dir=self.ui.lineEdit_csv.text()
-                df=pd.read_csv(csv_dir)
-                list_vars_filtered=list(df.head())
-                list_vars=[n for n in list_vars_ds if n in list_vars_filtered]
-                self.ui.comboBox_var_name.addItems(list_vars)
-            #-----
-            elif csv_or_nc=="nc":
-                print ("in nc!!!")
-                self.ui.label_longx_new.clear()
-                self.ui.label_laty_new.clear()
-                self.ui.label_time_new.clear()
-                self.ui.label_6.clear()
-                self.ui.label_7.clear()
-                self.ui.label_8.clear()
+        list_vars_ds=list(self.ds.variables.keys())
+        dims_list=["time_bnds","time","lat","lon","x","y"]
+        list_vars_ds=[n for n in list_vars_ds if n not in dims_list]
+        #------
+        if csv_or_nc=="csv":
+            #read csv heads
+            csv_dir=self.ui.lineEdit_csv.text()
+            df=pd.read_csv(csv_dir)
+            list_vars_filtered=list(df.head())
+            list_vars=[n for n in list_vars_ds if n in list_vars_filtered]
+            self.ui.comboBox_var_name.addItems(list_vars)
+        #-----
+        elif csv_or_nc=="nc":
+            print ("in nc!!!")
+            self.ui.label_longx_new.clear()
+            self.ui.label_laty_new.clear()
+            self.ui.label_time_new.clear()
+            self.ui.label_6.clear()
+            self.ui.label_7.clear()
+            self.ui.label_8.clear()
 
-                nc_ds_tmp_dir=self.ui.lineEdit_nc.text()
-                nc_ds_tmp=nc.Dataset(nc_ds_tmp_dir,'r+',format='NETCDF4')
-                list_vars_filtered=list(nc_ds_tmp.variables.keys())
-                list_vars=[n for n in list_vars_ds if n in list_vars_filtered]
-                self.ui.comboBox_var_name_nc.addItems(list_vars)
+            nc_ds_tmp_dir=self.ui.lineEdit_nc.text()
+            nc_ds_tmp=nc.Dataset(nc_ds_tmp_dir,'r+',format='NETCDF4')
+            list_vars_filtered=list(nc_ds_tmp.variables.keys())
+            list_vars=[n for n in list_vars_ds if n in list_vars_filtered]
+            self.ui.comboBox_var_name_nc.addItems(list_vars)
 
-                self.ui.label_longx_new.setText(str(list(nc_ds_tmp.dimensions.values())[0].size))
-                self.ui.label_laty_new.setText(str(list(nc_ds_tmp.dimensions.values())[1].size))
-                self.ui.label_time_new.setText(str(list(nc_ds_tmp.dimensions.values())[2].size))
-                self.ui.label_6.setText(list(nc_ds_tmp.dimensions.values())[0].name)
-                self.ui.label_7.setText(list(nc_ds_tmp.dimensions.values())[1].name)
-                self.ui.label_8.setText(list(nc_ds_tmp.dimensions.values())[2].name)
+            self.ui.label_longx_new.setText(str(list(nc_ds_tmp.dimensions.values())[0].size))
+            self.ui.label_laty_new.setText(str(list(nc_ds_tmp.dimensions.values())[1].size))
+            self.ui.label_time_new.setText(str(list(nc_ds_tmp.dimensions.values())[2].size))
+            self.ui.label_6.setText(list(nc_ds_tmp.dimensions.values())[0].name)
+            self.ui.label_7.setText(list(nc_ds_tmp.dimensions.values())[1].name)
+            self.ui.label_8.setText(list(nc_ds_tmp.dimensions.values())[2].name)
 
-                nc_ds_tmp.close()
+            nc_ds_tmp.close()
      
-        except: pass
+        #except: pass
     
     
     ###############
@@ -349,11 +349,11 @@ class Ui_Dialog_var_spat_interpol_(QtWidgets.QDialog):
 
             ######
             if self.single_point==False:
-                method=self.method_str_construct(self)
-                self.ds=netCDF_ds.var_interpolation(self.ds,ras_sample_dir,csv_dir,time_csv_col,lat_csv_col,lon_csv_col,var_name,method,preferred_date_interval,interpolation_time_int,multiply)
+                method=self.method_str_construct()
+                self.ds=variable_management.var_interpolation(self.ds,ras_sample_dir,csv_dir,var_name,method,preferred_date_interval,interpolation_time_int,time_csv_col,lat_csv_col,lon_csv_col,multiply)
 
             else:
-                self.ds=netCDF_ds.var_introduction_from_csv(self.ds,csv_dir,time_csv_col,var_name,preferred_date_interval,interpolation_time_int,multiply)
+                self.ds=variable_management.var_introduction_from_csv(self.ds,csv_dir,var_name,preferred_date_interval,interpolation_time_int,time_csv_col,multiply)
 
         elif self.sam_val==True and self.nc_ds==False:
             #same value for all timesteps and in all space
@@ -364,7 +364,8 @@ class Ui_Dialog_var_spat_interpol_(QtWidgets.QDialog):
             #nc
             var_name=self.ui.comboBox_var_name_nc.currentText
             new_nc_dir=self.ui.lineEdit_nc.text()
-            self.ds=netCDF_ds.var_introduction_from_nc(new_nc_dir,self.ds,var_name)
+
+            self.ds=variable_management.var_introduction_from_nc(new_nc_dir,self.ds,var_name)
 
 
     '''def single_point_csv_config(self,csv_dir):

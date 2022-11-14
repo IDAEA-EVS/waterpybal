@@ -1,7 +1,7 @@
 from PyQt6 import QtWidgets,QtGui,QtCore
-from waterpybal_ui_py.infiltration import Ui_Dialog_infiltration
+from .waterpybal_ui_py.infiltration import Ui_Dialog_infiltration
 from waterpybal.inf_calcs import infiltration
-from waterpybal.urban_infiltration import urban_cycle_infiltration_calcs,urban_Composite_CN_correction
+from waterpybal.urban_cycle import urban_cycle_calcs,urban_Composite_CN_correction
 from gui_help.gui_help_load import loadhelp
 
 
@@ -391,7 +391,7 @@ class Ui_Dialog_infiltration_(QtWidgets.QDialog):
             CN_table_dir=self.ui.lineEdit_cn_csv.text()
             HSG_band=self.ui.lineEdit_hsg.text()
             LU_band=self.ui.lineEdit_lu.text()
-            ELEV_band=self.ui.lineEdit_elev.text()
+            ELEV_or_HC_band=self.ui.lineEdit_elev.text()
             DEM_or_raster="raster"
             raster_dir=self.ui.lineEdit_cn_raster.text()
             DEM_path_or_raster=raster_dir
@@ -404,16 +404,20 @@ class Ui_Dialog_infiltration_(QtWidgets.QDialog):
             else:
                 SC_or_HC="HC"
                 slope_range_list=list()
-                
-            self.ds,Ia=infiltration.Inf_calc(self.ds,CN_table_dir,raster_dir,HSG_band,LU_band,ELEV_band,DEM_path_or_raster,DEM_or_raster,filled_dep,slope_range_list,amc1_coeffs,amc3_coeffs,dormant_thresh,growing_thresh,average_thresh,mon_list_dormant,preferred_date_interval,corrected_cn,self.single_cn_val,self.cn_val,advanced_cn,advanced_cn_dic,SC_or_HC)
+            self.ds,Ia=infiltration.Inf_calc(self.ds,CN_table_dir,raster_dir,HSG_band,LU_band,ELEV_or_HC_band,
+                preferred_date_interval,corrected_cn,self.single_cn_val,self.cn_val,advanced_cn_dic,advanced_cn,
+                filled_dep,slope_range_list,amc1_coeffs,amc3_coeffs,dormant_thresh,growing_thresh,average_thresh,
+                mon_list_dormant,SC_or_HC,DEM_path_or_raster,DEM_or_raster)
             # max infiltration threshold per timestep
             var_inp="INF_Val"
             var_out="INF_Val"
             ########################
 
         else:
+
             # max infiltration threshold per timestep
-            var_inp="Prec_Val"
+            #var_inp="Prec_Val"
+            var_inp="INF_Val"
             var_out="INF_Val"
             Ia=None
 
@@ -426,20 +430,20 @@ class Ui_Dialog_infiltration_(QtWidgets.QDialog):
                 if self.ui.checkBox_cia_cn_composite.isChecked() and self.ui.lineEdit_cn_urban_cia_raster.isEnabled():
                     cia_raster=self.ui.lineEdit_cn_urban_cia_raster.text()
                     
-                    self.ds=urban_Composite_CN_correction.cia_main(cia_raster,self.ds,corrected_cn)
+                    self.ds=urban_Composite_CN_correction.cia_main(self.ds,cia_raster,corrected_cn)
                 #unconnected imp.area cn correction
                 if self.ui.checkBox_uncia_cn_composite.isChecked() and self.ui.lineEdit_cn_urban_uncia_total_raster.isEnabled() and self.ui.lineEdit_cn_urban_uncia_raster.isEnabled():
                     tia_raster=self.ui.lineEdit_cn_urban_uncia_total_raster.text()
                     ucia_raster=self.ui.lineEdit_cn_urban_uncia_raster.text()
 
-                    self.ds=urban_Composite_CN_correction.ucia_main(tia_raster,ucia_raster,self.ds,corrected_cn)
+                    self.ds=urban_Composite_CN_correction.ucia_main(self.ds,tia_raster,ucia_raster,corrected_cn)
 
             
             #urban cycle
             if self.ui.checkBox_urban_cycle.isChecked() and self.ui.tableWidget_urban.isEnabled():
                 variables_dic=self.urban_inf_dic_gen()
                 urban_area_raster_dir=self.ui.lineEdit_urban_zone_raster.text()
-                self.ds=urban_cycle_infiltration_calcs.urban_infiltration_main(self.ds,urban_area_raster_dir,variables_dic) 
+                self.ds=urban_cycle_calcs.urban_cycle_main(self.ds,urban_area_raster_dir,variables_dic) 
 
         ##############################################################################
         #apply the max infiltration threshold and calculate runoff

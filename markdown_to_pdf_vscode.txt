@@ -1,0 +1,5 @@
+press f1
+paste this command:
+markdown-pdf: Export (pdf)
+
+(see the vscode extension help for more info)

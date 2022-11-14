@@ -1,7 +1,10 @@
 from PyQt6 import QtWidgets,QtGui
-from waterpybal_ui_py.balance import Ui_balance_Dialog
+from .waterpybal_ui_py.balance import Ui_balance_Dialog
 from waterpybal.balance_calcs import balance #meth balance_calculation_main
 import sys
+import inspect
+
+
 
 class Ui_balance_Dialog_(QtWidgets.QDialog):
 

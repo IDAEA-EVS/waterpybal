@@ -12,12 +12,17 @@ from PyQt6 import QtCore, QtGui, QtWidgets
 class Ui_Dialog_swr(object):
     def setupUi(self, Dialog_swr):
         Dialog_swr.setObjectName("Dialog_swr")
-        Dialog_swr.resize(600, 228)
+        Dialog_swr.resize(902, 241)
         Dialog_swr.setMinimumSize(QtCore.QSize(600, 0))
         self.horizontalLayout_11 = QtWidgets.QHBoxLayout(Dialog_swr)
         self.horizontalLayout_11.setObjectName("horizontalLayout_11")
         self.verticalLayout_3 = QtWidgets.QVBoxLayout()
         self.verticalLayout_3.setObjectName("verticalLayout_3")
+        self.checkbox_ds_vals = QtWidgets.QCheckBox(Dialog_swr)
+        self.checkbox_ds_vals.setObjectName("checkbox_ds_vals")
+        self.verticalLayout_3.addWidget(self.checkbox_ds_vals)
+        spacerItem = QtWidgets.QSpacerItem(20, 18, QtWidgets.QSizePolicy.Policy.Minimum, QtWidgets.QSizePolicy.Policy.Expanding)
+        self.verticalLayout_3.addItem(spacerItem)
         self.checkBox_raster = QtWidgets.QCheckBox(Dialog_swr)
         self.checkBox_raster.setObjectName("checkBox_raster")
         self.verticalLayout_3.addWidget(self.checkBox_raster)
@@ -104,8 +109,8 @@ class Ui_Dialog_swr(object):
         self.horizontalLayout_8.addLayout(self.horizontalLayout)
         self.verticalLayout.addLayout(self.horizontalLayout_8)
         self.verticalLayout_3.addWidget(self.groupBox_raster)
-        spacerItem = QtWidgets.QSpacerItem(20, 13, QtWidgets.QSizePolicy.Policy.Minimum, QtWidgets.QSizePolicy.Policy.Expanding)
-        self.verticalLayout_3.addItem(spacerItem)
+        spacerItem1 = QtWidgets.QSpacerItem(20, 18, QtWidgets.QSizePolicy.Policy.Minimum, QtWidgets.QSizePolicy.Policy.Expanding)
+        self.verticalLayout_3.addItem(spacerItem1)
         self.groupBox_single_values = QtWidgets.QGroupBox(Dialog_swr)
         self.groupBox_single_values.setEnabled(False)
         self.groupBox_single_values.setTitle("")
@@ -205,6 +210,7 @@ class Ui_Dialog_swr(object):
     def retranslateUi(self, Dialog_swr):
         _translate = QtCore.QCoreApplication.translate
         Dialog_swr.setWindowTitle(_translate("Dialog_swr", "Soil Water Reserve Calculation"))
+        self.checkbox_ds_vals.setText(_translate("Dialog_swr", "Use the dataset CC, PWP & RRT values"))
         self.checkBox_raster.setText(_translate("Dialog_swr", "Raster"))
         self.label_csv.setText(_translate("Dialog_swr", "File path (raster)"))
         self.toolButton_browse_csv.setText(_translate("Dialog_swr", "..."))
@@ -219,3 +225,13 @@ class Ui_Dialog_swr(object):
 "p, li { white-space: pre-wrap; }\n"
 "</style></head><body style=\" font-family:\'MS Shell Dlg 2\'; font-size:8.1pt; font-weight:400; font-style:normal;\">\n"
 "<p align=\"justify\" style=\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><br /></p></body></html>"))
+
+
+if __name__ == "__main__":
+    import sys
+    app = QtWidgets.QApplication(sys.argv)
+    Dialog_swr = QtWidgets.QDialog()
+    ui = Ui_Dialog_swr()
+    ui.setupUi(Dialog_swr)
+    Dialog_swr.show()
+    sys.exit(app.exec())

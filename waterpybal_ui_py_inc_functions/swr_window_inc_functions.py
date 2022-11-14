@@ -1,7 +1,7 @@
 from PyQt6 import QtWidgets,QtGui
 from gui_help.gui_help_load import loadhelp
-from waterpybal_ui_py.swr_window import Ui_Dialog_swr
-from waterpybal.pru_calcs import PRU
+from .waterpybal_ui_py.swr_window import Ui_Dialog_swr
+from waterpybal.swr_calcs import swr
 
 
 class Ui_Dialog_swr_(QtWidgets.QDialog):
@@ -22,6 +22,11 @@ class Ui_Dialog_swr_(QtWidgets.QDialog):
         ##################
 
         self.ui.checkBox_raster.setStyleSheet("""
+
+            QCheckBox::indicator { width: 15px; height: 15px;}
+            }
+        """)
+        self.ui.checkbox_ds_vals.setStyleSheet("""
 
             QCheckBox::indicator { width: 15px; height: 15px;}
             }
@@ -47,7 +52,8 @@ class Ui_Dialog_swr_(QtWidgets.QDialog):
         self.ui.lineEdit_rrt_val.setMaxLength(5)
         #################
         self.ui.checkBox_raster.stateChanged.connect(lambda: self.statechange_checkBox_raster())
-        
+        self.ui.checkbox_ds_vals.stateChanged.connect(lambda: self.statechange_checkBox_ds_vals())
+
 
         loadhelp(self,"swr_help.md")
 
@@ -55,12 +61,22 @@ class Ui_Dialog_swr_(QtWidgets.QDialog):
     def statechange_checkBox_raster(self):
         if self.ui.checkBox_raster.isChecked():
             self.ui.groupBox_raster.setEnabled(True)
+            self.ui.checkbox_ds_vals.setChecked(False)
             self.ui.groupBox_single_values.setEnabled(False)
+
         else:
             self.ui.groupBox_raster.setEnabled(False)
             self.ui.groupBox_single_values.setEnabled(True)
 
+    def statechange_checkBox_ds_vals(self):
+        if self.ui.checkbox_ds_vals.isChecked():
+            self.ui.groupBox_raster.setEnabled(False)
+            
+            self.ui.checkBox_raster.setChecked(False)
+            self.ui.groupBox_single_values.setEnabled(False)
 
+        else:
+            self.ui.groupBox_single_values.setEnabled(True)
     #################
     def single_point_mod(self):
         if self.single_point:
@@ -80,24 +96,37 @@ class Ui_Dialog_swr_(QtWidgets.QDialog):
         self.ui.lineEdit_csv.setText(self.rastfileName)
     ################
     def ok_clicked(self):
-        time_steps=None
-        raster_PRU_dir=self.ui.lineEdit_csv.text()
+        
+        
         #######
         raster_bands_dic_or_val={}
 
-        if self.ui.checkBox_raster.isChecked():
+        if self.ui.checkBox_raster.isChecked(): #raster
+
+            raster_PRU_dir=self.ui.lineEdit_csv.text()
+            time_steps=None
+
             raster_bands_dic_or_val['pwp']=int(self.ui.lineEdit_pwp.text())
             raster_bands_dic_or_val['cc']=int(self.ui.lineEdit_cc.text())
             raster_bands_dic_or_val['rrt']=int(self.ui.lineEdit_rrt.text())
-        else:
+        
+        elif self.ui.checkbox_ds_vals.isChecked(): #use the dataset values 
+            raster_PRU_dir=None
+            time_steps="all"
+
+
+        else: #same value
+            raster_PRU_dir=None
+            time_steps=None
+
             raster_bands_dic_or_val['pwp']=float(self.ui.lineEdit_pwp_val.text())
             raster_bands_dic_or_val['cc']=float(self.ui.lineEdit_cc_val.text())
             raster_bands_dic_or_val['rrt']=float(self.ui.lineEdit_rrt_val.text())
             #to add single point values to db
             self.ds=self.single_val_to_netcdf(self.ds,raster_bands_dic_or_val)
-            raster_PRU_dir=None
-        
-        self.ds=PRU.PRu_calc(self.ds,time_steps,raster_PRU_dir,raster_bands_dic_or_val)
+            
+            
+        self.ds=swr.swr_calc(self.ds,time_steps,raster_PRU_dir,raster_bands_dic_or_val)
     
     ################
     #to add single point values to db

@@ -1,6 +1,7 @@
 from PyQt6 import QtWidgets
-from waterpybal_ui_py.var_from_tiff import Ui_Dialog_var_from_tiff
-from waterpybal.dataset_prep import netCDF_ds
+from .waterpybal_ui_py.var_from_tiff import Ui_Dialog_var_from_tiff
+from waterpybal.dataset_prep import variable_management
+from gui_help.gui_help_load import loadhelp
 
 
 class Ui_Dialog_var_from_tiff_(QtWidgets.QDialog):
@@ -31,6 +32,7 @@ class Ui_Dialog_var_from_tiff_(QtWidgets.QDialog):
             QCheckBox::indicator { width: 15px; height: 15px;}
             }
         """)
+        loadhelp(self,"import_from_tiff_help.md")
     #function to list the variables
     def updatelist_vars(self):
         try:
@@ -53,4 +55,5 @@ class Ui_Dialog_var_from_tiff_(QtWidgets.QDialog):
             multiply=True
         if self.ui.checkBox.isChecked()==True:
             multiply=False
-        self.ds=netCDF_ds.var_introduction_from_tiffs(self.ds,folder_dir,var_name,preferred_date_interval,multiply)
+
+        self.ds=variable_management.var_introduction_from_tiffs(self.ds,folder_dir,var_name,preferred_date_interval,multiply)

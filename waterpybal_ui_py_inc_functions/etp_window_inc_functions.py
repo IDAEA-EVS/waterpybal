@@ -1,5 +1,5 @@
 from PyQt6 import QtWidgets,QtCore
-from waterpybal_ui_py.etp_window import Ui_Dialog_etp
+from .waterpybal_ui_py.etp_window import Ui_Dialog_etp
 from waterpybal.etp_calcs import ETP
 import sys
 from gui_help.gui_help_load import loadhelp
@@ -62,9 +62,11 @@ class Ui_Dialog_etp_(QtWidgets.QDialog):
                     etp_meth_input_dic[par_name]=float(val_or_path)
         #execute the method
         
-        print ("raster_etp_var_dic####\n",raster_etp_var_dic)
-        print ("etp_meth_input_dic####\n",etp_meth_input_dic)
-        self.ds=ETP.ETP_calc_main(self.ds,method=self.new_method,preferred_date_interval=self.preferred_date_interval,var_name='ETP_Val',raster_etp_var_dic=raster_etp_var_dic,**etp_meth_input_dic)
+        #print ("raster_etp_var_dic####\n",raster_etp_var_dic)
+        #print ("etp_meth_input_dic####\n",etp_meth_input_dic)
+
+        self.ds=ETP.ETP_calc(self.ds,method=self.new_method,preferred_date_interval=self.preferred_date_interval,
+            raster_etp_var_dic=raster_etp_var_dic,var_name='ETP_Val',**etp_meth_input_dic)
       
     ######################
     def update_table(self):

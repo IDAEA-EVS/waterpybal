@@ -1,30 +1,11 @@
 import numpy as np
 import rasterio as rs
-#Input Parameters:
 
-#Ru0 Reserva Util in t0 (this is the main calculation)
-#Ru0=35.7
-#I1=infilteration in t1
-#I1=38.1
-#Potential Evapotranspiration in t1
-#ETP1=110
-#Potential Reserva Util in t1 (comes from soil properties)
-#PRu1=65
-#---------------
-
-#Output Parameters:
-
-#Real Evapotranspiration in t1
-#ETR1
-#Deficit in t1
-#Def1
-#Recharge in t1
-#Rec1
-#Ru1 Reserva Util in t1
-#Ru1
 #-----------------------------------------
-class balance(object):
-
+class tools():
+    '''
+        Contains methods to be used individually or on balance class
+    '''
     @staticmethod
     def balance_calc_point(Ru0,I1,ETP1,PRu1):
         X1=Ru0+I1-ETP1
@@ -99,10 +80,71 @@ class balance(object):
 
         return [ETR1,Def1,Ru1,Rec1]
 
+
 #-----------------------------------------
-    #ETR1,Def1,Ru1,Rec1=balance_calc_arr(Ru0,I1,ETP1,PRu1)
+class balance(object):
+    '''
+    # class balance_calcs.balance()
+
+    The class to calculate the water balance
+
+    **Methods**
+
+        > ds = balance_calculation_main (ds,predef_ru_dir_or_np,predef_ru_type='raster',init_swr=100)
+
+    ---
+    ---
+    
+    '''
+
     @staticmethod
-    def balance_calculation_main (ds,predef_ru_dir_or_np,predef_ru_type='raster',init_swr=100):
+    def balance_calculation_main (ds,predef_ru_dir_or_np=None,predef_ru_type='dataset',init_swr=100):
+        '''
+        ## balance_calcs.balance.balance_calculation_main ()
+        
+            ds = balance_calculation_main (ds,predef_ru_dir_or_np,predef_ru_type='raster',init_swr=100)
+        
+            The method to calculate the water balance from the variables that are calculated using waterpybal.
+
+
+            **Parameters**
+
+                - ds netCDF dataset
+
+                    waterpybal netcdf dataset.
+
+                ---     
+                - predef_ru_dir_or_np None numpy array or str default None
+
+                    Defines the SWR preliminary values.
+                    None if it is iqual to the first step of the dataset.
+                    str if it is a path to a raster.
+                    A 2D numpy array if it is defined using an array.
+                
+                ---
+                - predef_ru_type str default 'dataset'
+
+                    Defines the SWR preliminary values type. 
+                    'raster', 'np' or 'dataset'.
+                
+                ---
+                - init_swr=100   
+
+                    The percentage of the preliminary SWR values that is saturated.
+                ---
+
+            **Returns**
+
+                -ds netCDF dataset
+
+                    waterpybal netcdf dataset.
+            
+            ---
+            ---
+        '''
+        
+        
+        
         #Append data to the variables
         time_steps=[ n for n in range(0,len(ds["time"][:].data))]
         
@@ -130,7 +172,7 @@ class balance(object):
                 j[j==-9999]=np.nan
 
                                             #Ru0,I1,ETP1,PRu1
-            bal_res=balance.balance_calc_arr(Ru_Val,INF_Val,ETP_Val,PRu_Val)
+            bal_res=tools.balance_calc_arr(Ru_Val,INF_Val,ETP_Val,PRu_Val)
                 
             #append to NETCDF
             #for time_t in time_steps:  #ETR1,Def1,Ru1,Rec1

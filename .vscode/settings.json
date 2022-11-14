@@ -1,5 +1,9 @@
 {
     "python.analysis.extraPaths": [
-        "./waterpybal_ui_py"
-    ]
+        "./waterpybal_ui_py",
+        "./waterpybal_ui_py_inc_functions"
+    ],
+    "python.linting.pylintEnabled": false,
+    "python.linting.enabled": false,
+    "python.linting.lintOnSave": false
 }

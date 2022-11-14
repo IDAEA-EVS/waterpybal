@@ -1,6 +1,6 @@
 from PyQt6 import QtWidgets,QtGui
-from waterpybal_ui_py.visual import Ui_Dialog_visual
-from waterpybal.post_processing import post_process
+from .waterpybal_ui_py.visual import Ui_Dialog_visual
+from waterpybal.post_processing import post_process, tools
 import netCDF4 as nc
 from gui_help.gui_help_load import loadhelp
 
@@ -90,7 +90,7 @@ class Ui_Dialog_visual_(QtWidgets.QDialog):
         self.ui.comboBox_region.clear()
 
         #try:
-        self.r_list=post_process.regions_list(self.ui.lineEdit_regions_raster.text())
+        self.r_list=tools.regions_list(self.ui.lineEdit_regions_raster.text())
         #update list of variables:
         self.ui.comboBox_region.addItems(self.r_list)
         #except: pass
@@ -148,9 +148,10 @@ class Ui_Dialog_visual_(QtWidgets.QDialog):
 
                 region=self.r_list
 
-            identifier_raster_array,reg_pix_area,msk=post_process.read_raster(self.ui.lineEdit_regions_raster.text())
+            identifier_raster_array,reg_pix_area,msk=tools.read_raster(self.ui.lineEdit_regions_raster.text())
             self.sam_raster_dir=self.ui.lineEdit_regions_raster.text()
-        post_process.gen_report(ds_dir,time_dic,var_name_list,lat_name,lon_name,save_dir,self.sam_raster_dir,reg_pix_area,identifier_raster_array,region)    
+
+        post_process.gen_report(ds_dir,time_dic,var_name_list,save_dir,self.sam_raster_dir,lat_name,lon_name,identifier_raster_array,region)    
         
         msgBox=QtWidgets.QMessageBox()
         msgBox.setIcon(QtWidgets.QMessageBox.Icon.Information)
@@ -214,7 +215,7 @@ class Ui_Dialog_visual_(QtWidgets.QDialog):
         else: 
             var_name_list=self.list_vars
         print (var_name_list)    
-        post_process.point_fig_csv(ds_dir,save_dir,time_dic,lat_val,lon_val,lat_name,lon_name,var_name_list,to_fig_or_csv)
+        post_process.point_fig_csv(ds_dir,save_dir,time_dic,lat_val,lon_val,var_name_list,to_fig_or_csv,lat_name,lon_name)
         print ("vis after func")
         msgBox=QtWidgets.QMessageBox()
         msgBox.setIcon(QtWidgets.QMessageBox.Icon.Information)

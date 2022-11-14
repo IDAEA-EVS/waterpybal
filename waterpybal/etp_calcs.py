@@ -6,8 +6,10 @@ import rasterio as rs
 #ETP calculation from soil parameters
 #Example ETP_calcs.ETP_calc_main(ds,method="oudin",tmean='ds', lat=0.91) 
 
-class ETP(object):
-
+class ETP_tools(object):
+    """
+    Methods to be used in ETP class, ETP_calc_main
+    """
     def __init__(self):
         #"obl" defines the obligatory input arguments of each function
         self.methods_dic={
@@ -89,29 +91,175 @@ class ETP(object):
             else: raise Exception ("The non-optional input arguments of {meth_name} ETP method is not defined!" )
         return self.results_df
     #########
+class ETP(object):
+    '''
+    # class etp_calcs.ETP()
+    The class to calculate evapotranspiration
+    **Methods**
+        
+        > ds = ETP_calc(ds, method, preferred_date_interval, var_name='ETP_Val', raster_etp_var_dic=None, **kwargs)
+    ---
+    ---
+    '''
     @staticmethod
-    def ETP_calc_main(ds,method,preferred_date_interval,var_name='ETP_Val',raster_etp_var_dic=None,**kwargs):
+    def ETP_calc(ds,method,preferred_date_interval,raster_etp_var_dic=None,var_name='ETP_Val',**kwargs):
         '''
-            ETP_calc_main function calculate evapotranspiration in all the dataset. It used "pyet" library for
-            ETP calculations which is opted for use in a single point. So we iterate along the coordinates. In
-            each iteration, ETP for all time steps will be calculated, then we move along to the next point.
+            ## etp_calcs.ETP.ETP_calc()
+            
+            ds = ETP_calc(ds, method, preferred_date_interval, var_name='ETP_Val', raster_etp_var_dic=None, **kwargs)
+            
+            ETP_calc method calculate evapotranspiration in all the dataset. It uses ***pyet*** library for
+            ETP calculations which is opted for use in a single point.
+
             Depending on the ETP method, necessary arguments have to be introduced to the database. If the argument is a 
             fix number for all times and coordinates, it could be determined right away. If the ETP
             related argument is equal to 'ds', the argument will be derived from the variable with the same name
             in the dataset. Note that user have to introduce this variables to the dataset beforehead. If the
-            argument value changes with the coordinate but not with the time, it, the etp argument have to be equal
+            argument value changes with the coordinate but not with the time, the etp argument have to be equal
             to 'raster'. the direction and the band of the targed master have to be determined in raster_etp_var_dic
             argument using the following syntax:
+
             {"var_name":["raster_dir","raster_band"]} or {"var_name":"raster_dir"} (band default to 1) or {"var_name":["raster_dir"]} (band default to 1)
             
         
             Let's elaborate using this function with an example:
-            Suppose we are using penman method for calculating ETP. "tmean" and "wind" are mandatory arguments for this method.
-            Since in this example "tmean" and "wind" are changing in each coordinate, the user have to use "ds"
-            to determine the this data have to be retrieved from dataset variables by the same name. Then there are "aw" and "bw" which
-            have a fixed value by default ("aw"=2.6, "bw"=0.536), but could be changed based on the coordinates.
-            so by defining "aw"="raster" and "bw"="raster and raster_etp_var_dic={"aw":["ras_dir",band1],"bw":["ras_dir",band2]},
-            aw and bw arguments are equal to raster values of band 1 and 2 respectively. 
+
+                Suppose we are using penman method for calculating ETP. "tmean" and "wind" are mandatory arguments for this method.
+                Since in this example "tmean" and "wind" are changing in each coordinate, the user have to use "ds"
+                to determine the this data have to be retrieved from dataset variables by the same name. Then there are "aw" and "bw" which
+                have a fixed value by default ("aw"=2.6, "bw"=0.536), but could be changed based on the coordinates.
+                so by defining "aw"="raster" and "bw"="raster and raster_etp_var_dic={"aw":["ras_dir",band1],"bw":["ras_dir",band2]},
+                aw and bw arguments are equal to raster values of band 1 and 2 respectively. 
+
+
+            **Parameters**
+
+                - ds netCDF dataset
+
+                    waterpybal netcdf dataset.
+
+                ---
+                - method
+                    
+                    - Combination evapotranspiration calculation methods:
+
+
+                        - ***Kimberly Penman:***
+
+                            tmean: **Mandatory**, wind: **Mandatory**, rs: Optional, rn: Optional, g: 0, tmax: Optional, tmin: Optional, rhmax: Optional, rhmin: Optional, rh: Optional, pressure: Optional, elevation: Optional, lat: Optional, n: Optional, nn: Optional, rso: Optional, a: 1.35, b: -0.35
+
+                        - ***Penman:***
+                            
+                            tmean: **Mandatory**, wind: **Mandatory**, rs: Optional, rn: Optional, g: 0, tmax: Optional, tmin: Optional, rhmax: Optional, rhmin: Optional, rh: Optional, pressure: Optional, elevation: Optional, lat: Optional, n: Optional, nn: Optional, rso: Optional, aw: 2.6, bw: 0.536, a: 1.35,b: -0.35
+
+                        - ***FAO-56 Penman-Monteith:***
+
+                            tmean: **Mandatory**, wind: **Mandatory**, rs: Optional, rn: Optional, g: 0, tmax: Optional, tmin: Optional, rhmax: Optional, rhmin: Optional, rh: Optional, pressure: Optional, elevation: Optional, lat: Optional, n: Optional, nn: Optional, rso: Optional, a: 1.35, b: -0.35
+
+                        - ***Priestley and taylor:***
+
+                            tmean: **Mandatory**, wind: **Mandatory**, rs: Optional, rn: Optional, g: 0, tmax: Optional, tmin: Optional, rhmax: Optional, rhmin: Optional, rh: Optional, pressure: Optional, elevation: Optional, lat: Optional, n: Optional, nn: Optional, rso: Optional, a: 1.35, b: -0.35, alpha: 1.26
+
+                        - ***Penman-Monteith:***
+
+                            tmean: **Mandatory**, wind: **Mandatory**, rs: Optional, rn: Optional, g: 0, tmax: Optional, tmin: Optional, rhmax: Optional, rhmin: Optional, rh: Optional, pressure: Optional, elevation: Optional, lat: Optional, n: Optional, nn: Optional, rso: Optional, a: 1.35, b: -0.35, lai: Optional, croph: Optional, r_l: 100, r_s: 70, ra_method: 1, a_sh: 1, a_s: 1, lai_eff: 1, srs: 0.0009, co2: 300
+
+                        - ***Thom and Oliver:***
+
+                            tmean: **Mandatory**, wind: **Mandatory**, rs: Optional, rn: Optional, g: 0, tmax: Optional, tmin: Optional, rhmax: Optional, rhmin: Optional, rh: Optional, pressure: Optional, elevation: Optional, lat: Optional, n: Optional, nn: Optional, rso: Optional, aw: 2.6, bw: 0.536, a: 1.35, b: -0.35, lai: Optional, croph: Optional, r_l: 100, r_s: 70, ra_method: 1, lai_eff: 1, srs: 0.0009, co2: 300
+
+
+                    - Temperature evapotranspiration calculation methods:
+
+
+                        - ***Blaney_criddle:***
+
+                            tmean: **Mandatory**, p: **Mandatory**, k: 0.85
+
+                        - ***Hamon:*** 
+
+                            tmean: **Mandatory**, lat: **Mandatory**
+
+                        - ***Linacre:*** 
+
+                            tmean: **Mandatory**, elevation: **Mandatory**, lat: **Mandatory**, tdew: Optional, tmax: Optional, tmin: Optional
+
+                        - ***Romanenko:*** 
+
+                            tmean: **Mandatory**, rh: **Mandatory**, k: 4.5
+
+
+                    - Radiation evapotranspiration calculation methods:
+
+                        - ***Abtew:*** 
+
+                            tmean: **Mandatory**, rs: **Mandatory**, k: 0.53
+
+                        - ***Doorenbos - Pruitt (FAO-24):*** 
+
+                            tmean: **Mandatory**, wind: **Mandatory**, rs: **Mandatory**, rh: **Mandatory**, pressure: Optional, elevation: Optional, albedo: 0.23
+
+                        - ***Hargreaves:*** 
+
+                            tmean: **Mandatory**, tmax: **Mandatory**, tmin: **Mandatory**, lat: **Mandatory**
+
+                        - ***Jensen and Haise:*** 
+
+                            tmean: **Mandatory**, rs: Optional, cr: 0.025, tx: -3, lat: Optional, method: 1
+
+                        - ***Makkink:*** 
+
+                            tmean: **Mandatory**, rs: **Mandatory**, pressure: Optional, elevation: Optional
+
+                        - ***McGuinness and Bordne:*** 
+
+                            tmean: **Mandatory**, lat: **Mandatory**, k: 0.0147
+
+                        - ***Oudin:*** 
+
+                            tmean: **Mandatory**, lat: **Mandatory**, k1: 100, k2: 5
+
+                        - ***Turc:*** 
+
+                            tmean: **Mandatory**, rs: **Mandatory**, rh: **Mandatory**, k: 0.31
+                
+                ---
+                - preferred_date_interval str
+
+                    Waterpybal dataset time interval.
+                
+                ---
+                - raster_etp_var_dic dic default: None
+                    If the ETP variable doesn't change in time, it is possible to use a raster to introduce it's values.
+                    
+                    Format:
+
+                    {"var_name":["raster_dir","raster_band"]} or {"var_name":"raster_dir"} (band default to 1) or {"var_name":["raster_dir"]}
+                
+                ---
+                - **kwargs dic
+                
+                    A dictionary that defines the inputs of the ETP method.
+                    
+                    The constant values can be defined directly
+                    
+                    Rasters have to be defined with "raster" keyword, and then introduced in raster_etp_var_dic argument as a dictionary
+
+                    If the ETP variable exists in the waterpybal dataset, the "ds" keyword have to be used. 
+
+                    Format:
+                        {"var_name_1":constant_value, "var_name_2": "raster", "var_name_3": "ds",... }
+                ---
+
+            **Returns**
+
+                -ds netCDF dataset
+
+                    waterpybal netcdf dataset.
+            
+            ---
+            ---
+            
         '''
         #retrieve data for each timestep from ds
         #data change in time t
@@ -166,7 +314,7 @@ class ETP(object):
                     else: kwargs_[k]=kwargs[k]    
 
                 if nodata_etp==False:
-                    etp_t=ETP()
+                    etp_t=ETP_tools()
                     etp_t.add_ETP_method_point(method,**kwargs_)
                     etp_t=etp_t.exec_ETPs_point()
                     #define ETPs (calculated for each point for all time steps)

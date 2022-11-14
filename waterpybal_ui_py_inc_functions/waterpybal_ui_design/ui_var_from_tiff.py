@@ -16,17 +16,20 @@ from PySide6.QtGui import (QBrush, QColor, QConicalGradient, QCursor,
     QImage, QKeySequence, QLinearGradient, QPainter,
     QPalette, QPixmap, QRadialGradient, QTransform)
 from PySide6.QtWidgets import (QAbstractButton, QApplication, QCheckBox, QComboBox,
-    QDialog, QDialogButtonBox, QHBoxLayout, QLabel,
-    QLineEdit, QSizePolicy, QSpacerItem, QToolButton,
-    QVBoxLayout, QWidget)
+    QDialog, QDialogButtonBox, QFrame, QGroupBox,
+    QHBoxLayout, QLabel, QLineEdit, QSizePolicy,
+    QSpacerItem, QTextBrowser, QToolButton, QVBoxLayout,
+    QWidget)
 
 class Ui_Dialog_var_from_tiff(object):
     def setupUi(self, Dialog_var_from_tiff):
         if not Dialog_var_from_tiff.objectName():
             Dialog_var_from_tiff.setObjectName(u"Dialog_var_from_tiff")
-        Dialog_var_from_tiff.resize(391, 200)
-        Dialog_var_from_tiff.setMaximumSize(QSize(16777215, 200))
-        self.verticalLayout = QVBoxLayout(Dialog_var_from_tiff)
+        Dialog_var_from_tiff.resize(760, 200)
+        Dialog_var_from_tiff.setMaximumSize(QSize(16777215, 300))
+        self.horizontalLayout_4 = QHBoxLayout(Dialog_var_from_tiff)
+        self.horizontalLayout_4.setObjectName(u"horizontalLayout_4")
+        self.verticalLayout = QVBoxLayout()
         self.verticalLayout.setObjectName(u"verticalLayout")
         self.label_from_tiffs = QLabel(Dialog_var_from_tiff)
         self.label_from_tiffs.setObjectName(u"label_from_tiffs")
@@ -127,6 +130,36 @@ class Ui_Dialog_var_from_tiff(object):
         self.verticalLayout.addWidget(self.buttonBox_from_tiff)
 
 
+        self.horizontalLayout_4.addLayout(self.verticalLayout)
+
+        self.groupBox_help = QGroupBox(Dialog_var_from_tiff)
+        self.groupBox_help.setObjectName(u"groupBox_help")
+        self.groupBox_help.setMinimumSize(QSize(150, 0))
+        font1 = QFont()
+        font1.setPointSize(9)
+        self.groupBox_help.setFont(font1)
+        self.groupBox_help.setAutoFillBackground(False)
+        self.groupBox_help.setStyleSheet(u"QGroupBox{border:2px solid gray;border-radius:1px;margin-top: 1ex;}\n"
+"QGroupBox::title{subcontrol-origin: margin;subcontrol-position:top center;padding:0 3px;}")
+        self.groupBox_help.setTitle(u"Help")
+        self.groupBox_help.setFlat(False)
+        self.verticalLayout_4 = QVBoxLayout(self.groupBox_help)
+        self.verticalLayout_4.setObjectName(u"verticalLayout_4")
+        self.textBrowser_help = QTextBrowser(self.groupBox_help)
+        self.textBrowser_help.setObjectName(u"textBrowser_help")
+        self.textBrowser_help.setAutoFillBackground(True)
+        self.textBrowser_help.setStyleSheet(u"background-color: rgb(240, 240, 240)")
+        self.textBrowser_help.setFrameShape(QFrame.WinPanel)
+        self.textBrowser_help.setFrameShadow(QFrame.Sunken)
+        self.textBrowser_help.setLineWidth(0)
+        self.textBrowser_help.setReadOnly(True)
+
+        self.verticalLayout_4.addWidget(self.textBrowser_help)
+
+
+        self.horizontalLayout_4.addWidget(self.groupBox_help)
+
+
         self.retranslateUi(Dialog_var_from_tiff)
         self.buttonBox_from_tiff.accepted.connect(Dialog_var_from_tiff.accept)
         self.buttonBox_from_tiff.rejected.connect(Dialog_var_from_tiff.reject)
@@ -142,5 +175,10 @@ class Ui_Dialog_var_from_tiff(object):
         self.label_var_name.setText(QCoreApplication.translate("Dialog_var_from_tiff", u"Variable name", None))
         self.checkBox.setText(QCoreApplication.translate("Dialog_var_from_tiff", u"In case time interval of .CSV is not the same as the Database, Use the \n"
 "same values for valid time steps(EX: Temp. vs accumulated precipitation)", None))
+        self.textBrowser_help.setHtml(QCoreApplication.translate("Dialog_var_from_tiff", u"<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
+"<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">\n"
+"p, li { white-space: pre-wrap; }\n"
+"</style></head><body style=\" font-family:'MS Shell Dlg 2'; font-size:8.1pt; font-weight:400; font-style:normal;\">\n"
+"<p align=\"justify\" style=\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><br /></p></body></html>", None))
     # retranslateUi
 
