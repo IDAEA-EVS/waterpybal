@@ -46,7 +46,7 @@ class Ui_Dialog_etp_(QtWidgets.QDialog):
 
             val_or_path_t=self.ui.tableWidget_etp_method_params.item(i,2)
             if val_or_path_t!=None:
-                val_or_path=val_or_path_t.text()
+                val_or_path=val_or_path_t.text().strip()
             else: val_or_path=None
 
             #create raster_etp_var_dic

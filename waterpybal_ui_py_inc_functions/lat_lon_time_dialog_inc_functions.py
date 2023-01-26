@@ -106,15 +106,17 @@ class lat_lon_time_dialog_(QtWidgets.QDialog):
             self.urban_ds=True
         else:
             self.urban_ds=False
-        
-        
+
+
+        dataset_cl=dataset_gen()
+
         if self.single_point==False:
             self.sam_raster_dir=self.ui.lineEdit_xyraster.text()
 
             
             lat_lon_type="raster"
 
-            dataset_cl=dataset_gen()
+            
                         
             
             dtype=dataset_cl.ds_dimensions(
@@ -143,7 +145,6 @@ class lat_lon_time_dialog_(QtWidgets.QDialog):
                 "height":1
             }
 
-            dataset_cl=dataset_gen()
 
             dtype=dataset_cl.ds_dimensions(
                 lat_lon_type=lat_lon_type,
@@ -162,9 +163,11 @@ class lat_lon_time_dialog_(QtWidgets.QDialog):
 
         ds_values_dic=self.new_var_to_ds()
         
+        print ("dataset_cl.time", dataset_cl.time)
+
         self.ds=dataset_cl.var_generation(dir=self.dir,ds_values_dic=ds_values_dic,urban_ds=self.urban_ds)
 
-        #print (self.ds)
+        print ("self.ds['time'][:]",self.ds["time"][:])
 
     #######
     def new_var_to_ds(self):

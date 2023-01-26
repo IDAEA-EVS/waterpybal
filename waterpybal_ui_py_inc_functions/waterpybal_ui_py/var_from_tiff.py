@@ -12,8 +12,9 @@ from PyQt6 import QtCore, QtGui, QtWidgets
 class Ui_Dialog_var_from_tiff(object):
     def setupUi(self, Dialog_var_from_tiff):
         Dialog_var_from_tiff.setObjectName("Dialog_var_from_tiff")
-        Dialog_var_from_tiff.resize(760, 200)
-        Dialog_var_from_tiff.setMaximumSize(QtCore.QSize(16777215, 300))
+        Dialog_var_from_tiff.resize(848, 300)
+        Dialog_var_from_tiff.setMinimumSize(QtCore.QSize(0, 300))
+        Dialog_var_from_tiff.setMaximumSize(QtCore.QSize(16777215, 600))
         self.horizontalLayout_4 = QtWidgets.QHBoxLayout(Dialog_var_from_tiff)
         self.horizontalLayout_4.setObjectName("horizontalLayout_4")
         self.verticalLayout = QtWidgets.QVBoxLayout()
@@ -94,7 +95,12 @@ class Ui_Dialog_var_from_tiff(object):
         self.verticalLayout.addWidget(self.buttonBox_from_tiff)
         self.horizontalLayout_4.addLayout(self.verticalLayout)
         self.groupBox_help = QtWidgets.QGroupBox(Dialog_var_from_tiff)
-        self.groupBox_help.setMinimumSize(QtCore.QSize(150, 0))
+        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Policy.MinimumExpanding, QtWidgets.QSizePolicy.Policy.MinimumExpanding)
+        sizePolicy.setHorizontalStretch(0)
+        sizePolicy.setVerticalStretch(0)
+        sizePolicy.setHeightForWidth(self.groupBox_help.sizePolicy().hasHeightForWidth())
+        self.groupBox_help.setSizePolicy(sizePolicy)
+        self.groupBox_help.setMinimumSize(QtCore.QSize(450, 200))
         font = QtGui.QFont()
         font.setPointSize(9)
         self.groupBox_help.setFont(font)
@@ -136,13 +142,3 @@ class Ui_Dialog_var_from_tiff(object):
 "p, li { white-space: pre-wrap; }\n"
 "</style></head><body style=\" font-family:\'MS Shell Dlg 2\'; font-size:8.1pt; font-weight:400; font-style:normal;\">\n"
 "<p align=\"justify\" style=\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><br /></p></body></html>"))
-
-
-if __name__ == "__main__":
-    import sys
-    app = QtWidgets.QApplication(sys.argv)
-    Dialog_var_from_tiff = QtWidgets.QDialog()
-    ui = Ui_Dialog_var_from_tiff()
-    ui.setupUi(Dialog_var_from_tiff)
-    Dialog_var_from_tiff.show()
-    sys.exit(app.exec())

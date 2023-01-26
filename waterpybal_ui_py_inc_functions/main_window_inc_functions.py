@@ -150,7 +150,7 @@ class waterpybalMainwindow(QtWidgets.QMainWindow):
             self.ui_etp.single_point=self.single_point
             if self.ui_etp.exec()==1 and qt_exception_hook.exception_hook_bool==False:
                 self.ds=self.ui_etp.ds
-                self.ui.label_to_etp.setText("Done")
+                self.ui.label_to_infiltration.setText("Done")
                 self.win_open=False
             else:
                 self.ui.label_to_etp.setText("")
@@ -178,7 +178,7 @@ class waterpybalMainwindow(QtWidgets.QMainWindow):
             #################
             if self.ui_infilt.exec()==1 and qt_exception_hook.exception_hook_bool==False:
                 self.ds=self.ui_infilt.ds
-                self.ui.label_to_infiltration.setText("Done")
+                self.ui.label_to_etp.setText("Done")
                 self.win_open=False
             else:
                 self.ui.label_to_infiltration.setText("")

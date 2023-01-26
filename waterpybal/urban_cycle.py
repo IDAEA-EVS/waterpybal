@@ -112,7 +112,7 @@ class urban_cycle_calcs():
 
                         - Water Consumption NOT from network loss: key wat_supp_wells_loss, %
 
-                        - Water from other sources (underground infrustructures,etc.): key wat_other, %
+                        - Water from other sources (underground infrustructures,etc.): key wat_other, mm
 
                         - Urban to calculated Infiltration and Evapotranspiration ratio: key urban_to_ds_inf_etp_ratio, %
                 ---
@@ -126,7 +126,6 @@ class urban_cycle_calcs():
             ---
             ---
         '''
-        
         for k,v in variables_dic.items():
             
             variable_name=k
@@ -134,7 +133,6 @@ class urban_cycle_calcs():
             dataset_raster_dir_or_value=v["dataset_raster_dir_or_value"]
 
             ds=urban_cycle_tools.urban_input_raster_or_value(ds,urban_area_raster_dir,variable_name, input_var ,dataset_raster_dir_or_value)
-        
         #Append data to the variables
         time_steps=[ n for n in range(0,len(ds["time"][:].data))]
 
@@ -434,6 +432,7 @@ class urban_cycle_tools():
         src=rs.open(raster_dir)
         rast=src.read(1)
         msk = src.read_masks(1)
+        rast=rast.astype(np.float32)
         rast[msk==0]=np.nan
         src.close()
         return rast
@@ -465,11 +464,17 @@ class urban_cycle_tools():
             urb_val=np.array(lst)  #3D
 
             ds_vals=ds[name][:,:,:].data
-            
+            #to include just the data with prec available
+            prec_vals=ds["Prec_Val"][:,:,:].data
+            ds_vals[prec_vals==-9999]=np.nan
+
             #to just overwrite the values that are marked as urban area
-            ds_vals[~np.isnan(urban_raster_3d)]=ds_vals[~np.isnan(urban_raster_3d)]*(1-urban_to_ds_inf_etp_ratio[~np.isnan(urban_raster_3d)]/100)  + urb_val[~np.isnan(urban_raster_3d)]*(urban_to_ds_inf_etp_ratio[~np.isnan(urban_raster_3d)]/100)
+            val_urb_t=~np.isnan(urban_raster_3d)
+            k=urban_to_ds_inf_etp_ratio[val_urb_t]/100
+
+            ds_vals[val_urb_t]=ds_vals[val_urb_t]*(1-k) + urb_val[val_urb_t]*k
             
-            ds_vals[np.isnan(ds_vals)]=-9999
+            ds_vals[prec_vals==-9999]=-9999
 
             ds[name][:,:,:]=ds_vals
             

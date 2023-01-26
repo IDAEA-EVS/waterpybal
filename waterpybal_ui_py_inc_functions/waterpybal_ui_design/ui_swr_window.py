@@ -24,8 +24,8 @@ class Ui_Dialog_swr(object):
     def setupUi(self, Dialog_swr):
         if not Dialog_swr.objectName():
             Dialog_swr.setObjectName(u"Dialog_swr")
-        Dialog_swr.resize(902, 241)
-        Dialog_swr.setMinimumSize(QSize(600, 0))
+        Dialog_swr.resize(900, 300)
+        Dialog_swr.setMinimumSize(QSize(900, 300))
         self.horizontalLayout_11 = QHBoxLayout(Dialog_swr)
         self.horizontalLayout_11.setObjectName(u"horizontalLayout_11")
         self.verticalLayout_3 = QVBoxLayout()
@@ -236,7 +236,12 @@ class Ui_Dialog_swr(object):
 
         self.groupBox_help = QGroupBox(Dialog_swr)
         self.groupBox_help.setObjectName(u"groupBox_help")
-        self.groupBox_help.setMinimumSize(QSize(150, 0))
+        sizePolicy1 = QSizePolicy(QSizePolicy.MinimumExpanding, QSizePolicy.MinimumExpanding)
+        sizePolicy1.setHorizontalStretch(0)
+        sizePolicy1.setVerticalStretch(0)
+        sizePolicy1.setHeightForWidth(self.groupBox_help.sizePolicy().hasHeightForWidth())
+        self.groupBox_help.setSizePolicy(sizePolicy1)
+        self.groupBox_help.setMinimumSize(QSize(300, 0))
         font1 = QFont()
         font1.setPointSize(9)
         self.groupBox_help.setFont(font1)

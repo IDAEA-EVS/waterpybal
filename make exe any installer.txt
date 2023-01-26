@@ -11,3 +11,12 @@ pyinstaller waterpybalstudiointro_window.spec
 uso icofx to make icons
 
 use installforge to make the installer using the tutorial
+
+
+to make exe using pyinstaller:
+
+1.conda activate watbalenv
+
+2.pyinstaller waterpybal_gui_main.spec
+
+3. Installforge installer

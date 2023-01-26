@@ -155,8 +155,8 @@ class dataset_gen(object):
         
         #For time     
         if time_type=="dataframe":
-            #time=np.sort(np.unique(np.array(pd.to_datetime(time_source[time_name]),dtype=dtype)))
-            time_source[time_name]
+            time=np.sort(np.unique(np.array(pd.to_datetime(time_source[time_name]),dtype=dtype)))
+            #time_source[time_name]
         #########
         elif time_type=="csv": 
             
@@ -203,7 +203,7 @@ class dataset_gen(object):
 
         self.lon=lon
         self.lat=lat
-        self.time=time
+        self.time=time_v
         self.dtype=dtype
         self.time_steps_dic=time_steps_dic
 
@@ -259,7 +259,7 @@ class dataset_gen(object):
 
         inputs_dic={"Prec_Val":"mm","Runoff_Val":"mm","Irig_Val":"mm","CN_Val":"No_Unit","INF_Val":"mm","ETP_Val":"mm","PRu_Val":"mm","pwp":"no_unit","cc":"no_unit","rrt":"no_unit"}
         outputs_dic={"ETR_Val":"mm","Def_Val":"mm","Rec_Val":"mm","Ru_Val":"mm","five_day_acc_prec":"mm","CN_mod":"no_unit"}
-        urban_dic={"wat_cons":"mm","wat_net_loss":"%","urb_dir_evap":"%","urb_indir_evap":"%","sew_net_loss_low":"%","sew_net_loss_high":"%","prec_sewage_threshold":"mm","runoff_to_sewage":"%","dir_infil":"%","wat_supp_wells":"mm","wat_supp_wells_loss":"%","wat_other":"%","urban_to_ds_inf_etp_ratio":"%"}
+        urban_dic={"wat_cons":"mm","wat_net_loss":"%","urb_dir_evap":"%","urb_indir_evap":"%","sew_net_loss_low":"%","sew_net_loss_high":"%","prec_sewage_threshold":"mm","runoff_to_sewage":"%","dir_infil":"%","wat_supp_wells":"mm","wat_supp_wells_loss":"%","wat_other":"mm","urban_to_ds_inf_etp_ratio":"%"}
         
         if type(ds_values_dic)==dict: inputs_dic= {**inputs_dic,**ds_values_dic}
         if urban_ds: inputs_dic={**inputs_dic,**urban_dic}
@@ -277,6 +277,7 @@ class dataset_gen(object):
         time.long_name = "time"
         time.calendar = "standard"
         time.units = tunit
+        
         time.bounds = "time_bnds"
 
         time_bnds = ds.createVariable("time_bnds", "f4", ("time","nv",))
@@ -290,7 +291,7 @@ class dataset_gen(object):
         lons[:]=lons_np
         
         #times_np=np.datetime_as_string(times_np,unit='h')
-        time[:]=times_np
+        #time[:]=times_np
         
         #create values
 
@@ -414,101 +415,72 @@ class variable_management(object):
             ---
         '''
 
+        ###########################
         # get raster info for bounds
-        src = rs.open(ras_sample_dir)
-        outputBounds=[src.bounds.left,src.bounds.top,src.bounds.right,src.bounds.bottom]
-        width=src.width
-        height=src.height
-        msk = src.read_masks(1)
-        src.close()
+        outputBounds,width,height,msk=tools.get_bounds(ras_sample_dir)
 
-        if interpolation_time_int in ["Daily",'datetime64[D]']: interpolation_time_int='datetime64[D]'
-        elif interpolation_time_int in ["Monthly",'datetime64[M]']: interpolation_time_int='datetime64[M]'
-        elif interpolation_time_int in ["Hourly",'datetime64[h]']: interpolation_time_int='datetime64[h]'        
-        '''if time_interpolation==False:'''
-        #group the csv in timesteps
-        df=pd.read_csv(csv_dir)
-        df[time_csv_col]=np.array(pd.to_datetime(df[time_csv_col]))
-        df=df.set_index(time_csv_col)
-        '''else:
-            df=df_fin
-        '''
+        ###########################
+        # interpolation_time_int
+        if interpolation_time_int =="Daily": interpolation_time_int='datetime64[D]'
+        elif interpolation_time_int =="Monthly": interpolation_time_int='datetime64[M]'
+        elif interpolation_time_int =="Hourly": interpolation_time_int='datetime64[h]' 
 
-
-        np_interpolated_dic=dict()
-        np_interpolated_dic_cntr=dict()
-        
-        #datetime64
-        time_tt=np.array(df.index.unique())
-        nute=0
-
+        ###########################
         #delete existing files
         if os.path.exists("temp_tiff.tiff"): os.remove("temp_tiff.tiff")
         if os.path.exists("temp_csv.csv"): os.remove("temp_csv.csv")
-        if os.path.exists("temp_csv.vrt"): os.remove("temp_csv.vrt")
+        if os.path.exists("temp_csv.vrt"): os.remove("temp_csv.vrt")   
 
-        for i in time_tt:
-            nute=nute+1
-            print ("timestep count: ", nute)
-            
+        ###########################
+        #2 dics to save the interpolated 2D arrays for each time step
+        np_interpolated_dic=dict()
 
-            ########
+        ###########################
+        #set csv time column as index
+        df=pd.read_csv(csv_dir)
+        df[time_csv_col]=np.array(pd.to_datetime(df[time_csv_col]))
+        df=df.set_index(time_csv_col)
+        time_tt=np.array(df.index.unique())        #pandas datetime64
+        print ("time_tt",time_tt)
+        ###########################
+        #extract the time from ds and convert it to monthly, to just interpolate the same month
+        ds_date_interval_=tools.dtimechanger(preferred_date_interval)
+        ds_time=ds["time"][:].data #numbers
+        ds_time=ds_time.astype(ds_date_interval_)
+        ds_time_monthly=ds_time.astype('datetime64[M]')
+        print ("ds_time_monthly",ds_time_monthly)
+        ###########################
 
-            #create a temporal csv pf just one timestep
-            df_t=df[df.index==i]
-            df_t=df_t.sort_values(by=[lat_csv_col,lon_csv_col],ascending=[False,True])
-            df_t.to_csv("temp_csv.csv")
+        for time_csv in time_tt:
 
-            #for each timestep, a gdal dataset
-            
-            OGRVRT="<OGRVRTDataSource>\n \
-                <OGRVRTLayer name=\"temp_csv\">\n \
-                    <SrcDataSource>temp_csv.csv</SrcDataSource>\n \
-                    <GeometryType>wkbPoint</GeometryType>\n \
-                    <GeometryField encoding=\"PointFromColumns\" x=\""+ lon_csv_col +"\" y=\""+ lat_csv_col +"\" z=\""+ var_name +"\"/>\n \
-                </OGRVRTLayer>\n \
-                </OGRVRTDataSource>"
+            if time_csv.astype('datetime64[M]') in ds_time_monthly:
+                print("time_csv.astype('datetime64[M]')",time_csv.astype('datetime64[M]'))
+                
+                np_interpolated_dic_cntr=dict()  
 
-            f=open("temp_csv.vrt","w")
-            f.write(OGRVRT)
-            f.close()
+                #function to create the interpolated raster
+                rast=tools.interpolate_one_timestep(df,time_csv,lat_csv_col,lon_csv_col,var_name,method,outputBounds,width,height,msk)
 
-            #interpolate the dataset
-            nn=gdal.Grid("temp_tiff.tiff", "temp_csv.vrt",zfield=var_name,algorithm=method,
-            outputBounds=outputBounds,width=width,height=height,noData=-9999)
-            nn=None
+                ##############
+                ##to make average if not fits
+                if time_csv in np_interpolated_dic: 
+                    np_interpolated_dic[time_csv]=(np_interpolated_dic[time_csv]+rast)
+                    np_interpolated_dic_cntr[time_csv]=np_interpolated_dic_cntr[time_csv]+1
 
-            #open temp_tiff
-            src_temp = rs.open("temp_tiff.tiff")
-            rast=src_temp.read(1)
-            rast[msk==0]=np.nan #no data
-            #here we have to change the index (i) to number:
+                else:
+                    np_interpolated_dic[time_csv]=rast
+                    np_interpolated_dic_cntr[time_csv]=1
+                ##############
+                #
+                for date,val in np_interpolated_dic_cntr.items():
+                    np_interpolated_dic[date]=np_interpolated_dic[date]/val
+                    #print ("dic date",time_csv)
 
-
-
-            ###########
-            # #to make average if not fits
-            if i in np_interpolated_dic: 
-
-                np_interpolated_dic[i]=(np_interpolated_dic[i]+rast)
-                np_interpolated_dic_cntr[i]=np_interpolated_dic_cntr[i]+1
-            else:
-                np_interpolated_dic[i]=rast
-                np_interpolated_dic_cntr[i]=1
-            
-            for date,val in np_interpolated_dic_cntr.items():
-                np_interpolated_dic[date]=np_interpolated_dic[date]/val
-
-            src_temp.close()      
-        
-            if os.path.exists("temp_tiff.tiff"): os.remove("temp_tiff.tiff")
-            if os.path.exists("temp_csv.csv"): os.remove("temp_csv.csv")
-            if os.path.exists("temp_csv.vrt"): os.remove("temp_csv.vrt")      
 
         #store in netcdf
 
         
-        ds=tools.match_date(new_dic=np_interpolated_dic,preferred_date_interval=preferred_date_interval,new_time_int=interpolation_time_int,ds=ds,var_name=var_name,multiply=multiply)
+        ds=tools.match_date(new_dic=np_interpolated_dic,preferred_date_interval=preferred_date_interval,new_input_time_int=interpolation_time_int,ds=ds,var_name=var_name,multiply=multiply)
 
         '''elif time_interpolation==True: #add the data to ds in case time interpolation is True and space interpolation is false
             #create a temporal csv pf just one timestep
@@ -520,10 +492,6 @@ class variable_management(object):
                 lat_idx=np.where(lat_ds==row[lat_csv_col])
                 lon_idx=np.where(lon_ds==row[lon_csv_col])
             ds[var_name][t_idx,lat_idx,lon_idx]=row[var_name]'''
-
-        #else:
-        #    pass
-
 
         return ds
     
@@ -599,7 +567,8 @@ class variable_management(object):
             else: rast_dic[d]=arr
             src_temp.close()
 
-        ds=tools.match_date(new_dic=rast_dic,preferred_date_interval=preferred_date_interval,new_time_int=date_interval,ds=ds,var_name=var_name,multiply=multiply)
+        ds=tools.match_date(new_dic=rast_dic,preferred_date_interval=preferred_date_interval,new_input_time_int=date_interval,ds=ds,var_name=var_name,multiply=multiply)
+        
         return ds
     
     ######################
@@ -697,7 +666,7 @@ class variable_management(object):
                 for date,val in np_interpolated_dic_cntr.items():
                     np_interpolated_dic[date]=np_interpolated_dic[date]/val
 
-            ds=tools.match_date(new_dic=np_interpolated_dic,preferred_date_interval=preferred_date_interval,new_time_int=interpolation_time_int,ds=ds,var_name=var_name,multiply=multiply)
+            ds=tools.match_date(new_dic=np_interpolated_dic,preferred_date_interval=preferred_date_interval,new_input_time_int=interpolation_time_int,ds=ds,var_name=var_name,multiply=multiply)
             
         else:
             #select df times that exist in the dataframe
@@ -763,7 +732,7 @@ class variable_management(object):
             ---
         '''
         ds_temp=nc.Dataset(new_nc_dir,'r+',format='NETCDF')
-        ds[var_name][: ,:,:]=ds_temp["var_name"][:,:,:]
+        ds[var_name][: ,: ,:]=ds_temp[var_name][:, :, :]
         return ds
 
 ###################################################################
@@ -773,52 +742,47 @@ class tools(object):
     '''
 
     @staticmethod
-    def match_date(new_dic,preferred_date_interval,new_time_int,ds,var_name,multiply):
+    def match_date(new_dic,preferred_date_interval,new_input_time_int,ds,var_name,multiply):
         '''
            To match the date of the inputs and the dataset 
         '''
 
-
-
         ds_date_interval=tools.dtimechanger(preferred_date_interval)
-
         
+        #to get the right time interval from the ds
         time=ds["time"][:].data #numbers
         time=time.astype(ds_date_interval)
+        print ("time",time)
 
-        for date,arr in new_dic.items():
-            date_dt=np.array(date,dtype=preferred_date_interval)
-               
+        new_dic_changed=dict()
+
+        #interpolated data is more frequent than the dataset preferred_date_interval
+        if preferred_date_interval==new_input_time_int or (preferred_date_interval in ['datetime64[D]', 'datetime64[M]'] and new_input_time_int in ['datetime64[h]','datetime64[D]']):
             
-            #date_dt = date_dt - origin
-            #interpolated data is more frequent than the dataset preferred_date_interval
-            if preferred_date_interval==new_time_int or (preferred_date_interval in ['datetime64[D]', 'datetime64[M]'] and new_time_int=='datetime64[h]') or (preferred_date_interval=='datetime64[M]' and new_time_int=='datetime64[D]'):
-                #origin = np.array("1970-01-01",dtype=preferred_date_interval)
-                time_temp=time.astype(preferred_date_interval)
-         
-            else:
+            time_temp,new_dic_changed=tools.interpolated_more_frequent_match_date(time,preferred_date_interval,new_dic)
+            
 
-                if multiply==True:  
-                    if preferred_date_interval=='datetime64[h]' and new_time_int=='datetime64[D]': #hour to daily
-                        arr=arr/24
-                    elif preferred_date_interval=='datetime64[h]' and new_time_int=='datetime64[M]': #hour to month
-                        arr=arr/720
-                    elif preferred_date_interval=='datetime64[D]' and new_time_int=='datetime64[M]': #day to month
-                        arr=arr/30
-                else: print ("match_date function error - 2!")    
-                
-                #origin = np.array("1970-01-01",dtype=new_time_int)
+        #interpolated data is less frequent than the dataset preferred_date_interval
+        else:
+            time_temp,new_dic_changed=tools.interpolated_less_frequent_match_date(time,new_input_time_int,preferred_date_interval,new_dic,multiply)
 
-                time_temp=time.astype(new_time_int)
-
-            u=np.where(time_temp == date_dt)
+        
+        #write data to the dataset
+        
+        ds_array=np.full(ds[var_name].shape, -9999)
+        
+        for date,arr in new_dic_changed.items():
+            u=np.where(time_temp == date)
             if len(u)>0:
                 u_list=list(u[0])
                 if len(u_list)>0:
+                    print ("len(u_list)>0",u_list)
                     for uu in u_list:
                         arr=np.nan_to_num(arr,nan=-9999)
-                        ds[var_name][uu ,:,:]=arr
-
+                        ds_array[uu ,:,:]=arr
+        
+        ds[var_name][:,:,:]=ds_array
+        
         return ds
     
     ######################
@@ -831,3 +795,132 @@ class tools(object):
         elif preferred_date_interval=='datetime64[D]': ds_date_interval='datetime64[h]'
         elif preferred_date_interval=='datetime64[M]': ds_date_interval='datetime64[D]'
         return ds_date_interval 
+    ######################
+    @staticmethod
+    def get_bounds(ras_sample_dir):
+        src = rs.open(ras_sample_dir)
+        outputBounds=[src.bounds.left,src.bounds.top,src.bounds.right,src.bounds.bottom]
+        width=src.width
+        height=src.height
+        msk = src.read_masks(1)
+        src.close()
+        
+        return outputBounds,width,height,msk
+
+    ######################
+    @staticmethod
+    def interpolate_one_timestep(df,time_csv,lat_csv_col,lon_csv_col,var_name,method,outputBounds,width,height,msk):
+        #create a temporal csv of just one timestep
+        df_t=df[df.index==time_csv]
+        df_t=df_t.sort_values(by=[lat_csv_col,lon_csv_col],ascending=[False,True])
+        df_t.to_csv("temp_csv.csv")
+
+        #for each timestep, a gdal .vrt dataset
+        
+        OGRVRT="<OGRVRTDataSource>\n \
+            <OGRVRTLayer name=\"temp_csv\">\n \
+                <SrcDataSource>temp_csv.csv</SrcDataSource>\n \
+                <GeometryType>wkbPoint</GeometryType>\n \
+                <GeometryField encoding=\"PointFromColumns\" x=\""+ lon_csv_col +"\" y=\""+ lat_csv_col +"\" z=\""+ var_name +"\"/>\n \
+            </OGRVRTLayer>\n \
+            </OGRVRTDataSource>"
+
+        f=open("temp_csv.vrt","w")
+        f.write(OGRVRT)
+        f.close()
+        ###################
+
+        #interpolate the dataset
+        nn=gdal.Grid("temp_tiff.tiff", "temp_csv.vrt",zfield=var_name,algorithm=method,
+        outputBounds=outputBounds,width=width,height=height,noData=-9999)
+        nn=None
+        ##############
+
+        #open temp_tiff
+        src_temp = rs.open("temp_tiff.tiff")
+        rast=src_temp.read(1)
+
+        #from matplotlib import pyplot
+        #pyplot.imshow(rast, cmap='pink')
+        #pyplot.show()
+        rast[msk==0]=np.nan #no data
+
+        rast[rast==-9999]=np.nan
+
+        #print ("gdal output where not nan", len(rast[np.where(np.isnan(rast)==False)]))
+
+        src_temp.close() 
+        
+        if os.path.exists("temp_tiff.tiff"): os.remove("temp_tiff.tiff")
+        if os.path.exists("temp_csv.csv"): os.remove("temp_csv.csv")
+        if os.path.exists("temp_csv.vrt"): os.remove("temp_csv.vrt")  
+
+        return rast     
+
+    ######################
+
+    @staticmethod
+    def interpolated_more_frequent_match_date(time,preferred_date_interval,new_dic):
+        
+        new_dic_changed=dict()
+        # dataset with the preferred_date_interval
+        time_temp=time.astype(preferred_date_interval)
+
+        ##################
+        # new input with preferred_date_interval, but have to be averaged to match the frequency
+        
+        #make a new dictionary with the same frequency (averaging)
+        new_dic_changed_counter=dict()
+
+        for date,arr in new_dic.items():
+            
+            date_dt=date.astype(preferred_date_interval)
+
+            if date_dt not in new_dic_changed:
+
+                new_dic_changed[date_dt]=arr
+                new_dic_changed_counter[date_dt]=1
+            else:
+                print ("hey")
+                new_dic_changed[date_dt]=new_dic_changed[date_dt]+arr
+                new_dic_changed_counter[date_dt]=new_dic_changed_counter[date_dt]+1
+        
+        for date,val in new_dic_changed_counter.items():
+            new_dic_changed[date]=new_dic_changed[date]/val
+        
+        return time_temp,new_dic_changed
+
+    ######################
+    @staticmethod
+    def interpolated_less_frequent_match_date(time,new_input_time_int,preferred_date_interval,new_dic,multiply):
+
+        new_dic_changed=dict()
+
+        #dataset with the preferred_date_interval
+        time_temp=time.astype(new_input_time_int)
+
+        if multiply==True:  
+
+            if preferred_date_interval=='datetime64[h]' and new_input_time_int=='datetime64[D]': #hour to daily
+                dev_by=24
+            elif preferred_date_interval=='datetime64[h]' and new_input_time_int=='datetime64[M]': #hour to month
+                dev_by=720
+            elif preferred_date_interval=='datetime64[D]' and new_input_time_int=='datetime64[M]': #day to month
+                dev_by=30
+            
+        else: dev_by=1
+
+        print ("dev_by", dev_by)
+
+        for date,arr in new_dic.items():
+            
+            date_dt=date.astype(new_input_time_int)
+            print("date_dt as type",date_dt)
+
+            new_dic_changed[date_dt]=arr/dev_by
+
+        return time_temp,new_dic_changed
+
+    ######################
+
+

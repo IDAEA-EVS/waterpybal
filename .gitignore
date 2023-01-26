@@ -19,3 +19,8 @@ __pycache__
 build
 dist
 .vscode
+*.ifp
+*.spec
+*.docx
+*.txt
+*.ico

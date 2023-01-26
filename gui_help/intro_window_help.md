@@ -54,4 +54,4 @@ WaterpyBal Studio contains the more frequently used capabilities of the Waterpyb
 
 - Contact Information:
 
-    ....
+    ashkan.hassanzadeh@gmail.com

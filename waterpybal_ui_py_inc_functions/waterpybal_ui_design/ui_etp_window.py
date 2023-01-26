@@ -25,8 +25,8 @@ class Ui_Dialog_etp(object):
     def setupUi(self, Dialog_etp):
         if not Dialog_etp.objectName():
             Dialog_etp.setObjectName(u"Dialog_etp")
-        Dialog_etp.resize(591, 270)
-        Dialog_etp.setMinimumSize(QSize(590, 270))
+        Dialog_etp.resize(950, 530)
+        Dialog_etp.setMinimumSize(QSize(950, 530))
         self.horizontalLayout_2 = QHBoxLayout(Dialog_etp)
         self.horizontalLayout_2.setObjectName(u"horizontalLayout_2")
         self.verticalLayout = QVBoxLayout()
@@ -95,12 +95,12 @@ class Ui_Dialog_etp(object):
 
         self.groupBox_help = QGroupBox(Dialog_etp)
         self.groupBox_help.setObjectName(u"groupBox_help")
-        sizePolicy1 = QSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
+        sizePolicy1 = QSizePolicy(QSizePolicy.MinimumExpanding, QSizePolicy.MinimumExpanding)
         sizePolicy1.setHorizontalStretch(0)
         sizePolicy1.setVerticalStretch(0)
         sizePolicy1.setHeightForWidth(self.groupBox_help.sizePolicy().hasHeightForWidth())
         self.groupBox_help.setSizePolicy(sizePolicy1)
-        self.groupBox_help.setMinimumSize(QSize(150, 0))
+        self.groupBox_help.setMinimumSize(QSize(600, 500))
         font1 = QFont()
         font1.setPointSize(9)
         self.groupBox_help.setFont(font1)

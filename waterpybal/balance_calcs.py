@@ -78,6 +78,8 @@ class tools():
         ETR1[X1_bool]=Ru0[X1_bool]+I1[X1_bool]
         Def1[X1_bool]=-1*X1[X1_bool]
 
+        
+
         return [ETR1,Def1,Ru1,Rec1]
 
 
@@ -152,12 +154,15 @@ class balance(object):
         if predef_ru_type=="raster":
             rast=rs.open(predef_ru_dir_or_np)
             predef_ru_dir_or_np=rast.read(1)
+            msk = rast.read_masks(1)
+            rast=rast.astype(np.float32)
+            rast[msk==0]=np.nan
+            rast.close()
 
         if predef_ru_type=="dataset":
-            
-            predef_ru_dir_or_np=ds["PRu_Val"][0,:,:].data
-            predef_ru_dir_or_np=predef_ru_dir_or_np*float(init_swr)/100
-
+            pru0= ds["PRu_Val"][0,:,:].data
+            predef_ru_dir_or_np=pru0*float(init_swr)/100
+            predef_ru_dir_or_np[pru0==-9999]=np.nan
 
         for time_t in time_steps:
             
@@ -173,12 +178,17 @@ class balance(object):
 
                                             #Ru0,I1,ETP1,PRu1
             bal_res=tools.balance_calc_arr(Ru_Val,INF_Val,ETP_Val,PRu_Val)
-                
+
             #append to NETCDF
             #for time_t in time_steps:  #ETR1,Def1,Ru1,Rec1
             for c,i in enumerate(["ETR_Val","Def_Val","Ru_Val","Rec_Val"]):                
 
                 x=bal_res[c]
+                x[np.isnan(PRu_Val)]=np.nan
+                x[np.isnan(Ru_Val)]=np.nan
+                x[np.isnan(INF_Val)]=np.nan
+                x[np.isnan(ETP_Val)]=np.nan
+
                 x[np.isnan(x)]=-9999
                 ds[i][time_t,:,:]=x
         

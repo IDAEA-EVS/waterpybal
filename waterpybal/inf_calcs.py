@@ -48,11 +48,11 @@ class infiltration_functions(object):
         #LU="Woods in poor hydrological condition"
         #SC=3
         #HSG="B"
-        print ('str(int(HSG_)),int(SC_),int(LU_)')
+        #print ('str(int(HSG_)),int(SC_),int(LU_)')
 
-        print (str(int(HSG_)),int(SC_),int(LU_))
+        #print (str(int(HSG_)),int(SC_),int(LU_))
 
-        return float(cnt[(cnt["Land use code"]==int(LU_)) & (cnt["Slope category"]==int(SC_))][str(int(HSG_))])
+        return float(cnt[(cnt["Land use code"]==int(LU_)) & (cnt["Slope category-Hydrologic condition"]==int(SC_))][int(HSG_)])
     #-----------------------------------------
     def CN_AMC_modded(CN,ds,preferred_date_interval,msk,amc1_coeffs=None,amc3_coeffs=None,dormant_thresh=None,growing_thresh=None,average_thresh=True,mon_list_dormant=None):
         #CN,ds,amc1_coeffs=None,amc3_coeffs=None,dormant_thresh=None,growing_thresh=None,average_thresh=True,mon_list_dormant=None
@@ -137,10 +137,11 @@ class infiltration_functions(object):
             ##########
             Q=np.zeros(CN_mod.shape)
             ##########
-            P_bool=P_Irig>Ia
-            P_bool[P_Irig==np.nan]==False
-            P_bool[CN_mod==np.nan]==False
+            P_bool=P_Irig>Ia #to calculate if P>Ia if not, zero
+            P_bool[np.isnan(P_Irig)]==False
+            P_bool[np.isnan(CN_mod)]==False
             Q[P_bool]=(P_Irig[P_bool]-Ia[P_bool])*(P_Irig[P_bool]-Ia[P_bool])/(P_Irig[P_bool]+0.8*S[P_bool])
+            #Q[~P_bool]=np.nan
         else:
 
             S,Q=infiltration_functions.adv_runoff_calc(
@@ -154,14 +155,25 @@ class infiltration_functions(object):
                 advanced_cn_dic["y"],
                 advanced_cn_dic["z"])
 
+        print (P_Irig[P_Irig>0])
+        print (Ia[Ia>0])
+        print (Q[Q>0])
 
+        print (P_Irig[P_Irig<0])
+        print (Ia[Ia<0])
+        print (Q[Q<0])
+        
         #inf=P-Ia-Q
         inf=P_Irig-Ia-Q
-        inf[P_Irig==np.nan]==np.nan
-        inf[CN_mod==np.nan]==np.nan
-        
-        inf=np.nan_to_num(inf,nan=-9999)
+        print ("inf in runoff inf cal 0",np.count_nonzero(inf==0))
         inf[inf<0]=0
+        print ("inf in runoff inf cal 0 after",np.count_nonzero(inf==0))
+
+        inf[np.isnan(P)]=np.nan
+        inf[np.isnan(CN_mod)]=np.nan
+        inf=np.nan_to_num(inf,nan=-9999)
+        print ("inf in runoff inf cal 9999 2",np.count_nonzero(inf==-9999))
+        print ("inf in runoff inf cal 0 2",np.count_nonzero(inf==0))
         ds["INF_Val"][:,:,:]=inf
         
         return  ds,Ia      
@@ -379,7 +391,7 @@ class infiltration(object):
                     Time interval of the dataset as a dtype.
 
                 ---
-                corrected_cn None or bool default None
+                corrected_cn bool default False
 
                     If the Antecedent Moisture Condition (AMC) corrections have to be applied
 
@@ -434,6 +446,7 @@ class infiltration(object):
         '''
 
         if single_cn_val==False:
+            
             ds=infiltration_functions.Irig_calc(ds)
 
             #1-from raster, read HSG, LU,read Slope and calculate slope catagory
@@ -461,12 +474,15 @@ class infiltration(object):
 
         #single cn value defined by user
         else:
-            corrected_cn==False
-            ds["CN_Val"][:,:,:]=cn_val
+            corrected_cn=False
+            temp_arr=np.full(ds["Prec_Val"].shape,cn_val)
+            P=ds["Prec_Val"][:,:,:].data
+            temp_arr[P==-9999]=-9999
+            ds["CN_Val"][:,:,:]=temp_arr
         #---------------
         #calculate cn_amc_modded
         if corrected_cn==True:
-            infiltration_functions.CN_AMC_modded(CN,ds,preferred_date_interval,msk,amc1_coeffs,amc3_coeffs,dormant_thresh,growing_thresh,average_thresh,mon_list_dormant)
+            ds=infiltration_functions.CN_AMC_modded(CN,ds,preferred_date_interval,msk,amc1_coeffs,amc3_coeffs,dormant_thresh,growing_thresh,average_thresh,mon_list_dormant)
             cn_var="CN_mod"
         else:
             cn_var="CN_Val"

@@ -6,14 +6,14 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>800</width>
-    <height>590</height>
+    <width>950</width>
+    <height>650</height>
    </rect>
   </property>
   <property name="minimumSize">
    <size>
-    <width>800</width>
-    <height>590</height>
+    <width>950</width>
+    <height>650</height>
    </size>
   </property>
   <property name="maximumSize">
@@ -1237,9 +1237,15 @@
       <layout class="QHBoxLayout" name="horizontalLayout_10">
        <item>
         <widget class="QGroupBox" name="groupBox">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
          <property name="minimumSize">
           <size>
-           <width>240</width>
+           <width>220</width>
            <height>140</height>
           </size>
          </property>
@@ -1577,9 +1583,15 @@
        </item>
        <item>
         <widget class="QGroupBox" name="groupBox_2">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
          <property name="minimumSize">
           <size>
-           <width>240</width>
+           <width>200</width>
            <height>140</height>
           </size>
          </property>
@@ -1611,10 +1623,16 @@
             <item>
              <widget class="QPushButton" name="pushButton_maps_raster">
               <property name="sizePolicy">
-               <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+               <sizepolicy hsizetype="Maximum" vsizetype="Fixed">
                 <horstretch>0</horstretch>
                 <verstretch>0</verstretch>
                </sizepolicy>
+              </property>
+              <property name="minimumSize">
+               <size>
+                <width>80</width>
+                <height>0</height>
+               </size>
               </property>
               <property name="font">
                <font>
@@ -1629,14 +1647,14 @@
             <item>
              <widget class="QPushButton" name="pushButton_map_figure">
               <property name="sizePolicy">
-               <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+               <sizepolicy hsizetype="Maximum" vsizetype="Fixed">
                 <horstretch>0</horstretch>
                 <verstretch>0</verstretch>
                </sizepolicy>
               </property>
               <property name="minimumSize">
                <size>
-                <width>0</width>
+                <width>80</width>
                 <height>25</height>
                </size>
               </property>
@@ -1945,9 +1963,15 @@
    </item>
    <item>
     <widget class="QGroupBox" name="groupBox_help">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="MinimumExpanding" vsizetype="MinimumExpanding">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
      <property name="minimumSize">
       <size>
-       <width>150</width>
+       <width>450</width>
        <height>0</height>
       </size>
      </property>

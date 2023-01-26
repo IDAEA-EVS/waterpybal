@@ -25,8 +25,9 @@ class Ui_Dialog_var_from_tiff(object):
     def setupUi(self, Dialog_var_from_tiff):
         if not Dialog_var_from_tiff.objectName():
             Dialog_var_from_tiff.setObjectName(u"Dialog_var_from_tiff")
-        Dialog_var_from_tiff.resize(760, 200)
-        Dialog_var_from_tiff.setMaximumSize(QSize(16777215, 300))
+        Dialog_var_from_tiff.resize(848, 300)
+        Dialog_var_from_tiff.setMinimumSize(QSize(0, 300))
+        Dialog_var_from_tiff.setMaximumSize(QSize(16777215, 600))
         self.horizontalLayout_4 = QHBoxLayout(Dialog_var_from_tiff)
         self.horizontalLayout_4.setObjectName(u"horizontalLayout_4")
         self.verticalLayout = QVBoxLayout()
@@ -134,7 +135,12 @@ class Ui_Dialog_var_from_tiff(object):
 
         self.groupBox_help = QGroupBox(Dialog_var_from_tiff)
         self.groupBox_help.setObjectName(u"groupBox_help")
-        self.groupBox_help.setMinimumSize(QSize(150, 0))
+        sizePolicy2 = QSizePolicy(QSizePolicy.MinimumExpanding, QSizePolicy.MinimumExpanding)
+        sizePolicy2.setHorizontalStretch(0)
+        sizePolicy2.setVerticalStretch(0)
+        sizePolicy2.setHeightForWidth(self.groupBox_help.sizePolicy().hasHeightForWidth())
+        self.groupBox_help.setSizePolicy(sizePolicy2)
+        self.groupBox_help.setMinimumSize(QSize(450, 200))
         font1 = QFont()
         font1.setPointSize(9)
         self.groupBox_help.setFont(font1)

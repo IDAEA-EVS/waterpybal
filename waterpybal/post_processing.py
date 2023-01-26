@@ -20,6 +20,7 @@ class tools():
         if type(var_name_list)==str: var_name_list=[var_name_list] #for map and rasters
 
         ds_disk=xr.open_dataset(ds_dir)
+        #print ("ds_disk",ds_disk)
         '''
             #ds_disk.dims
             #ds_disk.coords
@@ -29,7 +30,7 @@ class tools():
             #var_name="tmean"
             #ds_dir=
             #ds=nc.Dataset(dir,'r',format='NETCDF4')
-
+            time_dic={'start': ['2019', '01', '01', '00'], 'end': ['2019', '02', '01', '00']}
             #time=np.array(ds_disk['time'])
             #time=time.astype(ds_date_interval)
 
@@ -39,14 +40,20 @@ class tools():
         
         start=np.datetime64( time_dic["start"][0] +'-'+ time_dic["start"][1] +'-'+ time_dic["start"][2] + 'T'+ time_dic["start"][3])
         end=np.datetime64( time_dic["end"][0] +'-'+ time_dic["end"][1] +'-'+ time_dic["end"][2] + 'T'+ time_dic["end"][3])
-
+        print ("start",start)
+        print ("end",end)
         selected_vars=list()
         for selected_var in var_name_list:
+            #print (selected_var)
+            #print (ds_disk[selected_var])
+            #print (ds_disk.sel(time=slice(start,end)))
             selected_vars.append(ds_disk[selected_var].sel(time=slice(start,end)))
+            max=float(ds_disk[selected_var].sel(time=slice(start,end)).max())
+            min=float(ds_disk[selected_var].sel(time=slice(start,end)).min())
 
         ds_disk.close()
         
-        return selected_vars
+        return selected_vars,max,min
     
     ##################################   
     @staticmethod
@@ -188,7 +195,7 @@ class post_process():
 
         var_name_list_len=len(var_name_list)
         
-        selected_vars=tools.ds_date_selector(ds_dir,time_dic,var_name_list)
+        selected_vars,max,min=tools.ds_date_selector(ds_dir,time_dic,var_name_list)
 
         
         for cnt,selected_var in enumerate(selected_vars):
@@ -196,10 +203,7 @@ class post_process():
             #try:
             coords={lat_name:np.array(float(lat_val)),lon_name:np.array(float(lon_val))}
             print (coords)
-            s_t=selected_var.sel(coords,method="nearest")
-            #except:
-                #print("lat lon not found in point_plot method!!")
-            
+            s_t=selected_var.sel(coords,method="nearest")            
             
             if to_fig_or_csv=="Figure":
                 #dir
@@ -211,9 +215,11 @@ class post_process():
             else:
                 
                 #dir
-                excel_dir=os.path.join(save_dir,str(s_t.name)+'_lat_'+str(lat_val)+'_lon_'+str(lon_val)+'.csv')
-                print (s_t.name)
-                print (s_t)
+                if s_t.name in ["cc","pwp","rrt"]:
+                    print (s_t.name)
+                    print (s_t)
+                    print (s_t.time)
+
                 df_d_t=pd.DataFrame(s_t,index=s_t.time,columns=[s_t.name])
 
 
@@ -221,12 +227,16 @@ class post_process():
             if to_fig_or_csv!="Figure":
                 if cnt==0: 
                     df_d_t_f=df_d_t   
+
                 else: 
                     df_d_t_f=pd.concat([df_d_t_f, df_d_t],axis=1,ignore_index=False)
             
         if to_fig_or_csv!="Figure":
                             
-            if var_name_list_len==1: df_d_t_f.to_csv(excel_dir)
+            if var_name_list_len==1: 
+                excel_dir=os.path.join(save_dir,str(s_t.name)+'_lat_'+str(lat_val)+'_lon_'+str(lon_val)+'.csv')
+                df_d_t_f.to_csv(excel_dir)
+
             else: 
                 excel_dir=os.path.join(save_dir,'All_variables_lat_'+str(lat_val)+'_lon_'+str(lon_val)+'.csv')
                 df_d_t_f.to_csv(excel_dir)
@@ -274,8 +284,9 @@ class post_process():
                 ---
 
         '''
-
-        selected_var=tools.ds_date_selector(ds_dir,time_dic,var_name)
+        print ("time_dic",time_dic)
+        selected_var,colorbar_max,colorbar_min=tools.ds_date_selector(ds_dir,time_dic,var_name)
+        #print("selected_var",selected_var)
         selected_var=selected_var[0]
         #dirs
         if  fig_csv_raster=='Figure':
@@ -288,7 +299,7 @@ class post_process():
             csv_path=os.path.join(save_dir,"csv_excels_"+var_name)
             Path(csv_path).mkdir(parents=True, exist_ok=True)
 
-        print ("selected_var",selected_var)
+        #print ("selected_var",selected_var)
         for i in selected_var: #i is each time step
 
             date_str=i["time"].dt.strftime('%Y-%m-%d-%H-%M')
@@ -297,7 +308,7 @@ class post_process():
             if  fig_csv_raster=='Figure':
 
                 fig, ax = plt.subplots()
-                i.plot(ax=ax)
+                i.plot(ax=ax,vmin=colorbar_min,vmax=colorbar_max)
                 fig.savefig( os.path.join(fig_path,date_str+'.png') )
 
             elif  fig_csv_raster=='Raster':
@@ -380,7 +391,7 @@ class post_process():
                 ---
         '''
 
-        selected_vars=tools.ds_date_selector(ds_dir,time_dic,var_name_list)
+        selected_vars,max,min=tools.ds_date_selector(ds_dir,time_dic,var_name_list)
         identifier_raster_bool=None
 
         ##########
@@ -427,8 +438,9 @@ class post_process():
                 
                     df_d_t_f=pd.DataFrame(mskd_selected_var,index=s_t.time,columns=[csv_reg])
                     df_d_t=pd.concat([df_d_t, df_d_t_f],axis=1,ignore_index=False)
-                    
-                    df_d_t=tools.reg_area_calc(reg,identifier_raster_bool,reg_pix_area,df_d_t)
+                    if "REG_"+str(reg)+"_AREA" not in list(df_d_t.columns):
+                        df_d_t=tools.reg_area_calc(reg,identifier_raster_bool,reg_pix_area,df_d_t)
+                    df_d_t[csv_reg]=df_d_t[csv_reg]/df_d_t["REG_"+str(reg)+"_AREA"]
             
             if df is None:
                 df=df_d_t
@@ -437,6 +449,7 @@ class post_process():
         
         
         #csv save
+        df = df.loc[:,~df.columns.duplicated()].copy()
         df=tools.whole_area_calc(sam_raster_dir,df)
         df.to_csv(excel_dir)
 

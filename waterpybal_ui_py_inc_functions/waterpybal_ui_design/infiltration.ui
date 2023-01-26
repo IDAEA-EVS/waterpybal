@@ -1,1112 +1,1148 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<ui version="4.0">
- <class>Dialog_infiltration</class>
- <widget class="QDialog" name="Dialog_infiltration">
-  <property name="geometry">
-   <rect>
-    <x>0</x>
-    <y>0</y>
-    <width>688</width>
-    <height>781</height>
-   </rect>
-  </property>
-  <property name="windowTitle">
-   <string>Dialog_infiltration</string>
-  </property>
-  <layout class="QVBoxLayout" name="verticalLayout_10">
-   <item>
-    <layout class="QVBoxLayout" name="verticalLayout_8">
-     <item>
-      <widget class="QGroupBox" name="groupBox_curve_number">
-       <property name="enabled">
-        <bool>true</bool>
-       </property>
-       <property name="font">
-        <font>
-         <weight>50</weight>
-         <bold>false</bold>
-         <kerning>true</kerning>
-        </font>
-       </property>
-       <property name="title">
-        <string>Curve Number Method for Daily Database</string>
-       </property>
-       <property name="checkable">
-        <bool>true</bool>
-       </property>
-       <property name="checked">
-        <bool>true</bool>
-       </property>
-       <layout class="QVBoxLayout" name="verticalLayout_7">
-        <item>
-         <layout class="QHBoxLayout" name="horizontalLayout_6">
-          <item>
-           <widget class="QLabel" name="label_cn_csv">
-            <property name="minimumSize">
-             <size>
-              <width>200</width>
-              <height>20</height>
-             </size>
-            </property>
-            <property name="font">
-             <font>
-              <pointsize>10</pointsize>
-              <weight>50</weight>
-              <bold>false</bold>
-              <kerning>true</kerning>
-             </font>
-            </property>
-            <property name="text">
-             <string>Curve Number source table (.CSV)</string>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <widget class="QLineEdit" name="lineEdit_cn_csv">
-            <property name="minimumSize">
-             <size>
-              <width>160</width>
-              <height>20</height>
-             </size>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <widget class="QToolButton" name="toolButton_browse_cn_csv">
-            <property name="sizePolicy">
-             <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
-              <horstretch>0</horstretch>
-              <verstretch>0</verstretch>
-             </sizepolicy>
-            </property>
-            <property name="maximumSize">
-             <size>
-              <width>20</width>
-              <height>20</height>
-             </size>
-            </property>
-            <property name="text">
-             <string>...</string>
-            </property>
-           </widget>
-          </item>
-         </layout>
-        </item>
-        <item>
-         <spacer name="verticalSpacer_5">
-          <property name="orientation">
-           <enum>Qt::Vertical</enum>
-          </property>
-          <property name="sizeHint" stdset="0">
-           <size>
-            <width>20</width>
-            <height>40</height>
-           </size>
-          </property>
-         </spacer>
-        </item>
-        <item>
-         <widget class="QGroupBox" name="groupBox_raster">
-          <property name="title">
-           <string>Raster</string>
-          </property>
-          <property name="checkable">
-           <bool>true</bool>
-          </property>
-          <layout class="QVBoxLayout" name="verticalLayout_5">
-           <item>
-            <layout class="QVBoxLayout" name="verticalLayout_4">
-             <item>
-              <layout class="QHBoxLayout" name="horizontalLayout_7">
-               <item>
-                <widget class="QLabel" name="label_cn_raster">
-                 <property name="minimumSize">
-                  <size>
-                   <width>200</width>
-                   <height>20</height>
-                  </size>
-                 </property>
-                 <property name="font">
-                  <font>
-                   <pointsize>10</pointsize>
-                   <weight>50</weight>
-                   <bold>false</bold>
-                   <kerning>true</kerning>
-                  </font>
-                 </property>
-                 <property name="text">
-                  <string>CN parameters source (raster)</string>
-                 </property>
-                </widget>
-               </item>
-               <item>
-                <widget class="QLineEdit" name="lineEdit_cn_raster">
-                 <property name="minimumSize">
-                  <size>
-                   <width>160</width>
-                   <height>20</height>
-                  </size>
-                 </property>
-                </widget>
-               </item>
-               <item>
-                <widget class="QToolButton" name="toolButton_browse_cn_raster">
-                 <property name="sizePolicy">
-                  <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
-                   <horstretch>0</horstretch>
-                   <verstretch>0</verstretch>
-                  </sizepolicy>
-                 </property>
-                 <property name="maximumSize">
-                  <size>
-                   <width>20</width>
-                   <height>20</height>
-                  </size>
-                 </property>
-                 <property name="text">
-                  <string>...</string>
-                 </property>
-                </widget>
-               </item>
-              </layout>
-             </item>
-             <item>
-              <layout class="QHBoxLayout" name="horizontalLayout_28">
-               <item>
-                <layout class="QHBoxLayout" name="horizontalLayout">
-                 <item>
-                  <widget class="QLabel" name="label_hsg">
-                   <property name="minimumSize">
-                    <size>
-                     <width>60</width>
-                     <height>20</height>
-                    </size>
-                   </property>
-                   <property name="maximumSize">
-                    <size>
-                     <width>100</width>
-                     <height>16777215</height>
-                    </size>
-                   </property>
-                   <property name="font">
-                    <font>
-                     <pointsize>10</pointsize>
-                     <weight>50</weight>
-                     <bold>false</bold>
-                     <kerning>true</kerning>
-                    </font>
-                   </property>
-                   <property name="text">
-                    <string>HSG Band</string>
-                   </property>
-                  </widget>
-                 </item>
-                 <item>
-                  <widget class="QLineEdit" name="lineEdit_hsg">
-                   <property name="minimumSize">
-                    <size>
-                     <width>30</width>
-                     <height>20</height>
-                    </size>
-                   </property>
-                   <property name="maximumSize">
-                    <size>
-                     <width>30</width>
-                     <height>16777215</height>
-                    </size>
-                   </property>
-                   <property name="text">
-                    <string/>
-                   </property>
-                  </widget>
-                 </item>
-                </layout>
-               </item>
-               <item>
-                <spacer name="horizontalSpacer_8">
-                 <property name="orientation">
-                  <enum>Qt::Horizontal</enum>
-                 </property>
-                 <property name="sizeHint" stdset="0">
-                  <size>
-                   <width>40</width>
-                   <height>20</height>
-                  </size>
-                 </property>
-                </spacer>
-               </item>
-               <item>
-                <layout class="QHBoxLayout" name="horizontalLayout_2">
-                 <item>
-                  <widget class="QLabel" name="label_lu">
-                   <property name="minimumSize">
-                    <size>
-                     <width>60</width>
-                     <height>20</height>
-                    </size>
-                   </property>
-                   <property name="maximumSize">
-                    <size>
-                     <width>100</width>
-                     <height>16777215</height>
-                    </size>
-                   </property>
-                   <property name="font">
-                    <font>
-                     <pointsize>10</pointsize>
-                     <weight>50</weight>
-                     <bold>false</bold>
-                     <kerning>true</kerning>
-                    </font>
-                   </property>
-                   <property name="text">
-                    <string>LU Band</string>
-                   </property>
-                  </widget>
-                 </item>
-                 <item>
-                  <widget class="QLineEdit" name="lineEdit_lu">
-                   <property name="minimumSize">
-                    <size>
-                     <width>30</width>
-                     <height>20</height>
-                    </size>
-                   </property>
-                   <property name="maximumSize">
-                    <size>
-                     <width>30</width>
-                     <height>16777215</height>
-                    </size>
-                   </property>
-                   <property name="text">
-                    <string/>
-                   </property>
-                  </widget>
-                 </item>
-                </layout>
-               </item>
-               <item>
-                <spacer name="horizontalSpacer_9">
-                 <property name="orientation">
-                  <enum>Qt::Horizontal</enum>
-                 </property>
-                 <property name="sizeHint" stdset="0">
-                  <size>
-                   <width>40</width>
-                   <height>20</height>
-                  </size>
-                 </property>
-                </spacer>
-               </item>
-               <item>
-                <layout class="QHBoxLayout" name="horizontalLayout_3">
-                 <item>
-                  <widget class="QLabel" name="label_elev">
-                   <property name="minimumSize">
-                    <size>
-                     <width>71</width>
-                     <height>20</height>
-                    </size>
-                   </property>
-                   <property name="maximumSize">
-                    <size>
-                     <width>100</width>
-                     <height>16777215</height>
-                    </size>
-                   </property>
-                   <property name="font">
-                    <font>
-                     <pointsize>10</pointsize>
-                     <weight>50</weight>
-                     <bold>false</bold>
-                     <kerning>true</kerning>
-                    </font>
-                   </property>
-                   <property name="text">
-                    <string>Elevation Band</string>
-                   </property>
-                  </widget>
-                 </item>
-                 <item>
-                  <widget class="QLineEdit" name="lineEdit_elev">
-                   <property name="minimumSize">
-                    <size>
-                     <width>30</width>
-                     <height>20</height>
-                    </size>
-                   </property>
-                   <property name="maximumSize">
-                    <size>
-                     <width>30</width>
-                     <height>16777215</height>
-                    </size>
-                   </property>
-                   <property name="text">
-                    <string/>
-                   </property>
-                  </widget>
-                 </item>
-                 <item>
-                  <layout class="QHBoxLayout" name="horizontalLayout_14">
-                   <item>
-                    <spacer name="horizontalSpacer_10">
-                     <property name="orientation">
-                      <enum>Qt::Horizontal</enum>
-                     </property>
-                     <property name="sizeHint" stdset="0">
-                      <size>
-                       <width>40</width>
-                       <height>20</height>
-                      </size>
-                     </property>
-                    </spacer>
-                   </item>
-                   <item>
-                    <widget class="QLabel" name="label_slope">
-                     <property name="minimumSize">
-                      <size>
-                       <width>60</width>
-                       <height>20</height>
-                      </size>
-                     </property>
-                     <property name="maximumSize">
-                      <size>
-                       <width>100</width>
-                       <height>16777215</height>
-                      </size>
-                     </property>
-                     <property name="font">
-                      <font>
-                       <pointsize>10</pointsize>
-                       <weight>50</weight>
-                       <bold>false</bold>
-                       <kerning>true</kerning>
-                      </font>
-                     </property>
-                     <property name="text">
-                      <string>Slope range</string>
-                     </property>
-                    </widget>
-                   </item>
-                   <item>
-                    <widget class="QLineEdit" name="lineEdit_slope">
-                     <property name="maximumSize">
-                      <size>
-                       <width>60</width>
-                       <height>16777215</height>
-                      </size>
-                     </property>
-                     <property name="text">
-                      <string>1,5,10,20</string>
-                     </property>
-                    </widget>
-                   </item>
-                  </layout>
-                 </item>
-                </layout>
-               </item>
-              </layout>
-             </item>
-            </layout>
-           </item>
-           <item>
-            <spacer name="verticalSpacer_3">
-             <property name="orientation">
-              <enum>Qt::Vertical</enum>
-             </property>
-             <property name="sizeHint" stdset="0">
-              <size>
-               <width>20</width>
-               <height>40</height>
-              </size>
-             </property>
-            </spacer>
-           </item>
-          </layout>
-         </widget>
-        </item>
-        <item>
-         <widget class="Line" name="line">
-          <property name="orientation">
-           <enum>Qt::Horizontal</enum>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <spacer name="verticalSpacer_4">
-          <property name="orientation">
-           <enum>Qt::Vertical</enum>
-          </property>
-          <property name="sizeHint" stdset="0">
-           <size>
-            <width>20</width>
-            <height>40</height>
-           </size>
-          </property>
-         </spacer>
-        </item>
-        <item>
-         <widget class="QGroupBox" name="groupBox_corrected_cn">
-          <property name="title">
-           <string>Use Corrected CN Values</string>
-          </property>
-          <property name="checkable">
-           <bool>true</bool>
-          </property>
-          <layout class="QVBoxLayout" name="verticalLayout_6">
-           <item>
-            <layout class="QHBoxLayout" name="horizontalLayout_29">
-             <item>
-              <layout class="QVBoxLayout" name="verticalLayout_2">
-               <item>
-                <layout class="QHBoxLayout" name="horizontalLayout_4">
-                 <item>
-                  <widget class="QLabel" name="label_amc1">
-                   <property name="minimumSize">
-                    <size>
-                     <width>65</width>
-                     <height>20</height>
-                    </size>
-                   </property>
-                   <property name="maximumSize">
-                    <size>
-                     <width>100</width>
-                     <height>16777215</height>
-                    </size>
-                   </property>
-                   <property name="font">
-                    <font>
-                     <pointsize>10</pointsize>
-                     <weight>50</weight>
-                     <bold>false</bold>
-                     <kerning>true</kerning>
-                    </font>
-                   </property>
-                   <property name="text">
-                    <string>AMC1 Coeffs.</string>
-                   </property>
-                  </widget>
-                 </item>
-                 <item>
-                  <widget class="QLineEdit" name="lineEdit_amc1">
-                   <property name="minimumSize">
-                    <size>
-                     <width>80</width>
-                     <height>0</height>
-                    </size>
-                   </property>
-                   <property name="text">
-                    <string>0.0069,0.2575,0 </string>
-                   </property>
-                  </widget>
-                 </item>
-                </layout>
-               </item>
-               <item>
-                <layout class="QHBoxLayout" name="horizontalLayout_5">
-                 <item>
-                  <widget class="QLabel" name="label_amc3">
-                   <property name="minimumSize">
-                    <size>
-                     <width>65</width>
-                     <height>20</height>
-                    </size>
-                   </property>
-                   <property name="maximumSize">
-                    <size>
-                     <width>100</width>
-                     <height>16777215</height>
-                    </size>
-                   </property>
-                   <property name="font">
-                    <font>
-                     <pointsize>10</pointsize>
-                     <weight>50</weight>
-                     <bold>false</bold>
-                     <kerning>true</kerning>
-                    </font>
-                   </property>
-                   <property name="text">
-                    <string>AMC3 Coeffs.</string>
-                   </property>
-                  </widget>
-                 </item>
-                 <item>
-                  <widget class="QLineEdit" name="lineEdit_amc3">
-                   <property name="text">
-                    <string>-0.0086,1.8338,0</string>
-                   </property>
-                  </widget>
-                 </item>
-                </layout>
-               </item>
-              </layout>
-             </item>
-             <item>
-              <spacer name="horizontalSpacer_2">
-               <property name="orientation">
-                <enum>Qt::Horizontal</enum>
-               </property>
-               <property name="sizeHint" stdset="0">
-                <size>
-                 <width>40</width>
-                 <height>20</height>
-                </size>
-               </property>
-              </spacer>
-             </item>
-             <item>
-              <layout class="QVBoxLayout" name="verticalLayout">
-               <item>
-                <layout class="QHBoxLayout" name="horizontalLayout_8">
-                 <item>
-                  <widget class="QLabel" name="label_dormant_month">
-                   <property name="minimumSize">
-                    <size>
-                     <width>90</width>
-                     <height>20</height>
-                    </size>
-                   </property>
-                   <property name="maximumSize">
-                    <size>
-                     <width>200</width>
-                     <height>16777215</height>
-                    </size>
-                   </property>
-                   <property name="font">
-                    <font>
-                     <pointsize>10</pointsize>
-                     <weight>50</weight>
-                     <bold>false</bold>
-                     <kerning>true</kerning>
-                    </font>
-                   </property>
-                   <property name="text">
-                    <string>Dormant month</string>
-                   </property>
-                  </widget>
-                 </item>
-                 <item>
-                  <widget class="QLineEdit" name="lineEdit_dormant_month">
-                   <property name="minimumSize">
-                    <size>
-                     <width>70</width>
-                     <height>0</height>
-                    </size>
-                   </property>
-                   <property name="text">
-                    <string>1,2,3,10,11,12</string>
-                   </property>
-                  </widget>
-                 </item>
-                </layout>
-               </item>
-               <item>
-                <layout class="QHBoxLayout" name="horizontalLayout_10">
-                 <item>
-                  <widget class="QLabel" name="label_dormant">
-                   <property name="minimumSize">
-                    <size>
-                     <width>90</width>
-                     <height>20</height>
-                    </size>
-                   </property>
-                   <property name="maximumSize">
-                    <size>
-                     <width>200</width>
-                     <height>16777215</height>
-                    </size>
-                   </property>
-                   <property name="font">
-                    <font>
-                     <pointsize>10</pointsize>
-                     <weight>50</weight>
-                     <bold>false</bold>
-                     <kerning>true</kerning>
-                    </font>
-                   </property>
-                   <property name="text">
-                    <string>Dormant threshold</string>
-                   </property>
-                  </widget>
-                 </item>
-                 <item>
-                  <widget class="QLineEdit" name="lineEdit_dormant">
-                   <property name="text">
-                    <string>12.7,27.9</string>
-                   </property>
-                  </widget>
-                 </item>
-                </layout>
-               </item>
-              </layout>
-             </item>
-             <item>
-              <spacer name="horizontalSpacer">
-               <property name="orientation">
-                <enum>Qt::Horizontal</enum>
-               </property>
-               <property name="sizeHint" stdset="0">
-                <size>
-                 <width>40</width>
-                 <height>20</height>
-                </size>
-               </property>
-              </spacer>
-             </item>
-             <item>
-              <layout class="QVBoxLayout" name="verticalLayout_3">
-               <item>
-                <layout class="QHBoxLayout" name="horizontalLayout_9">
-                 <item>
-                  <widget class="QLabel" name="label_growing">
-                   <property name="minimumSize">
-                    <size>
-                     <width>90</width>
-                     <height>20</height>
-                    </size>
-                   </property>
-                   <property name="maximumSize">
-                    <size>
-                     <width>200</width>
-                     <height>16777215</height>
-                    </size>
-                   </property>
-                   <property name="font">
-                    <font>
-                     <pointsize>10</pointsize>
-                     <weight>50</weight>
-                     <bold>false</bold>
-                     <kerning>true</kerning>
-                    </font>
-                   </property>
-                   <property name="text">
-                    <string>Growing threshold</string>
-                   </property>
-                  </widget>
-                 </item>
-                 <item>
-                  <widget class="QLineEdit" name="lineEdit_growing">
-                   <property name="text">
-                    <string>36.6,53.3</string>
-                   </property>
-                  </widget>
-                 </item>
-                </layout>
-               </item>
-               <item>
-                <layout class="QHBoxLayout" name="horizontalLayout_12">
-                 <item>
-                  <layout class="QHBoxLayout" name="horizontalLayout_11">
-                   <item>
-                    <widget class="QLabel" name="label_average">
-                     <property name="minimumSize">
-                      <size>
-                       <width>90</width>
-                       <height>20</height>
-                      </size>
-                     </property>
-                     <property name="maximumSize">
-                      <size>
-                       <width>200</width>
-                       <height>16777215</height>
-                      </size>
-                     </property>
-                     <property name="font">
-                      <font>
-                       <pointsize>10</pointsize>
-                       <weight>50</weight>
-                       <bold>false</bold>
-                       <kerning>true</kerning>
-                      </font>
-                     </property>
-                     <property name="text">
-                      <string>Average threshold</string>
-                     </property>
-                    </widget>
-                   </item>
-                   <item>
-                    <widget class="QComboBox" name="comboBox_average">
-                     <property name="minimumSize">
-                      <size>
-                       <width>40</width>
-                       <height>0</height>
-                      </size>
-                     </property>
-                     <item>
-                      <property name="text">
-                       <string>Yes</string>
-                      </property>
-                     </item>
-                     <item>
-                      <property name="text">
-                       <string>No</string>
-                      </property>
-                     </item>
-                    </widget>
-                   </item>
-                  </layout>
-                 </item>
-                </layout>
-               </item>
-              </layout>
-             </item>
-            </layout>
-           </item>
-          </layout>
-         </widget>
-        </item>
-       </layout>
-      </widget>
-     </item>
-     <item>
-      <layout class="QHBoxLayout" name="horizontalLayout_13">
-       <item>
-        <widget class="QCheckBox" name="checkBox_cn_value">
-         <property name="text">
-          <string/>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <widget class="QLabel" name="label_cn_val">
-         <property name="enabled">
-          <bool>false</bool>
-         </property>
-         <property name="minimumSize">
-          <size>
-           <width>50</width>
-           <height>20</height>
-          </size>
-         </property>
-         <property name="maximumSize">
-          <size>
-           <width>60</width>
-           <height>16777215</height>
-          </size>
-         </property>
-         <property name="font">
-          <font>
-           <pointsize>10</pointsize>
-           <weight>50</weight>
-           <bold>false</bold>
-           <kerning>true</kerning>
-          </font>
-         </property>
-         <property name="text">
-          <string>CN Value</string>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <widget class="QLineEdit" name="lineEdit_CN_Val">
-         <property name="enabled">
-          <bool>false</bool>
-         </property>
-         <property name="minimumSize">
-          <size>
-           <width>30</width>
-           <height>20</height>
-          </size>
-         </property>
-         <property name="maximumSize">
-          <size>
-           <width>30</width>
-           <height>16777215</height>
-          </size>
-         </property>
-         <property name="text">
-          <string/>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <spacer name="horizontalSpacer_3">
-         <property name="orientation">
-          <enum>Qt::Horizontal</enum>
-         </property>
-         <property name="sizeHint" stdset="0">
-          <size>
-           <width>40</width>
-           <height>20</height>
-          </size>
-         </property>
-        </spacer>
-       </item>
-      </layout>
-     </item>
-    </layout>
-   </item>
-   <item>
-    <widget class="QGroupBox" name="groupBox_urban">
-     <property name="enabled">
-      <bool>false</bool>
-     </property>
-     <property name="title">
-      <string>Urban Infiltration Calculation</string>
-     </property>
-     <property name="checkable">
-      <bool>true</bool>
-     </property>
-     <property name="checked">
-      <bool>false</bool>
-     </property>
-     <layout class="QVBoxLayout" name="verticalLayout_9">
-      <item>
-       <layout class="QHBoxLayout" name="horizontalLayout_16">
-        <item>
-         <widget class="QLabel" name="label_urban_zone_raster">
-          <property name="minimumSize">
-           <size>
-            <width>200</width>
-            <height>20</height>
-           </size>
-          </property>
-          <property name="font">
-           <font>
-            <pointsize>10</pointsize>
-            <weight>50</weight>
-            <bold>false</bold>
-            <kerning>true</kerning>
-           </font>
-          </property>
-          <property name="text">
-           <string>Urban Zones Identifier (raster)</string>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="QLineEdit" name="lineEdit_urban_zone_raster">
-          <property name="minimumSize">
-           <size>
-            <width>160</width>
-            <height>20</height>
-           </size>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="QToolButton" name="toolButton_browse_urban_zone_raster">
-          <property name="sizePolicy">
-           <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
-            <horstretch>0</horstretch>
-            <verstretch>0</verstretch>
-           </sizepolicy>
-          </property>
-          <property name="maximumSize">
-           <size>
-            <width>20</width>
-            <height>20</height>
-           </size>
-          </property>
-          <property name="text">
-           <string>...</string>
-          </property>
-         </widget>
-        </item>
-       </layout>
-      </item>
-      <item>
-       <widget class="QTableWidget" name="tableWidget_urban">
-        <property name="enabled">
-         <bool>false</bool>
-        </property>
-        <property name="minimumSize">
-         <size>
-          <width>600</width>
-          <height>200</height>
-         </size>
-        </property>
-        <row>
-         <property name="text">
-          <string>Water Consumption (mm)</string>
-         </property>
-        </row>
-        <row>
-         <property name="text">
-          <string>Water Network Loss (%)</string>
-         </property>
-        </row>
-        <row>
-         <property name="text">
-          <string>Sewage Network Loss (%)</string>
-         </property>
-        </row>
-        <row>
-         <property name="text">
-          <string>Run-off to Sewage (%)</string>
-         </property>
-        </row>
-        <row>
-         <property name="text">
-          <string>Indirect Urban Evaporation (% of water consumption)</string>
-         </property>
-        </row>
-        <row>
-         <property name="text">
-          <string>Direct Urban Evaporation (% of water precipitation+irrigation)</string>
-         </property>
-        </row>
-        <row>
-         <property name="text">
-          <string>Direct Infiltration (% of water precipitation+irrigation)</string>
-         </property>
-        </row>
-        <column>
-         <property name="text">
-          <string>Parameter</string>
-         </property>
-        </column>
-        <column>
-         <property name="text">
-          <string>Type</string>
-         </property>
-        </column>
-        <column>
-         <property name="text">
-          <string>Value or Path</string>
-         </property>
-        </column>
-        <item row="0" column="2">
-         <property name="text">
-          <string>0</string>
-         </property>
-        </item>
-        <item row="1" column="2">
-         <property name="text">
-          <string>0</string>
-         </property>
-        </item>
-        <item row="2" column="2">
-         <property name="text">
-          <string>0</string>
-         </property>
-        </item>
-        <item row="3" column="2">
-         <property name="text">
-          <string>0</string>
-         </property>
-        </item>
-        <item row="4" column="2">
-         <property name="text">
-          <string>0</string>
-         </property>
-        </item>
-        <item row="5" column="2">
-         <property name="text">
-          <string>0</string>
-         </property>
-        </item>
-        <item row="6" column="2">
-         <property name="text">
-          <string>0</string>
-         </property>
-        </item>
-       </widget>
-      </item>
-     </layout>
-    </widget>
-   </item>
-   <item>
-    <layout class="QHBoxLayout" name="horizontalLayout_15">
-     <item>
-      <widget class="QLabel" name="label_max_infilt">
-       <property name="minimumSize">
-        <size>
-         <width>250</width>
-         <height>20</height>
-        </size>
-       </property>
-       <property name="font">
-        <font>
-         <pointsize>10</pointsize>
-         <kerning>true</kerning>
-        </font>
-       </property>
-       <property name="text">
-        <string>Maximum Infiltration Threshold Value per Timestep</string>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QLineEdit" name="lineEdit__max_infilt">
-       <property name="minimumSize">
-        <size>
-         <width>50</width>
-         <height>20</height>
-        </size>
-       </property>
-       <property name="maximumSize">
-        <size>
-         <width>70</width>
-         <height>16777215</height>
-        </size>
-       </property>
-       <property name="text">
-        <string/>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <spacer name="horizontalSpacer_4">
-       <property name="orientation">
-        <enum>Qt::Horizontal</enum>
-       </property>
-       <property name="sizeHint" stdset="0">
-        <size>
-         <width>40</width>
-         <height>20</height>
-        </size>
-       </property>
-      </spacer>
-     </item>
-    </layout>
-   </item>
-   <item>
-    <widget class="QDialogButtonBox" name="buttonBox">
-     <property name="orientation">
-      <enum>Qt::Horizontal</enum>
-     </property>
-     <property name="standardButtons">
-      <set>QDialogButtonBox::Cancel|QDialogButtonBox::Ok</set>
-     </property>
-    </widget>
-   </item>
-  </layout>
- </widget>
- <resources/>
- <connections>
-  <connection>
-   <sender>buttonBox</sender>
-   <signal>accepted()</signal>
-   <receiver>Dialog_infiltration</receiver>
-   <slot>accept()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>248</x>
-     <y>254</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>157</x>
-     <y>274</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>buttonBox</sender>
-   <signal>rejected()</signal>
-   <receiver>Dialog_infiltration</receiver>
-   <slot>reject()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>316</x>
-     <y>260</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>286</x>
-     <y>274</y>
-    </hint>
-   </hints>
-  </connection>
- </connections>
-</ui>
+# Form implementation generated from reading ui file 'infiltration_new.ui'
+#
+# Created by: PyQt6 UI code generator 6.4.0
+#
+# WARNING: Any manual changes made to this file will be lost when pyuic6 is
+# run again.  Do not edit this file unless you know what you are doing.
+
+
+from PyQt6 import QtCore, QtGui, QtWidgets
+
+
+class Ui_Dialog_infiltration(object):
+    def setupUi(self, Dialog_infiltration):
+        Dialog_infiltration.setObjectName("Dialog_infiltration")
+        Dialog_infiltration.resize(1350, 780)
+        Dialog_infiltration.setMinimumSize(QtCore.QSize(1350, 780))
+        self.verticalLayout_15 = QtWidgets.QVBoxLayout(Dialog_infiltration)
+        self.verticalLayout_15.setObjectName("verticalLayout_15")
+        self.horizontalLayout_36 = QtWidgets.QHBoxLayout()
+        self.horizontalLayout_36.setObjectName("horizontalLayout_36")
+        self.verticalLayout_14 = QtWidgets.QVBoxLayout()
+        self.verticalLayout_14.setObjectName("verticalLayout_14")
+        self.groupBox_curve_number = QtWidgets.QGroupBox(Dialog_infiltration)
+        self.groupBox_curve_number.setEnabled(True)
+        self.groupBox_curve_number.setMinimumSize(QtCore.QSize(630, 370))
+        font = QtGui.QFont()
+        font.setBold(False)
+        font.setWeight(50)
+        font.setKerning(True)
+        self.groupBox_curve_number.setFont(font)
+        self.groupBox_curve_number.setCheckable(True)
+        self.groupBox_curve_number.setChecked(True)
+        self.groupBox_curve_number.setObjectName("groupBox_curve_number")
+        self.verticalLayout_11 = QtWidgets.QVBoxLayout(self.groupBox_curve_number)
+        self.verticalLayout_11.setObjectName("verticalLayout_11")
+        self.horizontalLayout_6 = QtWidgets.QHBoxLayout()
+        self.horizontalLayout_6.setObjectName("horizontalLayout_6")
+        self.label_cn_csv = QtWidgets.QLabel(self.groupBox_curve_number)
+        self.label_cn_csv.setMinimumSize(QtCore.QSize(200, 20))
+        font = QtGui.QFont()
+        font.setPointSize(10)
+        font.setBold(False)
+        font.setWeight(50)
+        font.setKerning(True)
+        self.label_cn_csv.setFont(font)
+        self.label_cn_csv.setObjectName("label_cn_csv")
+        self.horizontalLayout_6.addWidget(self.label_cn_csv)
+        self.lineEdit_cn_csv = QtWidgets.QLineEdit(self.groupBox_curve_number)
+        self.lineEdit_cn_csv.setMinimumSize(QtCore.QSize(150, 20))
+        self.lineEdit_cn_csv.setObjectName("lineEdit_cn_csv")
+        self.horizontalLayout_6.addWidget(self.lineEdit_cn_csv)
+        self.toolButton_browse_cn_csv = QtWidgets.QToolButton(self.groupBox_curve_number)
+        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Policy.Preferred, QtWidgets.QSizePolicy.Policy.Fixed)
+        sizePolicy.setHorizontalStretch(0)
+        sizePolicy.setVerticalStretch(0)
+        sizePolicy.setHeightForWidth(self.toolButton_browse_cn_csv.sizePolicy().hasHeightForWidth())
+        self.toolButton_browse_cn_csv.setSizePolicy(sizePolicy)
+        self.toolButton_browse_cn_csv.setMaximumSize(QtCore.QSize(20, 20))
+        self.toolButton_browse_cn_csv.setObjectName("toolButton_browse_cn_csv")
+        self.horizontalLayout_6.addWidget(self.toolButton_browse_cn_csv)
+        self.verticalLayout_11.addLayout(self.horizontalLayout_6)
+        self.line_5 = QtWidgets.QFrame(self.groupBox_curve_number)
+        self.line_5.setFrameShape(QtWidgets.QFrame.Shape.HLine)
+        self.line_5.setFrameShadow(QtWidgets.QFrame.Shadow.Sunken)
+        self.line_5.setObjectName("line_5")
+        self.verticalLayout_11.addWidget(self.line_5)
+        self.groupBox_raster = QtWidgets.QGroupBox(self.groupBox_curve_number)
+        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Policy.Fixed, QtWidgets.QSizePolicy.Policy.Expanding)
+        sizePolicy.setHorizontalStretch(0)
+        sizePolicy.setVerticalStretch(0)
+        sizePolicy.setHeightForWidth(self.groupBox_raster.sizePolicy().hasHeightForWidth())
+        self.groupBox_raster.setSizePolicy(sizePolicy)
+        self.groupBox_raster.setMinimumSize(QtCore.QSize(0, 73))
+        font = QtGui.QFont()
+        font.setPointSize(7)
+        self.groupBox_raster.setFont(font)
+        self.groupBox_raster.setCheckable(False)
+        self.groupBox_raster.setObjectName("groupBox_raster")
+        self.verticalLayout_4 = QtWidgets.QVBoxLayout(self.groupBox_raster)
+        self.verticalLayout_4.setObjectName("verticalLayout_4")
+        self.horizontalLayout_7 = QtWidgets.QHBoxLayout()
+        self.horizontalLayout_7.setObjectName("horizontalLayout_7")
+        self.label_cn_raster = QtWidgets.QLabel(self.groupBox_raster)
+        self.label_cn_raster.setMinimumSize(QtCore.QSize(200, 20))
+        font = QtGui.QFont()
+        font.setPointSize(8)
+        font.setBold(False)
+        font.setWeight(50)
+        font.setKerning(True)
+        self.label_cn_raster.setFont(font)
+        self.label_cn_raster.setObjectName("label_cn_raster")
+        self.horizontalLayout_7.addWidget(self.label_cn_raster)
+        self.lineEdit_cn_raster = QtWidgets.QLineEdit(self.groupBox_raster)
+        self.lineEdit_cn_raster.setMinimumSize(QtCore.QSize(160, 20))
+        self.lineEdit_cn_raster.setObjectName("lineEdit_cn_raster")
+        self.horizontalLayout_7.addWidget(self.lineEdit_cn_raster)
+        self.toolButton_browse_cn_raster = QtWidgets.QToolButton(self.groupBox_raster)
+        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Policy.Preferred, QtWidgets.QSizePolicy.Policy.Fixed)
+        sizePolicy.setHorizontalStretch(0)
+        sizePolicy.setVerticalStretch(0)
+        sizePolicy.setHeightForWidth(self.toolButton_browse_cn_raster.sizePolicy().hasHeightForWidth())
+        self.toolButton_browse_cn_raster.setSizePolicy(sizePolicy)
+        self.toolButton_browse_cn_raster.setMaximumSize(QtCore.QSize(20, 20))
+        self.toolButton_browse_cn_raster.setObjectName("toolButton_browse_cn_raster")
+        self.horizontalLayout_7.addWidget(self.toolButton_browse_cn_raster)
+        self.verticalLayout_4.addLayout(self.horizontalLayout_7)
+        self.horizontalLayout_28 = QtWidgets.QHBoxLayout()
+        self.horizontalLayout_28.setObjectName("horizontalLayout_28")
+        self.horizontalLayout_2 = QtWidgets.QHBoxLayout()
+        self.horizontalLayout_2.setObjectName("horizontalLayout_2")
+        self.label_lu = QtWidgets.QLabel(self.groupBox_raster)
+        self.label_lu.setMinimumSize(QtCore.QSize(50, 20))
+        self.label_lu.setMaximumSize(QtCore.QSize(100, 16777215))
+        font = QtGui.QFont()
+        font.setPointSize(8)
+        font.setBold(False)
+        font.setWeight(50)
+        font.setKerning(True)
+        self.label_lu.setFont(font)
+        self.label_lu.setObjectName("label_lu")
+        self.horizontalLayout_2.addWidget(self.label_lu)
+        self.lineEdit_lu = QtWidgets.QLineEdit(self.groupBox_raster)
+        self.lineEdit_lu.setMinimumSize(QtCore.QSize(30, 20))
+        self.lineEdit_lu.setMaximumSize(QtCore.QSize(30, 16777215))
+        self.lineEdit_lu.setText("")
+        self.lineEdit_lu.setObjectName("lineEdit_lu")
+        self.horizontalLayout_2.addWidget(self.lineEdit_lu)
+        self.horizontalLayout_28.addLayout(self.horizontalLayout_2)
+        self.horizontalLayout = QtWidgets.QHBoxLayout()
+        self.horizontalLayout.setObjectName("horizontalLayout")
+        self.label_hsg = QtWidgets.QLabel(self.groupBox_raster)
+        self.label_hsg.setMinimumSize(QtCore.QSize(50, 20))
+        self.label_hsg.setMaximumSize(QtCore.QSize(100, 16777215))
+        font = QtGui.QFont()
+        font.setPointSize(8)
+        font.setBold(False)
+        font.setWeight(50)
+        font.setKerning(True)
+        self.label_hsg.setFont(font)
+        self.label_hsg.setObjectName("label_hsg")
+        self.horizontalLayout.addWidget(self.label_hsg)
+        self.lineEdit_hsg = QtWidgets.QLineEdit(self.groupBox_raster)
+        self.lineEdit_hsg.setMinimumSize(QtCore.QSize(30, 20))
+        self.lineEdit_hsg.setMaximumSize(QtCore.QSize(30, 16777215))
+        self.lineEdit_hsg.setText("")
+        self.lineEdit_hsg.setObjectName("lineEdit_hsg")
+        self.horizontalLayout.addWidget(self.lineEdit_hsg)
+        self.horizontalLayout_28.addLayout(self.horizontalLayout)
+        self.horizontalLayout_3 = QtWidgets.QHBoxLayout()
+        self.horizontalLayout_3.setObjectName("horizontalLayout_3")
+        self.label_elev = QtWidgets.QLabel(self.groupBox_raster)
+        self.label_elev.setMinimumSize(QtCore.QSize(167, 20))
+        self.label_elev.setMaximumSize(QtCore.QSize(16777215, 16777215))
+        font = QtGui.QFont()
+        font.setPointSize(7)
+        font.setBold(False)
+        font.setWeight(50)
+        font.setKerning(True)
+        self.label_elev.setFont(font)
+        self.label_elev.setObjectName("label_elev")
+        self.horizontalLayout_3.addWidget(self.label_elev)
+        self.lineEdit_elev = QtWidgets.QLineEdit(self.groupBox_raster)
+        self.lineEdit_elev.setMinimumSize(QtCore.QSize(30, 20))
+        self.lineEdit_elev.setMaximumSize(QtCore.QSize(30, 16777215))
+        self.lineEdit_elev.setText("")
+        self.lineEdit_elev.setObjectName("lineEdit_elev")
+        self.horizontalLayout_3.addWidget(self.lineEdit_elev)
+        self.horizontalLayout_28.addLayout(self.horizontalLayout_3)
+        spacerItem = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Policy.Expanding, QtWidgets.QSizePolicy.Policy.Minimum)
+        self.horizontalLayout_28.addItem(spacerItem)
+        self.checkBox_slope_cat = QtWidgets.QCheckBox(self.groupBox_raster)
+        self.checkBox_slope_cat.setMinimumSize(QtCore.QSize(70, 0))
+        self.checkBox_slope_cat.setObjectName("checkBox_slope_cat")
+        self.horizontalLayout_28.addWidget(self.checkBox_slope_cat)
+        self.horizontalLayout_14 = QtWidgets.QHBoxLayout()
+        self.horizontalLayout_14.setObjectName("horizontalLayout_14")
+        self.label_slope = QtWidgets.QLabel(self.groupBox_raster)
+        self.label_slope.setEnabled(False)
+        self.label_slope.setMinimumSize(QtCore.QSize(60, 20))
+        self.label_slope.setMaximumSize(QtCore.QSize(100, 16777215))
+        font = QtGui.QFont()
+        font.setPointSize(8)
+        font.setBold(False)
+        font.setWeight(50)
+        font.setKerning(True)
+        self.label_slope.setFont(font)
+        self.label_slope.setObjectName("label_slope")
+        self.horizontalLayout_14.addWidget(self.label_slope)
+        self.lineEdit_slope = QtWidgets.QLineEdit(self.groupBox_raster)
+        self.lineEdit_slope.setEnabled(False)
+        self.lineEdit_slope.setMinimumSize(QtCore.QSize(50, 0))
+        self.lineEdit_slope.setMaximumSize(QtCore.QSize(60, 16777215))
+        self.lineEdit_slope.setObjectName("lineEdit_slope")
+        self.horizontalLayout_14.addWidget(self.lineEdit_slope)
+        self.horizontalLayout_28.addLayout(self.horizontalLayout_14)
+        self.verticalLayout_4.addLayout(self.horizontalLayout_28)
+        self.verticalLayout_11.addWidget(self.groupBox_raster)
+        self.line_3 = QtWidgets.QFrame(self.groupBox_curve_number)
+        self.line_3.setFrameShape(QtWidgets.QFrame.Shape.HLine)
+        self.line_3.setFrameShadow(QtWidgets.QFrame.Shadow.Sunken)
+        self.line_3.setObjectName("line_3")
+        self.verticalLayout_11.addWidget(self.line_3)
+        self.checkBox_adv_cn = QtWidgets.QCheckBox(self.groupBox_curve_number)
+        self.checkBox_adv_cn.setEnabled(True)
+        self.checkBox_adv_cn.setMinimumSize(QtCore.QSize(174, 19))
+        self.checkBox_adv_cn.setMaximumSize(QtCore.QSize(600, 16777215))
+        font = QtGui.QFont()
+        font.setPointSize(10)
+        font.setBold(True)
+        font.setWeight(75)
+        self.checkBox_adv_cn.setFont(font)
+        self.checkBox_adv_cn.setObjectName("checkBox_adv_cn")
+        self.verticalLayout_11.addWidget(self.checkBox_adv_cn)
+        self.horizontalLayout_35 = QtWidgets.QHBoxLayout()
+        self.horizontalLayout_35.setObjectName("horizontalLayout_35")
+        self.verticalLayout_7 = QtWidgets.QVBoxLayout()
+        self.verticalLayout_7.setObjectName("verticalLayout_7")
+        self.horizontalLayout_35.addLayout(self.verticalLayout_7)
+        self.groupBox_adv_cn = QtWidgets.QGroupBox(self.groupBox_curve_number)
+        self.groupBox_adv_cn.setEnabled(False)
+        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Policy.Expanding, QtWidgets.QSizePolicy.Policy.Expanding)
+        sizePolicy.setHorizontalStretch(0)
+        sizePolicy.setVerticalStretch(0)
+        sizePolicy.setHeightForWidth(self.groupBox_adv_cn.sizePolicy().hasHeightForWidth())
+        self.groupBox_adv_cn.setSizePolicy(sizePolicy)
+        self.groupBox_adv_cn.setMinimumSize(QtCore.QSize(400, 67))
+        self.groupBox_adv_cn.setMaximumSize(QtCore.QSize(16777215, 200))
+        self.groupBox_adv_cn.setTitle("")
+        self.groupBox_adv_cn.setObjectName("groupBox_adv_cn")
+        self.horizontalLayout_33 = QtWidgets.QHBoxLayout(self.groupBox_adv_cn)
+        self.horizontalLayout_33.setObjectName("horizontalLayout_33")
+        self.verticalLayout_3 = QtWidgets.QVBoxLayout()
+        self.verticalLayout_3.setObjectName("verticalLayout_3")
+        self.horizontalLayout_27 = QtWidgets.QHBoxLayout()
+        self.horizontalLayout_27.setObjectName("horizontalLayout_27")
+        self.label_a = QtWidgets.QLabel(self.groupBox_adv_cn)
+        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Policy.Expanding, QtWidgets.QSizePolicy.Policy.Preferred)
+        sizePolicy.setHorizontalStretch(0)
+        sizePolicy.setVerticalStretch(0)
+        sizePolicy.setHeightForWidth(self.label_a.sizePolicy().hasHeightForWidth())
+        self.label_a.setSizePolicy(sizePolicy)
+        self.label_a.setMinimumSize(QtCore.QSize(30, 19))
+        self.label_a.setMaximumSize(QtCore.QSize(55, 16777215))
+        font = QtGui.QFont()
+        font.setPointSize(10)
+        font.setStyleStrategy(QtGui.QFont.StyleStrategy.PreferDefault)
+        self.label_a.setFont(font)
+        self.label_a.setFocusPolicy(QtCore.Qt.FocusPolicy.NoFocus)
+        self.label_a.setObjectName("label_a")
+        self.horizontalLayout_27.addWidget(self.label_a)
+        self.lineEdit_a = QtWidgets.QLineEdit(self.groupBox_adv_cn)
+        self.lineEdit_a.setMinimumSize(QtCore.QSize(45, 19))
+        self.lineEdit_a.setMaximumSize(QtCore.QSize(60, 16777215))
+        self.lineEdit_a.setObjectName("lineEdit_a")
+        self.horizontalLayout_27.addWidget(self.lineEdit_a)
+        self.verticalLayout_3.addLayout(self.horizontalLayout_27)
+        self.horizontalLayout_24 = QtWidgets.QHBoxLayout()
+        self.horizontalLayout_24.setObjectName("horizontalLayout_24")
+        self.label_x = QtWidgets.QLabel(self.groupBox_adv_cn)
+        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Policy.Expanding, QtWidgets.QSizePolicy.Policy.Preferred)
+        sizePolicy.setHorizontalStretch(0)
+        sizePolicy.setVerticalStretch(0)
+        sizePolicy.setHeightForWidth(self.label_x.sizePolicy().hasHeightForWidth())
+        self.label_x.setSizePolicy(sizePolicy)
+        self.label_x.setMinimumSize(QtCore.QSize(30, 19))
+        self.label_x.setMaximumSize(QtCore.QSize(55, 16777215))
+        font = QtGui.QFont()
+        font.setPointSize(10)
+        font.setStyleStrategy(QtGui.QFont.StyleStrategy.PreferDefault)
+        self.label_x.setFont(font)
+        self.label_x.setFocusPolicy(QtCore.Qt.FocusPolicy.NoFocus)
+        self.label_x.setObjectName("label_x")
+        self.horizontalLayout_24.addWidget(self.label_x)
+        self.lineEdit_x = QtWidgets.QLineEdit(self.groupBox_adv_cn)
+        self.lineEdit_x.setMinimumSize(QtCore.QSize(45, 19))
+        self.lineEdit_x.setMaximumSize(QtCore.QSize(60, 16777215))
+        self.lineEdit_x.setObjectName("lineEdit_x")
+        self.horizontalLayout_24.addWidget(self.lineEdit_x)
+        self.verticalLayout_3.addLayout(self.horizontalLayout_24)
+        self.horizontalLayout_33.addLayout(self.verticalLayout_3)
+        spacerItem1 = QtWidgets.QSpacerItem(30, 20, QtWidgets.QSizePolicy.Policy.Maximum, QtWidgets.QSizePolicy.Policy.Minimum)
+        self.horizontalLayout_33.addItem(spacerItem1)
+        self.verticalLayout_5 = QtWidgets.QVBoxLayout()
+        self.verticalLayout_5.setObjectName("verticalLayout_5")
+        self.horizontalLayout_30 = QtWidgets.QHBoxLayout()
+        self.horizontalLayout_30.setObjectName("horizontalLayout_30")
+        self.label_b = QtWidgets.QLabel(self.groupBox_adv_cn)
+        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Policy.Expanding, QtWidgets.QSizePolicy.Policy.Preferred)
+        sizePolicy.setHorizontalStretch(0)
+        sizePolicy.setVerticalStretch(0)
+        sizePolicy.setHeightForWidth(self.label_b.sizePolicy().hasHeightForWidth())
+        self.label_b.setSizePolicy(sizePolicy)
+        self.label_b.setMinimumSize(QtCore.QSize(30, 19))
+        self.label_b.setMaximumSize(QtCore.QSize(55, 16777215))
+        font = QtGui.QFont()
+        font.setPointSize(10)
+        font.setStyleStrategy(QtGui.QFont.StyleStrategy.PreferDefault)
+        self.label_b.setFont(font)
+        self.label_b.setFocusPolicy(QtCore.Qt.FocusPolicy.NoFocus)
+        self.label_b.setObjectName("label_b")
+        self.horizontalLayout_30.addWidget(self.label_b)
+        self.lineEdit_b = QtWidgets.QLineEdit(self.groupBox_adv_cn)
+        self.lineEdit_b.setMinimumSize(QtCore.QSize(45, 19))
+        self.lineEdit_b.setMaximumSize(QtCore.QSize(60, 16777215))
+        self.lineEdit_b.setObjectName("lineEdit_b")
+        self.horizontalLayout_30.addWidget(self.lineEdit_b)
+        self.verticalLayout_5.addLayout(self.horizontalLayout_30)
+        self.horizontalLayout_23 = QtWidgets.QHBoxLayout()
+        self.horizontalLayout_23.setObjectName("horizontalLayout_23")
+        self.label_y = QtWidgets.QLabel(self.groupBox_adv_cn)
+        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Policy.Expanding, QtWidgets.QSizePolicy.Policy.Preferred)
+        sizePolicy.setHorizontalStretch(0)
+        sizePolicy.setVerticalStretch(0)
+        sizePolicy.setHeightForWidth(self.label_y.sizePolicy().hasHeightForWidth())
+        self.label_y.setSizePolicy(sizePolicy)
+        self.label_y.setMinimumSize(QtCore.QSize(30, 19))
+        self.label_y.setMaximumSize(QtCore.QSize(55, 16777215))
+        font = QtGui.QFont()
+        font.setPointSize(10)
+        font.setStyleStrategy(QtGui.QFont.StyleStrategy.PreferDefault)
+        self.label_y.setFont(font)
+        self.label_y.setFocusPolicy(QtCore.Qt.FocusPolicy.NoFocus)
+        self.label_y.setObjectName("label_y")
+        self.horizontalLayout_23.addWidget(self.label_y)
+        self.lineEdit_y = QtWidgets.QLineEdit(self.groupBox_adv_cn)
+        self.lineEdit_y.setMinimumSize(QtCore.QSize(45, 19))
+        self.lineEdit_y.setMaximumSize(QtCore.QSize(60, 16777215))
+        self.lineEdit_y.setObjectName("lineEdit_y")
+        self.horizontalLayout_23.addWidget(self.lineEdit_y)
+        self.verticalLayout_5.addLayout(self.horizontalLayout_23)
+        self.horizontalLayout_33.addLayout(self.verticalLayout_5)
+        spacerItem2 = QtWidgets.QSpacerItem(31, 20, QtWidgets.QSizePolicy.Policy.Maximum, QtWidgets.QSizePolicy.Policy.Minimum)
+        self.horizontalLayout_33.addItem(spacerItem2)
+        self.verticalLayout_16 = QtWidgets.QVBoxLayout()
+        self.verticalLayout_16.setObjectName("verticalLayout_16")
+        self.horizontalLayout_26 = QtWidgets.QHBoxLayout()
+        self.horizontalLayout_26.setObjectName("horizontalLayout_26")
+        self.label_c = QtWidgets.QLabel(self.groupBox_adv_cn)
+        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Policy.Expanding, QtWidgets.QSizePolicy.Policy.Preferred)
+        sizePolicy.setHorizontalStretch(0)
+        sizePolicy.setVerticalStretch(0)
+        sizePolicy.setHeightForWidth(self.label_c.sizePolicy().hasHeightForWidth())
+        self.label_c.setSizePolicy(sizePolicy)
+        self.label_c.setMinimumSize(QtCore.QSize(30, 19))
+        self.label_c.setMaximumSize(QtCore.QSize(55, 16777215))
+        font = QtGui.QFont()
+        font.setPointSize(10)
+        font.setStyleStrategy(QtGui.QFont.StyleStrategy.PreferDefault)
+        self.label_c.setFont(font)
+        self.label_c.setFocusPolicy(QtCore.Qt.FocusPolicy.NoFocus)
+        self.label_c.setObjectName("label_c")
+        self.horizontalLayout_26.addWidget(self.label_c)
+        self.lineEdit_c = QtWidgets.QLineEdit(self.groupBox_adv_cn)
+        self.lineEdit_c.setMinimumSize(QtCore.QSize(45, 19))
+        self.lineEdit_c.setMaximumSize(QtCore.QSize(60, 16777215))
+        self.lineEdit_c.setObjectName("lineEdit_c")
+        self.horizontalLayout_26.addWidget(self.lineEdit_c)
+        self.verticalLayout_16.addLayout(self.horizontalLayout_26)
+        self.horizontalLayout_22 = QtWidgets.QHBoxLayout()
+        self.horizontalLayout_22.setObjectName("horizontalLayout_22")
+        self.label_z = QtWidgets.QLabel(self.groupBox_adv_cn)
+        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Policy.Expanding, QtWidgets.QSizePolicy.Policy.Preferred)
+        sizePolicy.setHorizontalStretch(0)
+        sizePolicy.setVerticalStretch(0)
+        sizePolicy.setHeightForWidth(self.label_z.sizePolicy().hasHeightForWidth())
+        self.label_z.setSizePolicy(sizePolicy)
+        self.label_z.setMinimumSize(QtCore.QSize(30, 19))
+        self.label_z.setMaximumSize(QtCore.QSize(55, 16777215))
+        font = QtGui.QFont()
+        font.setPointSize(10)
+        font.setStyleStrategy(QtGui.QFont.StyleStrategy.PreferDefault)
+        self.label_z.setFont(font)
+        self.label_z.setFocusPolicy(QtCore.Qt.FocusPolicy.NoFocus)
+        self.label_z.setObjectName("label_z")
+        self.horizontalLayout_22.addWidget(self.label_z)
+        self.lineEdit_z = QtWidgets.QLineEdit(self.groupBox_adv_cn)
+        self.lineEdit_z.setMinimumSize(QtCore.QSize(45, 19))
+        self.lineEdit_z.setMaximumSize(QtCore.QSize(60, 16777215))
+        self.lineEdit_z.setObjectName("lineEdit_z")
+        self.horizontalLayout_22.addWidget(self.lineEdit_z)
+        self.verticalLayout_16.addLayout(self.horizontalLayout_22)
+        self.horizontalLayout_33.addLayout(self.verticalLayout_16)
+        spacerItem3 = QtWidgets.QSpacerItem(30, 20, QtWidgets.QSizePolicy.Policy.Maximum, QtWidgets.QSizePolicy.Policy.Minimum)
+        self.horizontalLayout_33.addItem(spacerItem3)
+        self.verticalLayout_17 = QtWidgets.QVBoxLayout()
+        self.verticalLayout_17.setObjectName("verticalLayout_17")
+        self.horizontalLayout_21 = QtWidgets.QHBoxLayout()
+        self.horizontalLayout_21.setObjectName("horizontalLayout_21")
+        self.label_d = QtWidgets.QLabel(self.groupBox_adv_cn)
+        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Policy.Expanding, QtWidgets.QSizePolicy.Policy.Preferred)
+        sizePolicy.setHorizontalStretch(0)
+        sizePolicy.setVerticalStretch(0)
+        sizePolicy.setHeightForWidth(self.label_d.sizePolicy().hasHeightForWidth())
+        self.label_d.setSizePolicy(sizePolicy)
+        self.label_d.setMinimumSize(QtCore.QSize(30, 19))
+        self.label_d.setMaximumSize(QtCore.QSize(55, 16777215))
+        font = QtGui.QFont()
+        font.setPointSize(10)
+        font.setStyleStrategy(QtGui.QFont.StyleStrategy.PreferDefault)
+        self.label_d.setFont(font)
+        self.label_d.setFocusPolicy(QtCore.Qt.FocusPolicy.NoFocus)
+        self.label_d.setObjectName("label_d")
+        self.horizontalLayout_21.addWidget(self.label_d)
+        self.lineEdit_d = QtWidgets.QLineEdit(self.groupBox_adv_cn)
+        self.lineEdit_d.setMinimumSize(QtCore.QSize(45, 19))
+        self.lineEdit_d.setMaximumSize(QtCore.QSize(60, 16777215))
+        self.lineEdit_d.setObjectName("lineEdit_d")
+        self.horizontalLayout_21.addWidget(self.lineEdit_d)
+        self.verticalLayout_17.addLayout(self.horizontalLayout_21)
+        self.horizontalLayout_25 = QtWidgets.QHBoxLayout()
+        self.horizontalLayout_25.setObjectName("horizontalLayout_25")
+        self.label_landa = QtWidgets.QLabel(self.groupBox_adv_cn)
+        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Policy.Expanding, QtWidgets.QSizePolicy.Policy.Preferred)
+        sizePolicy.setHorizontalStretch(0)
+        sizePolicy.setVerticalStretch(0)
+        sizePolicy.setHeightForWidth(self.label_landa.sizePolicy().hasHeightForWidth())
+        self.label_landa.setSizePolicy(sizePolicy)
+        self.label_landa.setMinimumSize(QtCore.QSize(49, 19))
+        self.label_landa.setMaximumSize(QtCore.QSize(55, 16777215))
+        font = QtGui.QFont()
+        font.setPointSize(10)
+        self.label_landa.setFont(font)
+        self.label_landa.setObjectName("label_landa")
+        self.horizontalLayout_25.addWidget(self.label_landa)
+        self.lineEdit_landa = QtWidgets.QLineEdit(self.groupBox_adv_cn)
+        self.lineEdit_landa.setMinimumSize(QtCore.QSize(45, 19))
+        self.lineEdit_landa.setMaximumSize(QtCore.QSize(60, 16777215))
+        self.lineEdit_landa.setObjectName("lineEdit_landa")
+        self.horizontalLayout_25.addWidget(self.lineEdit_landa)
+        self.verticalLayout_17.addLayout(self.horizontalLayout_25)
+        self.horizontalLayout_33.addLayout(self.verticalLayout_17)
+        self.horizontalLayout_35.addWidget(self.groupBox_adv_cn)
+        self.verticalLayout_11.addLayout(self.horizontalLayout_35)
+        self.line_4 = QtWidgets.QFrame(self.groupBox_curve_number)
+        self.line_4.setFrameShape(QtWidgets.QFrame.Shape.HLine)
+        self.line_4.setFrameShadow(QtWidgets.QFrame.Shadow.Sunken)
+        self.line_4.setObjectName("line_4")
+        self.verticalLayout_11.addWidget(self.line_4)
+        self.groupBox_corrected_cn = QtWidgets.QGroupBox(self.groupBox_curve_number)
+        self.groupBox_corrected_cn.setMinimumSize(QtCore.QSize(0, 100))
+        font = QtGui.QFont()
+        font.setPointSize(10)
+        self.groupBox_corrected_cn.setFont(font)
+        self.groupBox_corrected_cn.setCheckable(True)
+        self.groupBox_corrected_cn.setChecked(False)
+        self.groupBox_corrected_cn.setObjectName("groupBox_corrected_cn")
+        self.verticalLayout_2 = QtWidgets.QVBoxLayout(self.groupBox_corrected_cn)
+        self.verticalLayout_2.setObjectName("verticalLayout_2")
+        self.verticalLayout = QtWidgets.QVBoxLayout()
+        self.verticalLayout.setObjectName("verticalLayout")
+        self.horizontalLayout_40 = QtWidgets.QHBoxLayout()
+        self.horizontalLayout_40.setObjectName("horizontalLayout_40")
+        self.horizontalLayout_5 = QtWidgets.QHBoxLayout()
+        self.horizontalLayout_5.setObjectName("horizontalLayout_5")
+        self.label_amc3 = QtWidgets.QLabel(self.groupBox_corrected_cn)
+        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Policy.Expanding, QtWidgets.QSizePolicy.Policy.Preferred)
+        sizePolicy.setHorizontalStretch(0)
+        sizePolicy.setVerticalStretch(0)
+        sizePolicy.setHeightForWidth(self.label_amc3.sizePolicy().hasHeightForWidth())
+        self.label_amc3.setSizePolicy(sizePolicy)
+        self.label_amc3.setMinimumSize(QtCore.QSize(54, 20))
+        self.label_amc3.setMaximumSize(QtCore.QSize(100, 16777215))
+        font = QtGui.QFont()
+        font.setPointSize(8)
+        font.setBold(False)
+        font.setWeight(50)
+        font.setKerning(True)
+        self.label_amc3.setFont(font)
+        self.label_amc3.setObjectName("label_amc3")
+        self.horizontalLayout_5.addWidget(self.label_amc3)
+        self.horizontalLayout_38 = QtWidgets.QHBoxLayout()
+        self.horizontalLayout_38.setObjectName("horizontalLayout_38")
+        self.label_amc3_a = QtWidgets.QLabel(self.groupBox_corrected_cn)
+        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Policy.Preferred, QtWidgets.QSizePolicy.Policy.Preferred)
+        sizePolicy.setHorizontalStretch(0)
+        sizePolicy.setVerticalStretch(0)
+        sizePolicy.setHeightForWidth(self.label_amc3_a.sizePolicy().hasHeightForWidth())
+        self.label_amc3_a.setSizePolicy(sizePolicy)
+        self.label_amc3_a.setMinimumSize(QtCore.QSize(15, 0))
+        font = QtGui.QFont()
+        font.setPointSize(8)
+        self.label_amc3_a.setFont(font)
+        self.label_amc3_a.setObjectName("label_amc3_a")
+        self.horizontalLayout_38.addWidget(self.label_amc3_a)
+        self.lineEdit_amc3_a = QtWidgets.QLineEdit(self.groupBox_corrected_cn)
+        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Policy.Expanding, QtWidgets.QSizePolicy.Policy.Fixed)
+        sizePolicy.setHorizontalStretch(0)
+        sizePolicy.setVerticalStretch(0)
+        sizePolicy.setHeightForWidth(self.lineEdit_amc3_a.sizePolicy().hasHeightForWidth())
+        self.lineEdit_amc3_a.setSizePolicy(sizePolicy)
+        self.lineEdit_amc3_a.setMinimumSize(QtCore.QSize(27, 0))
+        font = QtGui.QFont()
+        font.setPointSize(7)
+        self.lineEdit_amc3_a.setFont(font)
+        self.lineEdit_amc3_a.setObjectName("lineEdit_amc3_a")
+        self.horizontalLayout_38.addWidget(self.lineEdit_amc3_a)
+        self.label_amc3_b = QtWidgets.QLabel(self.groupBox_corrected_cn)
+        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Policy.Preferred, QtWidgets.QSizePolicy.Policy.Preferred)
+        sizePolicy.setHorizontalStretch(0)
+        sizePolicy.setVerticalStretch(0)
+        sizePolicy.setHeightForWidth(self.label_amc3_b.sizePolicy().hasHeightForWidth())
+        self.label_amc3_b.setSizePolicy(sizePolicy)
+        self.label_amc3_b.setMinimumSize(QtCore.QSize(15, 0))
+        font = QtGui.QFont()
+        font.setPointSize(8)
+        self.label_amc3_b.setFont(font)
+        self.label_amc3_b.setObjectName("label_amc3_b")
+        self.horizontalLayout_38.addWidget(self.label_amc3_b)
+        self.lineEdit_amc3_b = QtWidgets.QLineEdit(self.groupBox_corrected_cn)
+        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Policy.Expanding, QtWidgets.QSizePolicy.Policy.Fixed)
+        sizePolicy.setHorizontalStretch(0)
+        sizePolicy.setVerticalStretch(0)
+        sizePolicy.setHeightForWidth(self.lineEdit_amc3_b.sizePolicy().hasHeightForWidth())
+        self.lineEdit_amc3_b.setSizePolicy(sizePolicy)
+        self.lineEdit_amc3_b.setMinimumSize(QtCore.QSize(27, 0))
+        font = QtGui.QFont()
+        font.setPointSize(7)
+        self.lineEdit_amc3_b.setFont(font)
+        self.lineEdit_amc3_b.setObjectName("lineEdit_amc3_b")
+        self.horizontalLayout_38.addWidget(self.lineEdit_amc3_b)
+        self.label_amc3_c = QtWidgets.QLabel(self.groupBox_corrected_cn)
+        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Policy.Preferred, QtWidgets.QSizePolicy.Policy.Preferred)
+        sizePolicy.setHorizontalStretch(0)
+        sizePolicy.setVerticalStretch(0)
+        sizePolicy.setHeightForWidth(self.label_amc3_c.sizePolicy().hasHeightForWidth())
+        self.label_amc3_c.setSizePolicy(sizePolicy)
+        self.label_amc3_c.setMinimumSize(QtCore.QSize(15, 0))
+        font = QtGui.QFont()
+        font.setPointSize(8)
+        self.label_amc3_c.setFont(font)
+        self.label_amc3_c.setObjectName("label_amc3_c")
+        self.horizontalLayout_38.addWidget(self.label_amc3_c)
+        self.lineEdit_amc3_c = QtWidgets.QLineEdit(self.groupBox_corrected_cn)
+        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Policy.Expanding, QtWidgets.QSizePolicy.Policy.Fixed)
+        sizePolicy.setHorizontalStretch(0)
+        sizePolicy.setVerticalStretch(0)
+        sizePolicy.setHeightForWidth(self.lineEdit_amc3_c.sizePolicy().hasHeightForWidth())
+        self.lineEdit_amc3_c.setSizePolicy(sizePolicy)
+        self.lineEdit_amc3_c.setMinimumSize(QtCore.QSize(27, 0))
+        font = QtGui.QFont()
+        font.setPointSize(7)
+        self.lineEdit_amc3_c.setFont(font)
+        self.lineEdit_amc3_c.setObjectName("lineEdit_amc3_c")
+        self.horizontalLayout_38.addWidget(self.lineEdit_amc3_c)
+        self.horizontalLayout_5.addLayout(self.horizontalLayout_38)
+        self.horizontalLayout_40.addLayout(self.horizontalLayout_5)
+        self.horizontalLayout_4 = QtWidgets.QHBoxLayout()
+        self.horizontalLayout_4.setObjectName("horizontalLayout_4")
+        self.label_amc1 = QtWidgets.QLabel(self.groupBox_corrected_cn)
+        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Policy.Expanding, QtWidgets.QSizePolicy.Policy.Preferred)
+        sizePolicy.setHorizontalStretch(0)
+        sizePolicy.setVerticalStretch(0)
+        sizePolicy.setHeightForWidth(self.label_amc1.sizePolicy().hasHeightForWidth())
+        self.label_amc1.setSizePolicy(sizePolicy)
+        self.label_amc1.setMinimumSize(QtCore.QSize(54, 20))
+        self.label_amc1.setMaximumSize(QtCore.QSize(100, 16777215))
+        font = QtGui.QFont()
+        font.setPointSize(8)
+        font.setBold(False)
+        font.setWeight(50)
+        font.setKerning(True)
+        self.label_amc1.setFont(font)
+        self.label_amc1.setObjectName("label_amc1")
+        self.horizontalLayout_4.addWidget(self.label_amc1)
+        self.horizontalLayout_37 = QtWidgets.QHBoxLayout()
+        self.horizontalLayout_37.setObjectName("horizontalLayout_37")
+        self.label_amc1_a = QtWidgets.QLabel(self.groupBox_corrected_cn)
+        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Policy.Preferred, QtWidgets.QSizePolicy.Policy.Preferred)
+        sizePolicy.setHorizontalStretch(0)
+        sizePolicy.setVerticalStretch(0)
+        sizePolicy.setHeightForWidth(self.label_amc1_a.sizePolicy().hasHeightForWidth())
+        self.label_amc1_a.setSizePolicy(sizePolicy)
+        self.label_amc1_a.setMinimumSize(QtCore.QSize(15, 0))
+        font = QtGui.QFont()
+        font.setPointSize(8)
+        self.label_amc1_a.setFont(font)
+        self.label_amc1_a.setObjectName("label_amc1_a")
+        self.horizontalLayout_37.addWidget(self.label_amc1_a)
+        self.lineEdit_amc1_a = QtWidgets.QLineEdit(self.groupBox_corrected_cn)
+        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Policy.Expanding, QtWidgets.QSizePolicy.Policy.Fixed)
+        sizePolicy.setHorizontalStretch(0)
+        sizePolicy.setVerticalStretch(0)
+        sizePolicy.setHeightForWidth(self.lineEdit_amc1_a.sizePolicy().hasHeightForWidth())
+        self.lineEdit_amc1_a.setSizePolicy(sizePolicy)
+        self.lineEdit_amc1_a.setMinimumSize(QtCore.QSize(27, 0))
+        font = QtGui.QFont()
+        font.setPointSize(7)
+        self.lineEdit_amc1_a.setFont(font)
+        self.lineEdit_amc1_a.setObjectName("lineEdit_amc1_a")
+        self.horizontalLayout_37.addWidget(self.lineEdit_amc1_a)
+        self.label_amc1_b = QtWidgets.QLabel(self.groupBox_corrected_cn)
+        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Policy.Preferred, QtWidgets.QSizePolicy.Policy.Preferred)
+        sizePolicy.setHorizontalStretch(0)
+        sizePolicy.setVerticalStretch(0)
+        sizePolicy.setHeightForWidth(self.label_amc1_b.sizePolicy().hasHeightForWidth())
+        self.label_amc1_b.setSizePolicy(sizePolicy)
+        self.label_amc1_b.setMinimumSize(QtCore.QSize(15, 0))
+        font = QtGui.QFont()
+        font.setPointSize(8)
+        self.label_amc1_b.setFont(font)
+        self.label_amc1_b.setObjectName("label_amc1_b")
+        self.horizontalLayout_37.addWidget(self.label_amc1_b)
+        self.lineEdit_amc1_b = QtWidgets.QLineEdit(self.groupBox_corrected_cn)
+        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Policy.Expanding, QtWidgets.QSizePolicy.Policy.Fixed)
+        sizePolicy.setHorizontalStretch(0)
+        sizePolicy.setVerticalStretch(0)
+        sizePolicy.setHeightForWidth(self.lineEdit_amc1_b.sizePolicy().hasHeightForWidth())
+        self.lineEdit_amc1_b.setSizePolicy(sizePolicy)
+        self.lineEdit_amc1_b.setMinimumSize(QtCore.QSize(27, 0))
+        font = QtGui.QFont()
+        font.setPointSize(7)
+        self.lineEdit_amc1_b.setFont(font)
+        self.lineEdit_amc1_b.setObjectName("lineEdit_amc1_b")
+        self.horizontalLayout_37.addWidget(self.lineEdit_amc1_b)
+        self.label_amc1_c = QtWidgets.QLabel(self.groupBox_corrected_cn)
+        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Policy.Preferred, QtWidgets.QSizePolicy.Policy.Preferred)
+        sizePolicy.setHorizontalStretch(0)
+        sizePolicy.setVerticalStretch(0)
+        sizePolicy.setHeightForWidth(self.label_amc1_c.sizePolicy().hasHeightForWidth())
+        self.label_amc1_c.setSizePolicy(sizePolicy)
+        self.label_amc1_c.setMinimumSize(QtCore.QSize(15, 0))
+        font = QtGui.QFont()
+        font.setPointSize(8)
+        self.label_amc1_c.setFont(font)
+        self.label_amc1_c.setObjectName("label_amc1_c")
+        self.horizontalLayout_37.addWidget(self.label_amc1_c)
+        self.lineEdit_amc1_c = QtWidgets.QLineEdit(self.groupBox_corrected_cn)
+        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Policy.Expanding, QtWidgets.QSizePolicy.Policy.Fixed)
+        sizePolicy.setHorizontalStretch(0)
+        sizePolicy.setVerticalStretch(0)
+        sizePolicy.setHeightForWidth(self.lineEdit_amc1_c.sizePolicy().hasHeightForWidth())
+        self.lineEdit_amc1_c.setSizePolicy(sizePolicy)
+        self.lineEdit_amc1_c.setMinimumSize(QtCore.QSize(27, 0))
+        font = QtGui.QFont()
+        font.setPointSize(7)
+        self.lineEdit_amc1_c.setFont(font)
+        self.lineEdit_amc1_c.setObjectName("lineEdit_amc1_c")
+        self.horizontalLayout_37.addWidget(self.lineEdit_amc1_c)
+        self.horizontalLayout_4.addLayout(self.horizontalLayout_37)
+        self.horizontalLayout_40.addLayout(self.horizontalLayout_4)
+        self.verticalLayout.addLayout(self.horizontalLayout_40)
+        self.horizontalLayout_41 = QtWidgets.QHBoxLayout()
+        self.horizontalLayout_41.setObjectName("horizontalLayout_41")
+        self.horizontalLayout_29 = QtWidgets.QHBoxLayout()
+        self.horizontalLayout_29.setObjectName("horizontalLayout_29")
+        self.label_dormant_ = QtWidgets.QLabel(self.groupBox_corrected_cn)
+        self.label_dormant_.setMinimumSize(QtCore.QSize(80, 20))
+        self.label_dormant_.setMaximumSize(QtCore.QSize(200, 16777215))
+        font = QtGui.QFont()
+        font.setPointSize(8)
+        font.setBold(False)
+        font.setWeight(50)
+        font.setKerning(True)
+        self.label_dormant_.setFont(font)
+        self.label_dormant_.setObjectName("label_dormant_")
+        self.horizontalLayout_29.addWidget(self.label_dormant_)
+        self.horizontalLayout_10 = QtWidgets.QHBoxLayout()
+        self.horizontalLayout_10.setObjectName("horizontalLayout_10")
+        self.label_dor_1 = QtWidgets.QLabel(self.groupBox_corrected_cn)
+        self.label_dor_1.setMinimumSize(QtCore.QSize(10, 0))
+        self.label_dor_1.setObjectName("label_dor_1")
+        self.horizontalLayout_10.addWidget(self.label_dor_1)
+        self.lineEdit_dormant_1 = QtWidgets.QLineEdit(self.groupBox_corrected_cn)
+        self.lineEdit_dormant_1.setMinimumSize(QtCore.QSize(30, 0))
+        self.lineEdit_dormant_1.setObjectName("lineEdit_dormant_1")
+        self.horizontalLayout_10.addWidget(self.lineEdit_dormant_1)
+        self.label_dor_3 = QtWidgets.QLabel(self.groupBox_corrected_cn)
+        self.label_dor_3.setMinimumSize(QtCore.QSize(10, 0))
+        self.label_dor_3.setObjectName("label_dor_3")
+        self.horizontalLayout_10.addWidget(self.label_dor_3)
+        self.lineEdit_dormant_3 = QtWidgets.QLineEdit(self.groupBox_corrected_cn)
+        self.lineEdit_dormant_3.setMinimumSize(QtCore.QSize(30, 0))
+        self.lineEdit_dormant_3.setObjectName("lineEdit_dormant_3")
+        self.horizontalLayout_10.addWidget(self.lineEdit_dormant_3)
+        self.horizontalLayout_29.addLayout(self.horizontalLayout_10)
+        self.horizontalLayout_41.addLayout(self.horizontalLayout_29)
+        self.horizontalLayout_8 = QtWidgets.QHBoxLayout()
+        self.horizontalLayout_8.setObjectName("horizontalLayout_8")
+        self.label_dormant_month = QtWidgets.QLabel(self.groupBox_corrected_cn)
+        self.label_dormant_month.setMinimumSize(QtCore.QSize(60, 20))
+        self.label_dormant_month.setMaximumSize(QtCore.QSize(100, 16777215))
+        font = QtGui.QFont()
+        font.setPointSize(8)
+        font.setBold(False)
+        font.setWeight(50)
+        font.setKerning(True)
+        self.label_dormant_month.setFont(font)
+        self.label_dormant_month.setObjectName("label_dormant_month")
+        self.horizontalLayout_8.addWidget(self.label_dormant_month)
+        self.lineEdit_dormant_month = QtWidgets.QLineEdit(self.groupBox_corrected_cn)
+        self.lineEdit_dormant_month.setMinimumSize(QtCore.QSize(70, 0))
+        font = QtGui.QFont()
+        font.setPointSize(8)
+        self.lineEdit_dormant_month.setFont(font)
+        self.lineEdit_dormant_month.setObjectName("lineEdit_dormant_month")
+        self.horizontalLayout_8.addWidget(self.lineEdit_dormant_month)
+        self.horizontalLayout_41.addLayout(self.horizontalLayout_8)
+        self.verticalLayout.addLayout(self.horizontalLayout_41)
+        self.horizontalLayout_42 = QtWidgets.QHBoxLayout()
+        self.horizontalLayout_42.setObjectName("horizontalLayout_42")
+        self.horizontalLayout_9 = QtWidgets.QHBoxLayout()
+        self.horizontalLayout_9.setObjectName("horizontalLayout_9")
+        self.label_growing = QtWidgets.QLabel(self.groupBox_corrected_cn)
+        self.label_growing.setMinimumSize(QtCore.QSize(80, 20))
+        self.label_growing.setMaximumSize(QtCore.QSize(200, 16777215))
+        font = QtGui.QFont()
+        font.setPointSize(8)
+        font.setBold(False)
+        font.setWeight(50)
+        font.setKerning(True)
+        self.label_growing.setFont(font)
+        self.label_growing.setObjectName("label_growing")
+        self.horizontalLayout_9.addWidget(self.label_growing)
+        self.horizontalLayout_39 = QtWidgets.QHBoxLayout()
+        self.horizontalLayout_39.setObjectName("horizontalLayout_39")
+        self.label_grow_1 = QtWidgets.QLabel(self.groupBox_corrected_cn)
+        self.label_grow_1.setMinimumSize(QtCore.QSize(10, 0))
+        font = QtGui.QFont()
+        font.setPointSize(8)
+        self.label_grow_1.setFont(font)
+        self.label_grow_1.setObjectName("label_grow_1")
+        self.horizontalLayout_39.addWidget(self.label_grow_1)
+        self.lineEdit_grow_1 = QtWidgets.QLineEdit(self.groupBox_corrected_cn)
+        self.lineEdit_grow_1.setMinimumSize(QtCore.QSize(30, 0))
+        font = QtGui.QFont()
+        font.setPointSize(8)
+        self.lineEdit_grow_1.setFont(font)
+        self.lineEdit_grow_1.setObjectName("lineEdit_grow_1")
+        self.horizontalLayout_39.addWidget(self.lineEdit_grow_1)
+        self.label_grow_3 = QtWidgets.QLabel(self.groupBox_corrected_cn)
+        self.label_grow_3.setMinimumSize(QtCore.QSize(10, 0))
+        font = QtGui.QFont()
+        font.setPointSize(8)
+        self.label_grow_3.setFont(font)
+        self.label_grow_3.setObjectName("label_grow_3")
+        self.horizontalLayout_39.addWidget(self.label_grow_3)
+        self.lineEdit_grow_3 = QtWidgets.QLineEdit(self.groupBox_corrected_cn)
+        self.lineEdit_grow_3.setMinimumSize(QtCore.QSize(30, 0))
+        font = QtGui.QFont()
+        font.setPointSize(8)
+        self.lineEdit_grow_3.setFont(font)
+        self.lineEdit_grow_3.setObjectName("lineEdit_grow_3")
+        self.horizontalLayout_39.addWidget(self.lineEdit_grow_3)
+        self.horizontalLayout_9.addLayout(self.horizontalLayout_39)
+        self.horizontalLayout_42.addLayout(self.horizontalLayout_9)
+        self.horizontalLayout_12 = QtWidgets.QHBoxLayout()
+        self.horizontalLayout_12.setObjectName("horizontalLayout_12")
+        self.horizontalLayout_11 = QtWidgets.QHBoxLayout()
+        self.horizontalLayout_11.setObjectName("horizontalLayout_11")
+        self.label_average = QtWidgets.QLabel(self.groupBox_corrected_cn)
+        self.label_average.setMinimumSize(QtCore.QSize(80, 20))
+        self.label_average.setMaximumSize(QtCore.QSize(200, 16777215))
+        font = QtGui.QFont()
+        font.setPointSize(8)
+        font.setBold(False)
+        font.setWeight(50)
+        font.setKerning(True)
+        self.label_average.setFont(font)
+        self.label_average.setObjectName("label_average")
+        self.horizontalLayout_11.addWidget(self.label_average)
+        self.comboBox_average = QtWidgets.QComboBox(self.groupBox_corrected_cn)
+        self.comboBox_average.setMinimumSize(QtCore.QSize(40, 0))
+        font = QtGui.QFont()
+        font.setPointSize(8)
+        self.comboBox_average.setFont(font)
+        self.comboBox_average.setObjectName("comboBox_average")
+        self.comboBox_average.addItem("")
+        self.comboBox_average.addItem("")
+        self.horizontalLayout_11.addWidget(self.comboBox_average)
+        self.horizontalLayout_12.addLayout(self.horizontalLayout_11)
+        self.horizontalLayout_42.addLayout(self.horizontalLayout_12)
+        self.verticalLayout.addLayout(self.horizontalLayout_42)
+        self.verticalLayout_2.addLayout(self.verticalLayout)
+        self.verticalLayout_11.addWidget(self.groupBox_corrected_cn)
+        self.verticalLayout_14.addWidget(self.groupBox_curve_number)
+        self.horizontalLayout_13 = QtWidgets.QHBoxLayout()
+        self.horizontalLayout_13.setObjectName("horizontalLayout_13")
+        self.checkBox_cn_value = QtWidgets.QCheckBox(Dialog_infiltration)
+        self.checkBox_cn_value.setText("")
+        self.checkBox_cn_value.setObjectName("checkBox_cn_value")
+        self.horizontalLayout_13.addWidget(self.checkBox_cn_value)
+        self.label_cn_val = QtWidgets.QLabel(Dialog_infiltration)
+        self.label_cn_val.setEnabled(False)
+        self.label_cn_val.setMinimumSize(QtCore.QSize(50, 30))
+        self.label_cn_val.setMaximumSize(QtCore.QSize(60, 30))
+        font = QtGui.QFont()
+        font.setPointSize(10)
+        font.setBold(False)
+        font.setWeight(50)
+        font.setKerning(True)
+        self.label_cn_val.setFont(font)
+        self.label_cn_val.setObjectName("label_cn_val")
+        self.horizontalLayout_13.addWidget(self.label_cn_val)
+        self.lineEdit_CN_Val = QtWidgets.QLineEdit(Dialog_infiltration)
+        self.lineEdit_CN_Val.setEnabled(False)
+        self.lineEdit_CN_Val.setMinimumSize(QtCore.QSize(30, 30))
+        self.lineEdit_CN_Val.setMaximumSize(QtCore.QSize(30, 16777215))
+        self.lineEdit_CN_Val.setText("")
+        self.lineEdit_CN_Val.setObjectName("lineEdit_CN_Val")
+        self.horizontalLayout_13.addWidget(self.lineEdit_CN_Val)
+        spacerItem4 = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Policy.Expanding, QtWidgets.QSizePolicy.Policy.Minimum)
+        self.horizontalLayout_13.addItem(spacerItem4)
+        self.verticalLayout_14.addLayout(self.horizontalLayout_13)
+        self.horizontalLayout_36.addLayout(self.verticalLayout_14)
+        self.verticalLayout_6 = QtWidgets.QVBoxLayout()
+        self.verticalLayout_6.setObjectName("verticalLayout_6")
+        self.groupBox_urban = QtWidgets.QGroupBox(Dialog_infiltration)
+        self.groupBox_urban.setEnabled(True)
+        self.groupBox_urban.setCheckable(True)
+        self.groupBox_urban.setChecked(False)
+        self.groupBox_urban.setObjectName("groupBox_urban")
+        self.verticalLayout_12 = QtWidgets.QVBoxLayout(self.groupBox_urban)
+        self.verticalLayout_12.setObjectName("verticalLayout_12")
+        self.horizontalLayout_16 = QtWidgets.QHBoxLayout()
+        self.horizontalLayout_16.setObjectName("horizontalLayout_16")
+        self.label_urban_zone_raster = QtWidgets.QLabel(self.groupBox_urban)
+        self.label_urban_zone_raster.setEnabled(False)
+        self.label_urban_zone_raster.setMinimumSize(QtCore.QSize(200, 20))
+        font = QtGui.QFont()
+        font.setPointSize(10)
+        font.setBold(False)
+        font.setWeight(50)
+        font.setKerning(True)
+        self.label_urban_zone_raster.setFont(font)
+        self.label_urban_zone_raster.setObjectName("label_urban_zone_raster")
+        self.horizontalLayout_16.addWidget(self.label_urban_zone_raster)
+        self.lineEdit_urban_zone_raster = QtWidgets.QLineEdit(self.groupBox_urban)
+        self.lineEdit_urban_zone_raster.setEnabled(False)
+        self.lineEdit_urban_zone_raster.setMinimumSize(QtCore.QSize(150, 20))
+        self.lineEdit_urban_zone_raster.setObjectName("lineEdit_urban_zone_raster")
+        self.horizontalLayout_16.addWidget(self.lineEdit_urban_zone_raster)
+        self.toolButton_browse_urban_zone_raster = QtWidgets.QToolButton(self.groupBox_urban)
+        self.toolButton_browse_urban_zone_raster.setEnabled(False)
+        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Policy.Preferred, QtWidgets.QSizePolicy.Policy.Fixed)
+        sizePolicy.setHorizontalStretch(0)
+        sizePolicy.setVerticalStretch(0)
+        sizePolicy.setHeightForWidth(self.toolButton_browse_urban_zone_raster.sizePolicy().hasHeightForWidth())
+        self.toolButton_browse_urban_zone_raster.setSizePolicy(sizePolicy)
+        self.toolButton_browse_urban_zone_raster.setMinimumSize(QtCore.QSize(20, 0))
+        self.toolButton_browse_urban_zone_raster.setMaximumSize(QtCore.QSize(20, 20))
+        self.toolButton_browse_urban_zone_raster.setObjectName("toolButton_browse_urban_zone_raster")
+        self.horizontalLayout_16.addWidget(self.toolButton_browse_urban_zone_raster)
+        self.verticalLayout_12.addLayout(self.horizontalLayout_16)
+        self.checkBox_urban_cn_correction = QtWidgets.QCheckBox(self.groupBox_urban)
+        self.checkBox_urban_cn_correction.setEnabled(False)
+        self.checkBox_urban_cn_correction.setMinimumSize(QtCore.QSize(200, 0))
+        self.checkBox_urban_cn_correction.setObjectName("checkBox_urban_cn_correction")
+        self.verticalLayout_12.addWidget(self.checkBox_urban_cn_correction)
+        self.groupBox_urban_cn_correction = QtWidgets.QGroupBox(self.groupBox_urban)
+        self.groupBox_urban_cn_correction.setEnabled(False)
+        self.groupBox_urban_cn_correction.setMaximumSize(QtCore.QSize(16777215, 140))
+        self.groupBox_urban_cn_correction.setTitle("")
+        self.groupBox_urban_cn_correction.setObjectName("groupBox_urban_cn_correction")
+        self.verticalLayout_10 = QtWidgets.QVBoxLayout(self.groupBox_urban_cn_correction)
+        self.verticalLayout_10.setObjectName("verticalLayout_10")
+        self.horizontalLayout_32 = QtWidgets.QHBoxLayout()
+        self.horizontalLayout_32.setObjectName("horizontalLayout_32")
+        self.checkBox_cia_cn_composite = QtWidgets.QCheckBox(self.groupBox_urban_cn_correction)
+        self.checkBox_cia_cn_composite.setMinimumSize(QtCore.QSize(120, 22))
+        self.checkBox_cia_cn_composite.setObjectName("checkBox_cia_cn_composite")
+        self.horizontalLayout_32.addWidget(self.checkBox_cia_cn_composite)
+        self.horizontalLayout_17 = QtWidgets.QHBoxLayout()
+        self.horizontalLayout_17.setObjectName("horizontalLayout_17")
+        self.label_cn_urban_cia_raster = QtWidgets.QLabel(self.groupBox_urban_cn_correction)
+        self.label_cn_urban_cia_raster.setMinimumSize(QtCore.QSize(200, 20))
+        font = QtGui.QFont()
+        font.setPointSize(10)
+        font.setBold(False)
+        font.setWeight(50)
+        font.setKerning(True)
+        self.label_cn_urban_cia_raster.setFont(font)
+        self.label_cn_urban_cia_raster.setObjectName("label_cn_urban_cia_raster")
+        self.horizontalLayout_17.addWidget(self.label_cn_urban_cia_raster)
+        self.lineEdit_cn_urban_cia_raster = QtWidgets.QLineEdit(self.groupBox_urban_cn_correction)
+        self.lineEdit_cn_urban_cia_raster.setMinimumSize(QtCore.QSize(150, 20))
+        self.lineEdit_cn_urban_cia_raster.setObjectName("lineEdit_cn_urban_cia_raster")
+        self.horizontalLayout_17.addWidget(self.lineEdit_cn_urban_cia_raster)
+        self.toolButton_browse_cn_urban_cia_raster = QtWidgets.QToolButton(self.groupBox_urban_cn_correction)
+        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Policy.Preferred, QtWidgets.QSizePolicy.Policy.Fixed)
+        sizePolicy.setHorizontalStretch(0)
+        sizePolicy.setVerticalStretch(0)
+        sizePolicy.setHeightForWidth(self.toolButton_browse_cn_urban_cia_raster.sizePolicy().hasHeightForWidth())
+        self.toolButton_browse_cn_urban_cia_raster.setSizePolicy(sizePolicy)
+        self.toolButton_browse_cn_urban_cia_raster.setMinimumSize(QtCore.QSize(20, 0))
+        self.toolButton_browse_cn_urban_cia_raster.setMaximumSize(QtCore.QSize(20, 20))
+        self.toolButton_browse_cn_urban_cia_raster.setObjectName("toolButton_browse_cn_urban_cia_raster")
+        self.horizontalLayout_17.addWidget(self.toolButton_browse_cn_urban_cia_raster)
+        self.horizontalLayout_32.addLayout(self.horizontalLayout_17)
+        self.verticalLayout_10.addLayout(self.horizontalLayout_32)
+        spacerItem5 = QtWidgets.QSpacerItem(20, 40, QtWidgets.QSizePolicy.Policy.Minimum, QtWidgets.QSizePolicy.Policy.Maximum)
+        self.verticalLayout_10.addItem(spacerItem5)
+        self.horizontalLayout_34 = QtWidgets.QHBoxLayout()
+        self.horizontalLayout_34.setObjectName("horizontalLayout_34")
+        self.checkBox_uncia_cn_composite = QtWidgets.QCheckBox(self.groupBox_urban_cn_correction)
+        self.checkBox_uncia_cn_composite.setMinimumSize(QtCore.QSize(120, 22))
+        self.checkBox_uncia_cn_composite.setObjectName("checkBox_uncia_cn_composite")
+        self.horizontalLayout_34.addWidget(self.checkBox_uncia_cn_composite)
+        self.verticalLayout_9 = QtWidgets.QVBoxLayout()
+        self.verticalLayout_9.setObjectName("verticalLayout_9")
+        self.horizontalLayout_18 = QtWidgets.QHBoxLayout()
+        self.horizontalLayout_18.setObjectName("horizontalLayout_18")
+        self.label_cn_urban_uncia_total_raster = QtWidgets.QLabel(self.groupBox_urban_cn_correction)
+        self.label_cn_urban_uncia_total_raster.setMinimumSize(QtCore.QSize(200, 20))
+        font = QtGui.QFont()
+        font.setPointSize(10)
+        font.setBold(False)
+        font.setWeight(50)
+        font.setKerning(True)
+        self.label_cn_urban_uncia_total_raster.setFont(font)
+        self.label_cn_urban_uncia_total_raster.setObjectName("label_cn_urban_uncia_total_raster")
+        self.horizontalLayout_18.addWidget(self.label_cn_urban_uncia_total_raster)
+        self.lineEdit_cn_urban_uncia_total_raster = QtWidgets.QLineEdit(self.groupBox_urban_cn_correction)
+        self.lineEdit_cn_urban_uncia_total_raster.setMinimumSize(QtCore.QSize(150, 20))
+        self.lineEdit_cn_urban_uncia_total_raster.setObjectName("lineEdit_cn_urban_uncia_total_raster")
+        self.horizontalLayout_18.addWidget(self.lineEdit_cn_urban_uncia_total_raster)
+        self.toolButton_browse_cn_urban_uncia_total_raster = QtWidgets.QToolButton(self.groupBox_urban_cn_correction)
+        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Policy.Preferred, QtWidgets.QSizePolicy.Policy.Fixed)
+        sizePolicy.setHorizontalStretch(0)
+        sizePolicy.setVerticalStretch(0)
+        sizePolicy.setHeightForWidth(self.toolButton_browse_cn_urban_uncia_total_raster.sizePolicy().hasHeightForWidth())
+        self.toolButton_browse_cn_urban_uncia_total_raster.setSizePolicy(sizePolicy)
+        self.toolButton_browse_cn_urban_uncia_total_raster.setMinimumSize(QtCore.QSize(20, 0))
+        self.toolButton_browse_cn_urban_uncia_total_raster.setMaximumSize(QtCore.QSize(20, 20))
+        self.toolButton_browse_cn_urban_uncia_total_raster.setObjectName("toolButton_browse_cn_urban_uncia_total_raster")
+        self.horizontalLayout_18.addWidget(self.toolButton_browse_cn_urban_uncia_total_raster)
+        self.verticalLayout_9.addLayout(self.horizontalLayout_18)
+        spacerItem6 = QtWidgets.QSpacerItem(20, 4, QtWidgets.QSizePolicy.Policy.Minimum, QtWidgets.QSizePolicy.Policy.Fixed)
+        self.verticalLayout_9.addItem(spacerItem6)
+        self.horizontalLayout_19 = QtWidgets.QHBoxLayout()
+        self.horizontalLayout_19.setObjectName("horizontalLayout_19")
+        self.label_cn_urban_uncia_raster = QtWidgets.QLabel(self.groupBox_urban_cn_correction)
+        self.label_cn_urban_uncia_raster.setMinimumSize(QtCore.QSize(200, 20))
+        font = QtGui.QFont()
+        font.setPointSize(10)
+        font.setBold(False)
+        font.setWeight(50)
+        font.setKerning(True)
+        self.label_cn_urban_uncia_raster.setFont(font)
+        self.label_cn_urban_uncia_raster.setObjectName("label_cn_urban_uncia_raster")
+        self.horizontalLayout_19.addWidget(self.label_cn_urban_uncia_raster)
+        self.lineEdit_cn_urban_uncia_raster = QtWidgets.QLineEdit(self.groupBox_urban_cn_correction)
+        self.lineEdit_cn_urban_uncia_raster.setMinimumSize(QtCore.QSize(150, 20))
+        self.lineEdit_cn_urban_uncia_raster.setObjectName("lineEdit_cn_urban_uncia_raster")
+        self.horizontalLayout_19.addWidget(self.lineEdit_cn_urban_uncia_raster)
+        self.toolButton_browse_cn_urban_uncia_raster = QtWidgets.QToolButton(self.groupBox_urban_cn_correction)
+        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Policy.Preferred, QtWidgets.QSizePolicy.Policy.Fixed)
+        sizePolicy.setHorizontalStretch(0)
+        sizePolicy.setVerticalStretch(0)
+        sizePolicy.setHeightForWidth(self.toolButton_browse_cn_urban_uncia_raster.sizePolicy().hasHeightForWidth())
+        self.toolButton_browse_cn_urban_uncia_raster.setSizePolicy(sizePolicy)
+        self.toolButton_browse_cn_urban_uncia_raster.setMinimumSize(QtCore.QSize(20, 0))
+        self.toolButton_browse_cn_urban_uncia_raster.setMaximumSize(QtCore.QSize(20, 20))
+        self.toolButton_browse_cn_urban_uncia_raster.setObjectName("toolButton_browse_cn_urban_uncia_raster")
+        self.horizontalLayout_19.addWidget(self.toolButton_browse_cn_urban_uncia_raster)
+        self.verticalLayout_9.addLayout(self.horizontalLayout_19)
+        self.horizontalLayout_34.addLayout(self.verticalLayout_9)
+        self.verticalLayout_10.addLayout(self.horizontalLayout_34)
+        self.verticalLayout_12.addWidget(self.groupBox_urban_cn_correction)
+        self.line_6 = QtWidgets.QFrame(self.groupBox_urban)
+        self.line_6.setFrameShape(QtWidgets.QFrame.Shape.HLine)
+        self.line_6.setFrameShadow(QtWidgets.QFrame.Shadow.Sunken)
+        self.line_6.setObjectName("line_6")
+        self.verticalLayout_12.addWidget(self.line_6)
+        self.horizontalLayout_31 = QtWidgets.QHBoxLayout()
+        self.horizontalLayout_31.setObjectName("horizontalLayout_31")
+        self.verticalLayout_8 = QtWidgets.QVBoxLayout()
+        self.verticalLayout_8.setObjectName("verticalLayout_8")
+        self.checkBox_urban_cycle = QtWidgets.QCheckBox(self.groupBox_urban)
+        self.checkBox_urban_cycle.setEnabled(False)
+        self.checkBox_urban_cycle.setObjectName("checkBox_urban_cycle")
+        self.verticalLayout_8.addWidget(self.checkBox_urban_cycle)
+        spacerItem7 = QtWidgets.QSpacerItem(20, 40, QtWidgets.QSizePolicy.Policy.Minimum, QtWidgets.QSizePolicy.Policy.Expanding)
+        self.verticalLayout_8.addItem(spacerItem7)
+        self.horizontalLayout_31.addLayout(self.verticalLayout_8)
+        self.tableWidget_urban = QtWidgets.QTableWidget(self.groupBox_urban)
+        self.tableWidget_urban.setEnabled(False)
+        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Policy.MinimumExpanding, QtWidgets.QSizePolicy.Policy.MinimumExpanding)
+        sizePolicy.setHorizontalStretch(0)
+        sizePolicy.setVerticalStretch(0)
+        sizePolicy.setHeightForWidth(self.tableWidget_urban.sizePolicy().hasHeightForWidth())
+        self.tableWidget_urban.setSizePolicy(sizePolicy)
+        self.tableWidget_urban.setMinimumSize(QtCore.QSize(600, 250))
+        self.tableWidget_urban.setObjectName("tableWidget_urban")
+        self.tableWidget_urban.setColumnCount(0)
+        self.tableWidget_urban.setRowCount(0)
+        self.horizontalLayout_31.addWidget(self.tableWidget_urban)
+        self.verticalLayout_12.addLayout(self.horizontalLayout_31)
+        self.verticalLayout_6.addWidget(self.groupBox_urban)
+        self.horizontalLayout_20 = QtWidgets.QHBoxLayout()
+        self.horizontalLayout_20.setObjectName("horizontalLayout_20")
+        self.horizontalLayout_15 = QtWidgets.QHBoxLayout()
+        self.horizontalLayout_15.setObjectName("horizontalLayout_15")
+        self.label_max_infilt = QtWidgets.QLabel(Dialog_infiltration)
+        self.label_max_infilt.setMinimumSize(QtCore.QSize(250, 20))
+        font = QtGui.QFont()
+        font.setPointSize(10)
+        font.setKerning(True)
+        self.label_max_infilt.setFont(font)
+        self.label_max_infilt.setObjectName("label_max_infilt")
+        self.horizontalLayout_15.addWidget(self.label_max_infilt)
+        self.lineEdit__max_infilt = QtWidgets.QLineEdit(Dialog_infiltration)
+        self.lineEdit__max_infilt.setMinimumSize(QtCore.QSize(50, 20))
+        self.lineEdit__max_infilt.setMaximumSize(QtCore.QSize(70, 16777215))
+        self.lineEdit__max_infilt.setText("")
+        self.lineEdit__max_infilt.setObjectName("lineEdit__max_infilt")
+        self.horizontalLayout_15.addWidget(self.lineEdit__max_infilt)
+        self.horizontalLayout_20.addLayout(self.horizontalLayout_15)
+        spacerItem8 = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Policy.Expanding, QtWidgets.QSizePolicy.Policy.Minimum)
+        self.horizontalLayout_20.addItem(spacerItem8)
+        self.buttonBox = QtWidgets.QDialogButtonBox(Dialog_infiltration)
+        self.buttonBox.setOrientation(QtCore.Qt.Orientation.Horizontal)
+        self.buttonBox.setStandardButtons(QtWidgets.QDialogButtonBox.StandardButton.Cancel|QtWidgets.QDialogButtonBox.StandardButton.Ok)
+        self.buttonBox.setObjectName("buttonBox")
+        self.horizontalLayout_20.addWidget(self.buttonBox)
+        self.verticalLayout_6.addLayout(self.horizontalLayout_20)
+        self.horizontalLayout_36.addLayout(self.verticalLayout_6)
+        self.verticalLayout_15.addLayout(self.horizontalLayout_36)
+        self.groupBox_help = QtWidgets.QGroupBox(Dialog_infiltration)
+        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Policy.MinimumExpanding, QtWidgets.QSizePolicy.Policy.MinimumExpanding)
+        sizePolicy.setHorizontalStretch(0)
+        sizePolicy.setVerticalStretch(0)
+        sizePolicy.setHeightForWidth(self.groupBox_help.sizePolicy().hasHeightForWidth())
+        self.groupBox_help.setSizePolicy(sizePolicy)
+        self.groupBox_help.setMinimumSize(QtCore.QSize(550, 0))
+        self.groupBox_help.setMaximumSize(QtCore.QSize(16777215, 300))
+        font = QtGui.QFont()
+        font.setPointSize(9)
+        self.groupBox_help.setFont(font)
+        self.groupBox_help.setAutoFillBackground(False)
+        self.groupBox_help.setStyleSheet("QGroupBox{border:2px solid gray;border-radius:1px;margin-top: 1ex;}\n"
+"QGroupBox::title{subcontrol-origin: margin;subcontrol-position:top center;padding:0 3px;}")
+        self.groupBox_help.setTitle("Help")
+        self.groupBox_help.setFlat(False)
+        self.groupBox_help.setObjectName("groupBox_help")
+        self.verticalLayout_13 = QtWidgets.QVBoxLayout(self.groupBox_help)
+        self.verticalLayout_13.setObjectName("verticalLayout_13")
+        self.textBrowser_help = QtWidgets.QTextBrowser(self.groupBox_help)
+        self.textBrowser_help.setMinimumSize(QtCore.QSize(0, 250))
+        self.textBrowser_help.setMaximumSize(QtCore.QSize(16777215, 300))
+        self.textBrowser_help.setAutoFillBackground(True)
+        self.textBrowser_help.setStyleSheet("background-color: rgb(240, 240, 240)")
+        self.textBrowser_help.setFrameShape(QtWidgets.QFrame.Shape.WinPanel)
+        self.textBrowser_help.setFrameShadow(QtWidgets.QFrame.Shadow.Sunken)
+        self.textBrowser_help.setLineWidth(0)
+        self.textBrowser_help.setReadOnly(True)
+        self.textBrowser_help.setObjectName("textBrowser_help")
+        self.verticalLayout_13.addWidget(self.textBrowser_help)
+        self.verticalLayout_15.addWidget(self.groupBox_help)
+
+        self.retranslateUi(Dialog_infiltration)
+        self.buttonBox.accepted.connect(Dialog_infiltration.accept) # type: ignore
+        self.buttonBox.rejected.connect(Dialog_infiltration.reject) # type: ignore
+        QtCore.QMetaObject.connectSlotsByName(Dialog_infiltration)
+
+    def retranslateUi(self, Dialog_infiltration):
+        _translate = QtCore.QCoreApplication.translate
+        Dialog_infiltration.setWindowTitle(_translate("Dialog_infiltration", "Dialog_infiltration"))
+        self.groupBox_curve_number.setTitle(_translate("Dialog_infiltration", "Curve Number Method for Daily Database"))
+        self.label_cn_csv.setText(_translate("Dialog_infiltration", "Curve Number source table (.CSV)"))
+        self.toolButton_browse_cn_csv.setText(_translate("Dialog_infiltration", "..."))
+        self.groupBox_raster.setTitle(_translate("Dialog_infiltration", "Raster"))
+        self.label_cn_raster.setText(_translate("Dialog_infiltration", "CN parameters source (raster)"))
+        self.toolButton_browse_cn_raster.setText(_translate("Dialog_infiltration", "..."))
+        self.label_lu.setText(_translate("Dialog_infiltration", "LU Band:"))
+        self.label_hsg.setText(_translate("Dialog_infiltration", "HSG Band:"))
+        self.label_elev.setText(_translate("Dialog_infiltration", "Hydrologic condition / Slope Cat. Band:"))
+        self.checkBox_slope_cat.setText(_translate("Dialog_infiltration", "Slope Cat."))
+        self.label_slope.setText(_translate("Dialog_infiltration", "Slope range:"))
+        self.lineEdit_slope.setText(_translate("Dialog_infiltration", "1,5,10,20"))
+        self.checkBox_adv_cn.setText(_translate("Dialog_infiltration", "Advanced Curve Number Tuning  ( S = A CN^x +B CN^y +C CN ^z + D  )"))
+        self.label_a.setText(_translate("Dialog_infiltration", "A"))
+        self.lineEdit_a.setText(_translate("Dialog_infiltration", "0"))
+        self.label_x.setText(_translate("Dialog_infiltration", "x"))
+        self.lineEdit_x.setText(_translate("Dialog_infiltration", "0"))
+        self.label_b.setText(_translate("Dialog_infiltration", "B"))
+        self.lineEdit_b.setText(_translate("Dialog_infiltration", "0"))
+        self.label_y.setText(_translate("Dialog_infiltration", "y"))
+        self.lineEdit_y.setText(_translate("Dialog_infiltration", "0"))
+        self.label_c.setText(_translate("Dialog_infiltration", "C"))
+        self.lineEdit_c.setText(_translate("Dialog_infiltration", "25400"))
+        self.label_z.setText(_translate("Dialog_infiltration", "z"))
+        self.lineEdit_z.setText(_translate("Dialog_infiltration", "-1"))
+        self.label_d.setText(_translate("Dialog_infiltration", "D"))
+        self.lineEdit_d.setText(_translate("Dialog_infiltration", "-254"))
+        self.label_landa.setText(_translate("Dialog_infiltration", "LANDA"))
+        self.lineEdit_landa.setText(_translate("Dialog_infiltration", "0.2"))
+        self.groupBox_corrected_cn.setTitle(_translate("Dialog_infiltration", "Use Corrected CN Values (CN2 = A CNi^2 +B CNi +C )"))
+        self.label_amc3.setText(_translate("Dialog_infiltration", "AMC3 Coeffs."))
+        self.label_amc3_a.setText(_translate("Dialog_infiltration", "A"))
+        self.lineEdit_amc3_a.setText(_translate("Dialog_infiltration", "-0.0086"))
+        self.label_amc3_b.setText(_translate("Dialog_infiltration", "B"))
+        self.lineEdit_amc3_b.setText(_translate("Dialog_infiltration", "1.8338"))
+        self.label_amc3_c.setText(_translate("Dialog_infiltration", "C"))
+        self.lineEdit_amc3_c.setText(_translate("Dialog_infiltration", "0"))
+        self.label_amc1.setText(_translate("Dialog_infiltration", "AMC1 Coeffs."))
+        self.label_amc1_a.setText(_translate("Dialog_infiltration", "A"))
+        self.lineEdit_amc1_a.setText(_translate("Dialog_infiltration", "0.0069"))
+        self.label_amc1_b.setText(_translate("Dialog_infiltration", "B"))
+        self.lineEdit_amc1_b.setText(_translate("Dialog_infiltration", "0.2575"))
+        self.label_amc1_c.setText(_translate("Dialog_infiltration", "C"))
+        self.lineEdit_amc1_c.setText(_translate("Dialog_infiltration", "0"))
+        self.label_dormant_.setText(_translate("Dialog_infiltration", "Dormant threshold"))
+        self.label_dor_1.setText(_translate("Dialog_infiltration", "1:"))
+        self.lineEdit_dormant_1.setText(_translate("Dialog_infiltration", "12.7"))
+        self.label_dor_3.setText(_translate("Dialog_infiltration", "3:"))
+        self.lineEdit_dormant_3.setText(_translate("Dialog_infiltration", "27.9"))
+        self.label_dormant_month.setText(_translate("Dialog_infiltration", "Dormant month"))
+        self.lineEdit_dormant_month.setText(_translate("Dialog_infiltration", "1,2,3,10,11,12"))
+        self.label_growing.setText(_translate("Dialog_infiltration", "Growing threshold"))
+        self.label_grow_1.setText(_translate("Dialog_infiltration", "1:"))
+        self.lineEdit_grow_1.setText(_translate("Dialog_infiltration", "36.6"))
+        self.label_grow_3.setText(_translate("Dialog_infiltration", "3:"))
+        self.lineEdit_grow_3.setText(_translate("Dialog_infiltration", "53.3"))
+        self.label_average.setText(_translate("Dialog_infiltration", "Average threshold"))
+        self.comboBox_average.setItemText(0, _translate("Dialog_infiltration", "Yes"))
+        self.comboBox_average.setItemText(1, _translate("Dialog_infiltration", "No"))
+        self.label_cn_val.setText(_translate("Dialog_infiltration", "CN Value"))
+        self.groupBox_urban.setTitle(_translate("Dialog_infiltration", "Urban Infiltration"))
+        self.label_urban_zone_raster.setText(_translate("Dialog_infiltration", "Urban Zones Identifier (raster)"))
+        self.toolButton_browse_urban_zone_raster.setText(_translate("Dialog_infiltration", "..."))
+        self.checkBox_urban_cn_correction.setText(_translate("Dialog_infiltration", "Urban Composite Curve Number Correction"))
+        self.checkBox_cia_cn_composite.setText(_translate("Dialog_infiltration", "Connected Impervious\n"
+" area Composite CN"))
+        self.label_cn_urban_cia_raster.setText(_translate("Dialog_infiltration", "Connected Impervious Area % (raster)"))
+        self.toolButton_browse_cn_urban_cia_raster.setText(_translate("Dialog_infiltration", "..."))
+        self.checkBox_uncia_cn_composite.setText(_translate("Dialog_infiltration", "Unconnected Impervious\n"
+" area Composite CN"))
+        self.label_cn_urban_uncia_total_raster.setText(_translate("Dialog_infiltration", "Total Impervious Area % (raster)"))
+        self.toolButton_browse_cn_urban_uncia_total_raster.setText(_translate("Dialog_infiltration", "..."))
+        self.label_cn_urban_uncia_raster.setText(_translate("Dialog_infiltration", "Unconnected Impervious Area % (raster)"))
+        self.toolButton_browse_cn_urban_uncia_raster.setText(_translate("Dialog_infiltration", "..."))
+        self.checkBox_urban_cycle.setText(_translate("Dialog_infiltration", "Urban Cycle"))
+        self.label_max_infilt.setText(_translate("Dialog_infiltration", "Maximum Infiltration Threshold Value per Timestep"))
+        self.textBrowser_help.setHtml(_translate("Dialog_infiltration", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
+"<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">\n"
+"p, li { white-space: pre-wrap; }\n"
+"</style></head><body style=\" font-family:\'MS Shell Dlg 2\'; font-size:8.1pt; font-weight:400; font-style:normal;\">\n"
+"<p align=\"justify\" style=\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><br /></p></body></html>"))
+
+
+if __name__ == "__main__":
+    import sys
+    app = QtWidgets.QApplication(sys.argv)
+    Dialog_infiltration = QtWidgets.QDialog()
+    ui = Ui_Dialog_infiltration()
+    ui.setupUi(Dialog_infiltration)
+    Dialog_infiltration.show()
+    sys.exit(app.exec())

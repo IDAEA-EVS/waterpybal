@@ -6,14 +6,20 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>803</width>
-    <height>749</height>
+    <width>1281</width>
+    <height>767</height>
    </rect>
+  </property>
+  <property name="sizePolicy">
+   <sizepolicy hsizetype="MinimumExpanding" vsizetype="MinimumExpanding">
+    <horstretch>0</horstretch>
+    <verstretch>0</verstretch>
+   </sizepolicy>
   </property>
   <property name="minimumSize">
    <size>
-    <width>800</width>
-    <height>620</height>
+    <width>1140</width>
+    <height>750</height>
    </size>
   </property>
   <property name="windowTitle">
@@ -24,10 +30,22 @@
     <layout class="QVBoxLayout" name="verticalLayout_6">
      <item>
       <widget class="QGroupBox" name="groupBox_variable_input">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Maximum" vsizetype="Preferred">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
        <property name="minimumSize">
         <size>
          <width>570</width>
          <height>385</height>
+        </size>
+       </property>
+       <property name="maximumSize">
+        <size>
+         <width>630</width>
+         <height>16777215</height>
         </size>
        </property>
        <property name="title">
@@ -612,9 +630,6 @@ precipitation)
          </property>
          <layout class="QVBoxLayout" name="verticalLayout_3">
           <item>
-           <layout class="QHBoxLayout" name="horizontalLayout_14"/>
-          </item>
-          <item>
            <layout class="QHBoxLayout" name="horizontalLayout_13">
             <item>
              <layout class="QHBoxLayout" name="horizontalLayout_11">
@@ -721,6 +736,18 @@ precipitation)
       <widget class="QGroupBox" name="groupBox_2">
        <property name="enabled">
         <bool>false</bool>
+       </property>
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Maximum" vsizetype="Preferred">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="maximumSize">
+        <size>
+         <width>630</width>
+         <height>16777215</height>
+        </size>
        </property>
        <property name="title">
         <string/>
@@ -917,10 +944,16 @@ precipitation)
    </item>
    <item>
     <widget class="QGroupBox" name="groupBox_help">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="MinimumExpanding" vsizetype="MinimumExpanding">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
      <property name="minimumSize">
       <size>
-       <width>150</width>
-       <height>0</height>
+       <width>500</width>
+       <height>730</height>
       </size>
      </property>
      <property name="font">

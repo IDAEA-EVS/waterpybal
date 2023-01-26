@@ -1,6 +1,6 @@
 # ***Soil Water Reserve Calculation***
 
-CC: Camp Capacity
+CC: Field Capacity (Volumetric Content)
 
 PWP: Permanent Wilting Point
 

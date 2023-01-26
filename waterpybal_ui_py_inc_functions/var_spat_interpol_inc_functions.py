@@ -143,7 +143,7 @@ class Ui_Dialog_var_spat_interpol_(QtWidgets.QDialog):
         cellinfo=QtWidgets.QTableWidgetItem('radius')
         cellinfo.setFlags(QtCore.Qt.ItemFlag.ItemIsEnabled)
         self.ui.tableWidget_intp_method_params.setItem(0, 0, cellinfo)
-        cellinfo=QtWidgets.QTableWidgetItem('0.0')
+        cellinfo=QtWidgets.QTableWidgetItem('-1.0')
         self.ui.tableWidget_intp_method_params.setItem(0, 1, cellinfo)
     #################
     def single_point_mod(self):
@@ -167,51 +167,61 @@ class Ui_Dialog_var_spat_interpol_(QtWidgets.QDialog):
         data = []
         if new_method== "Inverse Distance":
             self.met="invdist"
-            src=7
+            src=10
             data=[
                 ('power','2.0'),
                 ('smoothing','0.0'),
                 ('radius1','0.0'),
                 ('radius2','0.0'),
+                ('radius','0.0'),
                 ('angle','0.0'),
                 ('max_points','0'),
                 ('min_points','0'),
+                ('max_points_per_quadrant','0'),
+                ('min_points_per_quadrant','0')
                 ]  
 
         elif new_method== "Nearest Neighbor":
             self.met="nearest"
-            src=3
+            src=4
             data=[
                 ('radius1','0.0'),
                 ('radius2','0.0'),
-                ('angle','0.0'),
+                ('radius','0.0'),
+                ('angle','0.0')
                 ] 
 
         elif new_method== "ID-NN":
             self.met="invdistnn"
-            src=5
+            src=7
             data=[
                 ('power','2.0'),
                 ('smoothing','0.0'),
                 ('radius','0.0'),
                 ('max_points','0'),
                 ('min_points','0'),
+                ('max_points_per_quadrant','0'),
+                ('min_points_per_quadrant','0')
                 ] 
         elif  new_method=="Linear":
             self.met="linear"
             src=1
             data=[
-                ('radius','0.0'),
+                ('radius','-1.0'),
                 ] 
             
         elif new_method== "Mov. Average":
             self.met="average"
-            src=4
+            src=8
             data=[
                 ('radius1','0.0'),
                 ('radius2','0.0'),
+                ('radius','0.0'),
                 ('angle','0.0'),
                 ('min_points','0'),
+                ('max_points','0'),
+                ('max_points_per_quadrant','0'),
+                ('min_points_per_quadrant','0')
                 ] 
         ####################
         self.ui.tableWidget_intp_method_params.setRowCount(src)
@@ -357,12 +367,12 @@ class Ui_Dialog_var_spat_interpol_(QtWidgets.QDialog):
 
         elif self.sam_val==True and self.nc_ds==False:
             #same value for all timesteps and in all space
-            var_name=self.ui.comboBox_var_name.currentText()
+            var_name=self.ui.comboBox_var_same_val.currentText()
             self.ds[var_name][:,:,:]=float(self.ui.lineEdit_same_val.text())
         
         elif self.sam_val==False and self.nc_ds==True:
             #nc
-            var_name=self.ui.comboBox_var_name_nc.currentText
+            var_name=self.ui.comboBox_var_name_nc.currentText()
             new_nc_dir=self.ui.lineEdit_nc.text()
 
             self.ds=variable_management.var_introduction_from_nc(new_nc_dir,self.ds,var_name)

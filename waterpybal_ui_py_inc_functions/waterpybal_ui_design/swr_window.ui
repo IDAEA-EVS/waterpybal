@@ -6,14 +6,14 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>902</width>
-    <height>241</height>
+    <width>900</width>
+    <height>300</height>
    </rect>
   </property>
   <property name="minimumSize">
    <size>
-    <width>600</width>
-    <height>0</height>
+    <width>900</width>
+    <height>300</height>
    </size>
   </property>
   <property name="windowTitle">
@@ -435,9 +435,15 @@
    </item>
    <item>
     <widget class="QGroupBox" name="groupBox_help">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="MinimumExpanding" vsizetype="MinimumExpanding">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
      <property name="minimumSize">
       <size>
-       <width>150</width>
+       <width>300</width>
        <height>0</height>
       </size>
      </property>

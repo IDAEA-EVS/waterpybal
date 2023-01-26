@@ -97,30 +97,41 @@ class swr():
             if raster_PRU_dir==None:
 
                 pwp=ds["pwp"][time_steps[t],:,:].data
-                pwp[pwp==-9999]=np.nan
+                #pwp[pwp==-9999]=np.nan
                 cc=ds["cc"][time_steps[t],:,:].data
+                #cc[cc==-9999]=np.nan
                 rrt=ds["rrt"][time_steps[t],:,:].data
+                #rrt[rrt==-9999]=np.nan
 
             elif raster_PRU_dir!=None:
                 
                 src=rs.open(raster_PRU_dir)
-                msk = src.read_masks(raster_bands_dic_or_val["pwp"])
                 pwp=src.read(raster_bands_dic_or_val["pwp"])
-                pwp[msk==0]=np.nan
                 cc=src.read(raster_bands_dic_or_val["cc"])
                 rrt=src.read(raster_bands_dic_or_val["rrt"])
+                msk = src.read_masks(raster_bands_dic_or_val["pwp"])
                 src.close()
 
             pru_sh=(cc-pwp)*rrt*1000 #1000 to convert it to mm
+            
             pru_sh=np.nan_to_num(pru_sh,nan=-9999)
+            
+            if raster_PRU_dir!=None: pru_sh[msk==0]=np.nan  
+            else: 
+                pru_sh[pwp==-9999]=np.nan  
+                pru_sh[cc==-9999]=np.nan  
+                pru_sh[rrt==-9999]=np.nan  
+
 
             #the same xy plane of values have to be added to the ds from t to t+1 step
             if time_steps==None: 
                 ds["PRu_Val"]=np.transpose(np.repeat(np.transpose(pru_sh)[:,:,np.newaxis], ds["time"].shape[0],axis=2))
-            ts=[n for n in range(time_steps[t],time_steps[t+1])]
             
-            for tt in ts:
-                ds["PRu_Val"][tt,:,:]=pru_sh
+            else:
+                ts=[n for n in range(time_steps[t],time_steps[t+1])]
+            
+                for tt in ts:
+                    ds["PRu_Val"][tt,:,:]=pru_sh
 
         return ds
 #-----------------------------------------
