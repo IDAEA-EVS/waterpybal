@@ -25,7 +25,7 @@
      <item>
       <widget class="QCheckBox" name="checkbox_ds_vals">
        <property name="text">
-        <string>Use the dataset CC, PWP &amp; RRT values</string>
+        <string>Use the dataset FC, PWP &amp; RRT values</string>
        </property>
       </widget>
      </item>
@@ -127,7 +127,7 @@
                </font>
               </property>
               <property name="text">
-               <string>CC Band</string>
+               <string>FC Band</string>
               </property>
              </widget>
             </item>
@@ -297,7 +297,7 @@
                </font>
               </property>
               <property name="text">
-               <string>CC Value</string>
+               <string>FC Value</string>
               </property>
              </widget>
             </item>

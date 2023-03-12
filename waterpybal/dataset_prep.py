@@ -43,11 +43,13 @@ class dataset_gen(object):
     def __init__(self) -> None:
         self.lat=None
         self.lon=None
-        self.dtype=None
+        #self.dtype=None
         self.time_steps_dic=None
+        self.single_point=None
+        self.ds_date_interval=None
     
     ######################
-    def ds_dimensions(self,lat_lon_type,lat_lon_source,time_source,time_type,preferred_date_interval,lat_name="lat",lon_name="lon",time_name="time",border_res_dic=None,time_dic=None): #lat_lon_type="raster", "dataframe", "csv","border_res_list","netcdf"
+    def ds_dimensions(self,lat_lon_type,lat_lon_source,time_source,time_type,preferred_date_interval,lat_name="lat",lon_name="lon",time_name="time",border_res_dic=None,time_dic=None,single_point=False): #lat_lon_type="raster", "dataframe", "csv","border_res_list","netcdf"
         '''
             ## dataset_prep.dataset_gen.ds_dimensions()
             
@@ -118,6 +120,22 @@ class dataset_gen(object):
                 ---
                 ---
         '''
+        if single_point:
+
+            self.single_point="TRUE"
+        
+            #for single point
+            lat_lon_type="border_res_dic"
+            
+            border_res_dic={
+                "left":0,
+                "right":1,
+                "top":0,
+                "bottom":1,
+                "width":1,
+                "height":1
+            }
+        else: self.single_point="FALSE"
         #For lat lon
         if lat_lon_type=="dataframe":
             lat=np.unique(np.array(lat_lon_source[lat_name])).sort()
@@ -144,38 +162,38 @@ class dataset_gen(object):
         else: print ("lat long dimensions failed!")
         ####################################
         if preferred_date_interval=="Hourly": 
-            dtype='datetime64[h]'
+            self.ds_date_interval='datetime64[h]'
             tunit="minutes since 1970-01-01 00:00:00 UTC"
         elif preferred_date_interval=="Daily": 
-            dtype='datetime64[D]'
+            self.ds_date_interval='datetime64[D]'
             tunit="hours since 1970-01-01 00:00:00 UTC"
         elif preferred_date_interval=="Monthly": 
-            dtype='datetime64[M]'
+            self.ds_date_interval='datetime64[M]'
             tunit="days since 1970-01-01 00:00:00 UTC"
         
         #For time     
         if time_type=="dataframe":
-            time=np.sort(np.unique(np.array(pd.to_datetime(time_source[time_name]),dtype=dtype)))
+            time=np.sort(np.unique(np.array(pd.to_datetime(time_source[time_name]),dtype=self.ds_date_interval)))
             #time_source[time_name]
         #########
         elif time_type=="csv": 
             
             data = pd.read_csv(time_source)
-            time=np.sort(np.unique(np.array(pd.to_datetime(data[time_name]),dtype=dtype)))
+            time=np.sort(np.unique(np.array(pd.to_datetime(data[time_name]),dtype=self.ds_date_interval)))
         #########
         elif time_type=="netcdf":
             ds=nc.Dataset(time_source,'r',format='NETCDF4')
-            time=np.unique(np.array(ds[time_name][:],dtype=dtype))
+            time=np.unique(np.array(ds[time_name][:],dtype=self.ds_date_interval))
         
         elif time_type== "time_dic": #{"start":["yyyy","mm","dd","hh"], "end":["yyyy","mm"."dd","hh"]}
             start=np.datetime64( time_dic["start"][0] +'-'+ time_dic["start"][1] +'-'+ time_dic["start"][2] + 'T'+ time_dic["start"][3])
             end=np.datetime64( time_dic["end"][0] +'-'+ time_dic["end"][1] +'-'+ time_dic["end"][2] + 'T'+ time_dic["end"][3])
-            time=np.arange(start,end,dtype=dtype)
+            time=np.arange(start,end,dtype=self.ds_date_interval)
         else: print ("time dimension failed!")
         
         ####################################
         
-        origin_2 = np.array("1970-01-01",dtype=dtype)  
+        origin_2 = np.array("1970-01-01",dtype=self.ds_date_interval)  
       
         if preferred_date_interval=="Hourly":
             time_v_delta=np.timedelta64(30,'m')
@@ -204,10 +222,10 @@ class dataset_gen(object):
         self.lon=lon
         self.lat=lat
         self.time=time_v
-        self.dtype=dtype
+        #self.dtype=dtype
         self.time_steps_dic=time_steps_dic
 
-        return self.dtype
+        #return self.dtype
 
     
     ######################
@@ -229,7 +247,7 @@ class dataset_gen(object):
                 ---
                 - ds_values_dic nonetype or dic default: None
 
-                    To add additional variables to the waterpybal dataset. The additional variables can be used in following stages such as ETP calculation, etc.
+                    To add additional variables to the waterpybal dataset. The additional variables can be used in following stages such as PET calculation, etc.
                     Format: ds_values_dic={"desired_variable":"desired_variable_unit",...} 
                 
                 ---
@@ -248,6 +266,9 @@ class dataset_gen(object):
             ---
 
         '''
+        
+        ds=nc.Dataset(dir,'w',format='NETCDF4') 
+       
         lons_np=self.lon
         lats_np=self.lat
         times_np=self.time
@@ -257,14 +278,21 @@ class dataset_gen(object):
         time_b2=time_steps_dic["time_b2"]
         tunit=time_steps_dic["tunit"]
 
-        inputs_dic={"Prec_Val":"mm","Runoff_Val":"mm","Irig_Val":"mm","CN_Val":"No_Unit","INF_Val":"mm","ETP_Val":"mm","PRu_Val":"mm","pwp":"no_unit","cc":"no_unit","rrt":"no_unit"}
-        outputs_dic={"ETR_Val":"mm","Def_Val":"mm","Rec_Val":"mm","Ru_Val":"mm","five_day_acc_prec":"mm","CN_mod":"no_unit"}
-        urban_dic={"wat_cons":"mm","wat_net_loss":"%","urb_dir_evap":"%","urb_indir_evap":"%","sew_net_loss_low":"%","sew_net_loss_high":"%","prec_sewage_threshold":"mm","runoff_to_sewage":"%","dir_infil":"%","wat_supp_wells":"mm","wat_supp_wells_loss":"%","wat_other":"mm","urban_to_ds_inf_etp_ratio":"%"}
+        inputs_dic={"Prec":"mm","Runoff":"mm","Irrig":"mm","CN":"No_Unit","INF":"mm","PET":"mm","SWR":"mm","pwp":"no_unit","cc":"no_unit","rrt":"no_unit","Ia": "mm"}
+        outputs_dic={"ETR":"mm","Def":"mm","Rec":"mm","ASWR":"mm","five_day_acc_prec":"mm","CN_mod":"no_unit"}
+        urban_dic={"URB_INF":"mm","URB_EP":"mm","wat_cons":"mm","wat_net_loss":"%","urb_dir_evap":"%","urb_indir_evap":"%","sew_net_loss_low":"%","sew_net_loss_high":"%","prec_sewage_threshold":"mm","runoff_to_sewage":"%","dir_infil":"%","wat_supp_wells":"mm","wat_supp_wells_loss":"%","wat_other":"mm","urban_to_ds_inf_PET_ratio":"%"}
         
         if type(ds_values_dic)==dict: inputs_dic= {**inputs_dic,**ds_values_dic}
-        if urban_ds: inputs_dic={**inputs_dic,**urban_dic}
+
+        if urban_ds: 
+            inputs_dic={**inputs_dic,**urban_dic}
+            ds.urban="TRUE"
+        else: ds.urban="FALSE"
         
-        ds=nc.Dataset(dir,'w',format='NETCDF4')
+        ds.single_point=self.single_point
+
+        ds.date_interval=self.ds_date_interval
+
         #create dimensions
         ds.createDimension("time",None) #None: unlimited dimension
         ds.createDimension("lon",None)
@@ -312,11 +340,11 @@ class variable_management(object):
 
     **Methods**
 
-        > ds = var_interpolation(ds,ras_sample_dir,csv_dir,var_name,method,preferred_date_interval,interpolation_time_int,time_csv_col="time",lat_csv_col="lat",lon_csv_col="lon",multiply=False)
+        > ds = var_interpolation(ds,ras_sample_dir,csv_dir,var_name,method,interpolation_time_int,time_csv_col="time",lat_csv_col="lat",lon_csv_col="lon",multiply=False)
         
-        > ds = var_introduction_from_tiffs(ds,folder_dir,var_name,preferred_date_interval,multiply)
+        > ds = var_introduction_from_tiffs(ds,folder_dir,var_name,multiply)
 
-        > ds = var_introduction_from_csv(ds,csv_dir,time_csv_col,var_name,preferred_date_interval,interpolation_time_int,multiply)
+        > ds = var_introduction_from_csv(ds,csv_dir,time_csv_col,var_name,interpolation_time_int,multiply)
     
         > ds = var_introduction_from_nc(new_nc_dir,ds,var_name)
     ---
@@ -325,12 +353,12 @@ class variable_management(object):
 
     ######################
     @staticmethod
-    def var_interpolation(ds,ras_sample_dir,csv_dir,var_name,method,preferred_date_interval,interpolation_time_int,time_csv_col="time",lat_csv_col="lat",lon_csv_col="lon",multiply=False):
+    def var_interpolation(ds,ras_sample_dir,csv_dir,var_name,method,interpolation_time_int,time_csv_col="time",lat_csv_col="lat",lon_csv_col="lon",multiply=False):
         
         '''
         ## dataset_prep.variable_management.var_interpolation()
             
-            ds = var_interpolation(ds,ras_sample_dir,csv_dir,time_csv_col,lat_csv_col,lon_csv_col,var_name,method,preferred_date_interval,interpolation_time_int,multiply)
+            ds = var_interpolation(ds,ras_sample_dir,csv_dir,time_csv_col,lat_csv_col,lon_csv_col,var_name,method,interpolation_time_int,multiply)
             
             The method to interpolate variables from .csv files. The .csv have to have a lat, long, time and variable name field.
             The variable name field have to be the same as the name in the waterpybal dataset.
@@ -389,11 +417,6 @@ class variable_management(object):
                         > "minimum:radius1=100:radius2=800:angle=20"
                 
                 ---
-                - preferred_date_interval str
-
-                    Waterpybal dataset time interval.
-
-                ---
                 - interpolation_time_int str
                 
                     .csv time interval. In case the .csv time interval differ the dataset time interval, the .csv values proportionally will be distributed between the time steps.
@@ -444,6 +467,7 @@ class variable_management(object):
         print ("time_tt",time_tt)
         ###########################
         #extract the time from ds and convert it to monthly, to just interpolate the same month
+        preferred_date_interval=ds.date_interval
         ds_date_interval_=tools.dtimechanger(preferred_date_interval)
         ds_time=ds["time"][:].data #numbers
         ds_time=ds_time.astype(ds_date_interval_)
@@ -480,7 +504,7 @@ class variable_management(object):
         #store in netcdf
 
         
-        ds=tools.match_date(new_dic=np_interpolated_dic,preferred_date_interval=preferred_date_interval,new_input_time_int=interpolation_time_int,ds=ds,var_name=var_name,multiply=multiply)
+        ds=tools.match_date(new_dic=np_interpolated_dic,new_input_time_int=interpolation_time_int,ds=ds,var_name=var_name,multiply=multiply)
 
         '''elif time_interpolation==True: #add the data to ds in case time interpolation is True and space interpolation is false
             #create a temporal csv pf just one timestep
@@ -497,11 +521,11 @@ class variable_management(object):
     
     ######################
     @staticmethod
-    def var_introduction_from_tiffs(ds,folder_dir,var_name,preferred_date_interval,multiply=False):
+    def var_introduction_from_tiffs(ds,folder_dir,var_name,multiply=False):
         '''
         ## dataset_prep.variable_management.var_introduction_from_tiffs()
             
-            ds = var_introduction_from_tiffs(ds,folder_dir,var_name,preferred_date_interval,multiply)
+            ds = var_introduction_from_tiffs(ds,folder_dir,var_name,multiply)
             
             The method to introduce variables from a folder containing the geotiff (.tif) files. the name of the files in the folder have to be the time step they're refering to.
             Format: YYYY-MM-DD-HH
@@ -522,11 +546,6 @@ class variable_management(object):
                 - var_name str
             
                     .csv variable field name. Have to be the same as watepybal netcdf dataset.
-
-                ---
-                - preferred_date_interval str
-
-                    Waterpybal dataset time interval.
 
                 ---
                 - multiply bool default: False 
@@ -559,6 +578,7 @@ class variable_management(object):
             elif len(date)==4: date_interval='datetime64[h]'
             
             d=np.array(d,dtype=date_interval)
+            preferred_date_interval=ds.date_interval
             d=str(d.astype(preferred_date_interval))
 
             src_temp = rs.open(t)
@@ -567,17 +587,17 @@ class variable_management(object):
             else: rast_dic[d]=arr
             src_temp.close()
 
-        ds=tools.match_date(new_dic=rast_dic,preferred_date_interval=preferred_date_interval,new_input_time_int=date_interval,ds=ds,var_name=var_name,multiply=multiply)
+        ds=tools.match_date(new_dic=rast_dic,new_input_time_int=date_interval,ds=ds,var_name=var_name,multiply=multiply)
         
         return ds
     
     ######################
     @staticmethod
-    def var_introduction_from_csv(ds,csv_dir,var_name,preferred_date_interval,interpolation_time_int,time_csv_col="time",multiply=False):
+    def var_introduction_from_csv(ds,csv_dir,var_name,interpolation_time_int,time_csv_col="time",multiply=False):
         '''
         ## dataset_prep.variable_management.var_introduction_from_csv()
             
-            ds = var_introduction_from_csv(ds,csv_dir,var_name,preferred_date_interval,interpolation_time_int,time_csv_col="time",multiply=False)
+            ds = var_introduction_from_csv(ds,csv_dir,var_name,interpolation_time_int,time_csv_col="time",multiply=False)
             
             The method to introduce **THE SAME VALUES FOR ALL THE STUDY AREA IN A TIMESTEP** from a .csv file without interpolation.
 
@@ -602,11 +622,6 @@ class variable_management(object):
                 - var_name str
             
                     .csv variable field name. Have to be the same as watepybal netcdf dataset.
-
-                ---
-                - preferred_date_interval str
-
-                    Waterpybal dataset time interval.
 
                 ---
                 - interpolation_time_int str
@@ -646,7 +661,7 @@ class variable_management(object):
         
         #datetime64
         time_tt=np.array(df.index.unique())   
-
+        preferred_date_interval=ds.date_interval
         if interpolation_time_int!=preferred_date_interval:
             for i in time_tt:
             
@@ -666,7 +681,7 @@ class variable_management(object):
                 for date,val in np_interpolated_dic_cntr.items():
                     np_interpolated_dic[date]=np_interpolated_dic[date]/val
 
-            ds=tools.match_date(new_dic=np_interpolated_dic,preferred_date_interval=preferred_date_interval,new_input_time_int=interpolation_time_int,ds=ds,var_name=var_name,multiply=multiply)
+            ds=tools.match_date(new_dic=np_interpolated_dic,new_input_time_int=interpolation_time_int,ds=ds,var_name=var_name,multiply=multiply)
             
         else:
             #select df times that exist in the dataframe
@@ -742,11 +757,12 @@ class tools(object):
     '''
 
     @staticmethod
-    def match_date(new_dic,preferred_date_interval,new_input_time_int,ds,var_name,multiply):
+    def match_date(new_dic,new_input_time_int,ds,var_name,multiply):
         '''
            To match the date of the inputs and the dataset 
         '''
-
+        
+        preferred_date_interval=ds.date_interval
         ds_date_interval=tools.dtimechanger(preferred_date_interval)
         
         #to get the right time interval from the ds

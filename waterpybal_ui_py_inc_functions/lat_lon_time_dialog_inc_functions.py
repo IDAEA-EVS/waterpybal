@@ -130,20 +130,14 @@ class lat_lon_time_dialog_(QtWidgets.QDialog):
                 lon_name=None,
                 time_name=None,
                 border_res_dic=None,
-                time_dic=time_dic   
+                time_dic=time_dic,
+                single_point=self.single_point   
             )
 
         else:
             
-            lat_lon_type="border_res_dic"
-            border_res_dic={
-                "left":0,
-                "right":1,
-                "top":0,
-                "bottom":1,
-                "width":1,
-                "height":1
-            }
+            lat_lon_type=None
+            border_res_dic=None
 
 
             dtype=dataset_cl.ds_dimensions(
@@ -156,10 +150,11 @@ class lat_lon_time_dialog_(QtWidgets.QDialog):
                 lon_name="lon",
                 time_name=None,
                 border_res_dic=border_res_dic,
-                time_dic=time_dic
+                time_dic=time_dic,
+                single_point=self.single_point
             )
 
-        self.preferred_date_interval=dtype
+        #self.preferred_date_interval=dtype
 
         ds_values_dic=self.new_var_to_ds()
         

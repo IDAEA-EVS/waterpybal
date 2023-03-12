@@ -413,12 +413,10 @@ class post_process():
 
         for selected_var in selected_vars:
             
-            
-            
-            s_t=selected_var.sum(dim=[lat_name,lon_name])
-            
             #total values of each time step
             csv_total="TOTAL_"+selected_var.name
+            #has to be mult. by pixel area since the sum is the sum of pixel values, not the actual area
+            s_t=selected_var.sum(dim=[lat_name,lon_name])*reg_pix_area
             df_d_t=pd.DataFrame(s_t,index=s_t.time,columns=[csv_total])
             
             if region!="Total":
@@ -434,13 +432,13 @@ class post_process():
 
                     csv_reg="REG_"+str(reg)+"_"+selected_var.name
                     mskd_selected_var=xr.where(identifier_raster_bool,selected_var,np.nan)
-                    mskd_selected_var=mskd_selected_var.sum(dim=[lat_name,lon_name])
+                    mskd_selected_var=mskd_selected_var.mean(dim=[lat_name,lon_name])
                 
                     df_d_t_f=pd.DataFrame(mskd_selected_var,index=s_t.time,columns=[csv_reg])
                     df_d_t=pd.concat([df_d_t, df_d_t_f],axis=1,ignore_index=False)
                     if "REG_"+str(reg)+"_AREA" not in list(df_d_t.columns):
                         df_d_t=tools.reg_area_calc(reg,identifier_raster_bool,reg_pix_area,df_d_t)
-                    df_d_t[csv_reg]=df_d_t[csv_reg]/df_d_t["REG_"+str(reg)+"_AREA"]
+                    #df_d_t[csv_reg]=df_d_t[csv_reg]/df_d_t["REG_"+str(reg)+"_AREA"]
             
             if df is None:
                 df=df_d_t

@@ -1,7 +1,7 @@
 from PyQt6 import QtWidgets,QtGui,QtCore
 from .waterpybal_ui_py.infiltration import Ui_Dialog_infiltration
-from waterpybal.inf_calcs import infiltration
-from waterpybal.urban_cycle import urban_cycle_calcs,urban_Composite_CN_correction
+from waterpybal.inf_calcs import Infiltration
+from waterpybal.urban_cycle import Urban_cycle,Urban_Composite_CN
 from gui_help.gui_help_load import loadhelp
 import numpy as np
 
@@ -21,9 +21,6 @@ class Ui_Dialog_infiltration_(QtWidgets.QDialog):
         #################
         #set variables
         self.ds=None
-        self.preferred_date_interval=None
-        self.single_point=False
-        self.urban_ds=False
         self.single_cn_val=False
         ##############
         #connect the clicks to functions
@@ -40,7 +37,6 @@ class Ui_Dialog_infiltration_(QtWidgets.QDialog):
         self.ui.lineEdit_cn_csv.setText("curve_number_standard_table.xls")
 
         loadhelp(self,"infiltration_help.md")
-
 
     ########################################################################################################
     ########################################################################################################
@@ -191,7 +187,7 @@ class Ui_Dialog_infiltration_(QtWidgets.QDialog):
             
             self.single_cn_val=False
 
-            if self.single_point==False:
+            if self.ds.single_point=="FALSE":
                 #enable curve number groupbox
                 self.ui.groupBox_curve_number.setEnabled(True)
 
@@ -208,8 +204,8 @@ class Ui_Dialog_infiltration_(QtWidgets.QDialog):
         
         self.Calc_CN=True
         # CN method not available
-        print ("self.preferred_date_interval",self.preferred_date_interval)
-        if self.preferred_date_interval not in ["datetime64[D]","daily","Daily"]:
+
+        if self.ds.date_interval not in ["datetime64[D]","daily","Daily"]:
             self.Calc_CN=False
             
             #curve number groupbox
@@ -230,7 +226,7 @@ class Ui_Dialog_infiltration_(QtWidgets.QDialog):
     ##########################
     #check if urban is enabled in the netcdf dataset - used in the main window - 2
     def check_urban(self):
-        if self.urban_ds:
+        if self.ds.urban=="TRUE":
             
             self.ui.lineEdit_urban_zone_raster.setEnabled(True) 
             self.ui.toolButton_browse_urban_zone_raster.setEnabled(True) 
@@ -246,7 +242,7 @@ class Ui_Dialog_infiltration_(QtWidgets.QDialog):
     ##########################
     #if single point is true enable and disable options - used in the main window - 3
     def check_single_point(self):
-        if self.single_point:
+        if self.ds.single_point=="TRUE":
             #disable  cn groupbox
             self.ui.groupBox_curve_number.setChecked(False)
             self.ui.groupBox_curve_number.setEnabled(False) 
@@ -333,7 +329,7 @@ class Ui_Dialog_infiltration_(QtWidgets.QDialog):
         
         for row in range(0,13):
             combo_c1 = QtWidgets.QComboBox()
-            if self.single_point:
+            if self.ds.single_point=="TRUE":
                 combo_c1.addItems(["Constant","Dataset"])
             else:
                 combo_c1.addItems(["Constant","Raster","Dataset"])
@@ -397,7 +393,6 @@ class Ui_Dialog_infiltration_(QtWidgets.QDialog):
             raster_dir=self.ui.lineEdit_cn_raster.text()
             DEM_path_or_raster=raster_dir
             filled_dep=True
-            preferred_date_interval=self.preferred_date_interval
             #Hydrologic condition (HC) or slope catagory (SC) & slope range list
             if self.ui.checkBox_slope_cat.isChecked(): 
                 SC_or_HC="SC"
@@ -406,22 +401,22 @@ class Ui_Dialog_infiltration_(QtWidgets.QDialog):
                 SC_or_HC="HC"
                 slope_range_list=list()
             print (self.cn_val)
-            self.ds,Ia=infiltration.Inf_calc(self.ds,CN_table_dir,raster_dir,HSG_band,LU_band,ELEV_or_HC_band,
-                preferred_date_interval,corrected_cn,self.single_cn_val,self.cn_val,advanced_cn_dic,advanced_cn,
+            self.ds=Infiltration.inf(self.ds,CN_table_dir,raster_dir,HSG_band,LU_band,ELEV_or_HC_band,
+                corrected_cn,self.single_cn_val,self.cn_val,advanced_cn_dic,advanced_cn,
                 filled_dep,slope_range_list,amc1_coeffs,amc3_coeffs,dormant_thresh,growing_thresh,average_thresh,
                 mon_list_dormant,SC_or_HC,DEM_path_or_raster,DEM_or_raster)
             # max infiltration threshold per timestep
-            var_inp="INF_Val"
-            var_out="INF_Val"
+            var_inp="INF"
+            var_out="INF"
             ########################
-            print ("INF_Val line 418 before urban",np.count_nonzero(self.ds["INF_Val"][:,:,:].data==-9999))
+            print ("INF line 418 before urban",np.count_nonzero(self.ds["INF"][:,:,:].data==-9999))
         else:
 
             # max infiltration threshold per timestep
-            #var_inp="Prec_Val"
-            var_inp="INF_Val"
-            var_out="INF_Val"
-            Ia=None
+            #var_inp="Prec"
+            var_inp="INF"
+            var_out="INF"
+            #Ia=None
 
         if self.ui.groupBox_urban.isChecked():
             ##########################
@@ -432,27 +427,27 @@ class Ui_Dialog_infiltration_(QtWidgets.QDialog):
                 if self.ui.checkBox_cia_cn_composite.isChecked() and self.ui.lineEdit_cn_urban_cia_raster.isEnabled():
                     cia_raster=self.ui.lineEdit_cn_urban_cia_raster.text()
                     
-                    self.ds=urban_Composite_CN_correction.cia_main(self.ds,cia_raster,corrected_cn)
+                    self.ds=Urban_Composite_CN.CIA(self.ds,cia_raster,corrected_cn)
                 #unconnected imp.area cn correction
                 if self.ui.checkBox_uncia_cn_composite.isChecked() and self.ui.lineEdit_cn_urban_uncia_total_raster.isEnabled() and self.ui.lineEdit_cn_urban_uncia_raster.isEnabled():
                     tia_raster=self.ui.lineEdit_cn_urban_uncia_total_raster.text()
                     ucia_raster=self.ui.lineEdit_cn_urban_uncia_raster.text()
 
-                    self.ds=urban_Composite_CN_correction.ucia_main(self.ds,tia_raster,ucia_raster,corrected_cn)
+                    self.ds=Urban_Composite_CN.UIA(self.ds,tia_raster,ucia_raster,corrected_cn)
 
             
             #urban cycle
             if self.ui.checkBox_urban_cycle.isChecked() and self.ui.tableWidget_urban.isEnabled():
                 variables_dic=self.urban_inf_dic_gen()
                 urban_area_raster_dir=self.ui.lineEdit_urban_zone_raster.text()
-                self.ds=urban_cycle_calcs.urban_cycle_main(self.ds,urban_area_raster_dir,variables_dic) 
+                self.ds=Urban_cycle.urban_cycle(self.ds,urban_area_raster_dir,variables_dic) 
 
         ##############################################################################
-        print ("INF_Val line 453 after urban",np.count_nonzero(self.ds["INF_Val"][:,:,:].data==-9999))
+        print ("INF line 453 after urban",np.count_nonzero(self.ds["INF"][:,:,:].data==-9999))
         #apply the max infiltration threshold and calculate runoff
-        self.ds=infiltration.max_inf_threshold(self.ds,var_inp,var_out,threshold) 
-        self.ds=infiltration.runoff_calc(self.ds,Ia)
-        print ("INF_Val line 458 after all",np.count_nonzero(self.ds["INF_Val"][:,:,:].data==-9999))
+        self.ds=Infiltration.max_inf_threshold(self.ds,var_inp,var_out,threshold) 
+        #self.ds=infiltration.runoff_calc(self.ds,Ia)
+        print ("INF line 458 after all",np.count_nonzero(self.ds["INF"][:,:,:].data==-9999))
 
     ##############################################################################
     ##############################################################################
@@ -504,7 +499,7 @@ class Ui_Dialog_infiltration_(QtWidgets.QDialog):
             elif variable_name=="Indirect Urban Evaporation (% of water consumption)": variable_name="urb_indir_evap"
             elif variable_name=="Direct Urban Evaporation (% of water precipitation+irrigation)": variable_name="urb_dir_evap"
             elif variable_name=="Direct Infiltration (% of water precipitation+irrigation)": variable_name="dir_infil"
-            elif variable_name=="Urban to calculated Infiltration and Evapotranspiration ratio": variable_name="urban_to_ds_inf_etp_ratio"
+            elif variable_name=="Urban to calculated Infiltration and Evapotranspiration ratio": variable_name="urban_to_ds_inf_PET_ratio"
 
             variables_dic[variable_name]=var_dic
         print ("variables_dic",variables_dic)

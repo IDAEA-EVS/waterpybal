@@ -23,9 +23,7 @@ class Ui_Dialog_var_spat_interpol_(QtWidgets.QDialog):
         self.ui.toolButton_browse_xy_raster.clicked.connect(lambda: self.selectrastFile())
         ##################
         self.ds=None
-        self.preferred_date_interval=None
         self.sam_raster_dir=None
-        self.single_point=False
         self.sam_val=False
         self.nc_ds=False
         ##################
@@ -148,7 +146,7 @@ class Ui_Dialog_var_spat_interpol_(QtWidgets.QDialog):
     #################
     def single_point_mod(self):
         
-        if self.single_point:
+        if self.ds.single_point=="TRUE":
             self.ui.lineEdit_xyraster.setEnabled(False)
             self.ui.label_xy_raster.setEnabled(False)
             self.ui.toolButton_browse_xy_raster.setEnabled(False)
@@ -348,7 +346,6 @@ class Ui_Dialog_var_spat_interpol_(QtWidgets.QDialog):
             if self.ui.checkBox.isChecked(): multiply=False
 
             ######
-            preferred_date_interval=self.preferred_date_interval
             interpolation_time_int=self.ui.comboBox_time_interval.currentText()
             csv_dir=self.ui.lineEdit_csv.text()
             time_csv_col=self.ui.lineEdit_time_col.text()
@@ -358,12 +355,12 @@ class Ui_Dialog_var_spat_interpol_(QtWidgets.QDialog):
             ras_sample_dir=self.ui.lineEdit_xyraster.text()
 
             ######
-            if self.single_point==False:
+            if self.ds.single_point=="FALSE":
                 method=self.method_str_construct()
-                self.ds=variable_management.var_interpolation(self.ds,ras_sample_dir,csv_dir,var_name,method,preferred_date_interval,interpolation_time_int,time_csv_col,lat_csv_col,lon_csv_col,multiply)
+                self.ds=variable_management.var_interpolation(self.ds,ras_sample_dir,csv_dir,var_name,method,interpolation_time_int,time_csv_col,lat_csv_col,lon_csv_col,multiply)
 
             else:
-                self.ds=variable_management.var_introduction_from_csv(self.ds,csv_dir,var_name,preferred_date_interval,interpolation_time_int,time_csv_col,multiply)
+                self.ds=variable_management.var_introduction_from_csv(self.ds,csv_dir,var_name,interpolation_time_int,time_csv_col,multiply)
 
         elif self.sam_val==True and self.nc_ds==False:
             #same value for all timesteps and in all space

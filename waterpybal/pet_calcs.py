@@ -3,12 +3,12 @@ import pandas as pd
 import pyet
 import rasterio as rs
 
-#ETP calculation from soil parameters
-#Example ETP_calcs.ETP_calc_main(ds,method="oudin",tmean='ds', lat=0.91) 
+#PET calculation from soil parameters
+#Example PET_calcs.PET_calc_main(ds,method="oudin",tmean='ds', lat=0.91) 
 
-class ETP_tools(object):
+class PET_tools(object):
     """
-    Methods to be used in ETP class, ETP_calc_main
+    Methods to be used in PET class, PET_calc_main
     """
     def __init__(self):
         #"obl" defines the obligatory input arguments of each function
@@ -55,11 +55,11 @@ class ETP_tools(object):
         }
         
 
-        self.exec_etp_inps=dict()
+        self.exec_PET_inps=dict()
         self.results_df=pd.DataFrame()
 
-    def add_ETP_method_point(self,method,**kwargs):
-        #print ("inside add_ETP_method_point")
+    def add_PET_method_point(self,method,**kwargs):
+        #print ("inside add_PET_method_point")
         if method in self.methods_dic:
 
             kwargs_=dict()
@@ -76,18 +76,18 @@ class ETP_tools(object):
                         #print ("v after",v)
 
                     kwargs_[k]=v
-                else: print ( f"argument {k} not found in the list of the ETP method argument and ignored." )
+                else: print ( f"argument {k} not found in the list of the PET method argument and ignored." )
             #add default values:
             for key_arg,val_arg in self.methods_dic[method].items(): 
                 if key_arg not in kwargs_: kwargs_[key_arg]=val_arg
 
-        self.exec_etp_inps[method]=kwargs_
+        self.exec_PET_inps[method]=kwargs_
 
-    def exec_ETPs_point(self):
-        #print ("inside exec_ETPs_point")
+    def exec_PETs_point(self):
+        #print ("inside exec_PETs_point")
 
-        #print ("self.exec_etp_inps",self.exec_etp_inps)
-        for meth_name,meth_kwargs in self.exec_etp_inps.items():
+        #print ("self.exec_PET_inps",self.exec_PET_inps)
+        for meth_name,meth_kwargs in self.exec_PET_inps.items():
 
             temp_meth_kwargs_list=[]
             for n in meth_kwargs.values():
@@ -96,18 +96,18 @@ class ETP_tools(object):
             if "obl" not in temp_meth_kwargs_list:
                 #print ("meth_kwargs",meth_kwargs)
                 #print ("meth_name",meth_name)
-                etp_res=self.pyet_func_dic[meth_name](**meth_kwargs)
-                self.results_df[meth_name]=etp_res
-            else: raise Exception ("The non-optional input arguments of {meth_name} ETP method is not defined!" )
+                PET_res=self.pyet_func_dic[meth_name](**meth_kwargs)
+                self.results_df[meth_name]=PET_res
+            else: raise Exception ("The non-optional input arguments of {meth_name} PET method is not defined!" )
         return self.results_df
     #########
-class ETP(ETP_tools):
+class PET(PET_tools):
     '''
-    # class etp_calcs.ETP()
+    # class PET_calcs.PET()
     The class to calculate evapotranspiration
     **Methods**
         
-        > ds = ETP_calc(ds, method, preferred_date_interval, var_name='ETP_Val', raster_etp_var_dic=None, **kwargs)
+        > ds = PET_calc(ds, method, var_name='PET', raster_PET_var_dic=None, **kwargs)
     ---
     ---
     '''
@@ -116,21 +116,21 @@ class ETP(ETP_tools):
 
 
     @staticmethod
-    def ETP_calc_temp_out(ds,method,preferred_date_interval,raster_etp_var_dic=None,var_name='ETP_Val',**kwargs):
+    def PET_calc_temp_out(ds,method,raster_PET_var_dic=None,var_name='PET',**kwargs):
         '''
-            ## etp_calcs.ETP.ETP_calc()
+            ## PET_calcs.PET.PET_calc()
             
-            ds = ETP_calc(ds, method, preferred_date_interval, var_name='ETP_Val', raster_etp_var_dic=None, **kwargs)
+            ds = PET_calc(ds, method, var_name='PET', raster_PET_var_dic=None, **kwargs)
             
-            ETP_calc method calculate evapotranspiration in all the dataset. It uses ***pyet*** library for
-            ETP calculations which is opted for use in a single point.
+            PET_calc method calculate evapotranspiration in all the dataset. It uses ***pyet*** library for
+            PET calculations which is opted for use in a single point.
 
-            Depending on the ETP method, necessary arguments have to be introduced to the database. If the argument is a 
-            fix number for all times and coordinates, it could be determined right away. If the ETP
+            Depending on the PET method, necessary arguments have to be introduced to the database. If the argument is a 
+            fix number for all times and coordinates, it could be determined right away. If the PET
             related argument is equal to 'ds', the argument will be derived from the variable with the same name
             in the dataset. Note that user have to introduce this variables to the dataset beforehead. If the
-            argument value changes with the coordinate but not with the time, the etp argument have to be equal
-            to 'raster'. the direction and the band of the targed master have to be determined in raster_etp_var_dic
+            argument value changes with the coordinate but not with the time, the PET argument have to be equal
+            to 'raster'. the direction and the band of the targed master have to be determined in raster_PET_var_dic
             argument using the following syntax:
 
             {"var_name":["raster_dir","raster_band"]} or {"var_name":"raster_dir"} (band default to 1) or {"var_name":["raster_dir"]} (band default to 1)
@@ -138,11 +138,11 @@ class ETP(ETP_tools):
         
             Let's elaborate using this function with an example:
 
-                Suppose we are using penman method for calculating ETP. "tmean" and "wind" are mandatory arguments for this method.
+                Suppose we are using penman method for calculating PET. "tmean" and "wind" are mandatory arguments for this method.
                 Since in this example "tmean" and "wind" are changing in each coordinate, the user have to use "ds"
                 to determine the this data have to be retrieved from dataset variables by the same name. Then there are "aw" and "bw" which
                 have a fixed value by default ("aw"=2.6, "bw"=0.536), but could be changed based on the coordinates.
-                so by defining "aw"="raster" and "bw"="raster and raster_etp_var_dic={"aw":["ras_dir",band1],"bw":["ras_dir",band2]},
+                so by defining "aw"="raster" and "bw"="raster and raster_PET_var_dic={"aw":["ras_dir",band1],"bw":["ras_dir",band2]},
                 aw and bw arguments are equal to raster values of band 1 and 2 respectively. 
 
 
@@ -238,13 +238,8 @@ class ETP(ETP_tools):
                             tmean: **Mandatory**, rs: **Mandatory**, rh: **Mandatory**, k: 0.31
                 
                 ---
-                - preferred_date_interval str
-
-                    Waterpybal dataset time interval.
-                
-                ---
-                - raster_etp_var_dic dic default: None
-                    If the ETP variable doesn't change in time, it is possible to use a raster to introduce it's values.
+                - raster_PET_var_dic dic default: None
+                    If the PET variable doesn't change in time, it is possible to use a raster to introduce it's values.
                     
                     Format:
 
@@ -253,13 +248,13 @@ class ETP(ETP_tools):
                 ---
                 - **kwargs dic
                 
-                    A dictionary that defines the inputs of the ETP method.
+                    A dictionary that defines the inputs of the PET method.
                     
                     The constant values can be defined directly
                     
-                    Rasters have to be defined with "raster" keyword, and then introduced in raster_etp_var_dic argument as a dictionary
+                    Rasters have to be defined with "raster" keyword, and then introduced in raster_PET_var_dic argument as a dictionary
 
-                    If the ETP variable exists in the waterpybal dataset, the "ds" keyword have to be used. 
+                    If the PET variable exists in the waterpybal dataset, the "ds" keyword have to be used. 
 
                     Format:
                         {"var_name_1":constant_value, "var_name_2": "raster", "var_name_3": "ds",... }
@@ -284,7 +279,9 @@ class ETP(ETP_tools):
         lons=[ n for n in range(0,ds["lon"].shape[0])]
         times=ds["time"][:].data
 
-        if raster_etp_var_dic==None: raster_etp_var_dic={} #{"var_name":["raster_dir",raster_band]} or {"var_name":"raster_dir"} (band default to 1) or {"var_name":["raster_dir"]} (band default to 1)
+        if raster_PET_var_dic==None: raster_PET_var_dic={} #{"var_name":["raster_dir",raster_band]} or {"var_name":"raster_dir"} (band default to 1) or {"var_name":["raster_dir"]} (band default to 1)
+        
+        preferred_date_interval=ds.date_interval
 
         if preferred_date_interval=='datetime64[h]': d_i_t='datetime64[m]'
         elif preferred_date_interval=='datetime64[D]':d_i_t='datetime64[h]'
@@ -297,7 +294,7 @@ class ETP(ETP_tools):
             for lon_t in lons: 
                 
                 kwargs_={}
-                nodata_etp=False
+                nodata_PET=False
                 for k in kwargs:
                     
                     if type(kwargs[k])==str and kwargs[k]=='ds':
@@ -310,8 +307,8 @@ class ETP(ETP_tools):
                         v=ds[k][time_step_st:time_step_fin,lat_t,lon_t].data
                         #if k=="lat": v=v * np.pi / 180
                         if np.all(v==-9999):
-                            #print ("nodata_etp_311")
-                            nodata_etp=True
+                            #print ("nodata_PET_311")
+                            nodata_PET=True
                         
                         else:
                             print ("k",k)        
@@ -323,35 +320,35 @@ class ETP(ETP_tools):
                             kwargs_[k]=t_v[k]
 
                     elif type(kwargs[k])==str and kwargs[k]=='raster':
-                        if type(raster_etp_var_dic[k])==str:
-                            rast_dir=raster_etp_var_dic[k]
+                        if type(raster_PET_var_dic[k])==str:
+                            rast_dir=raster_PET_var_dic[k]
                             rast_band=1 
                         else:
-                            rast_dir=raster_etp_var_dic[k][0]
+                            rast_dir=raster_PET_var_dic[k][0]
                             try:
-                                rast_band=raster_etp_var_dic[k][1]
+                                rast_band=raster_PET_var_dic[k][1]
                             except:  
                                 rast_band=1  
                         dataset = rs.open(rast_dir)
                         band = dataset.read(rast_band)
                         msk = dataset.read_masks(rast_band)
                         if msk[lat_t,lon_t]==0: 
-                            nodata_etp=True
-                            print ("nodata_etp_334")
+                            nodata_PET=True
+                            print ("nodata_PET_334")
                         else:kwargs_[k]=band[lat_t,lon_t]
 
                     else: 
                         va=kwargs[k] 
                         kwargs_[k]=va
 
-                if nodata_etp==False:
-                    #print ("nodata_etp==False")
-                    etp_t=ETP_tools()
-                    etp_t.add_ETP_method_point(method,**kwargs_)
-                    etp_t=etp_t.exec_ETPs_point()
-                    #print ("after exec_ETPs_point")
-                    #define ETPs (calculated for each point for all time steps)
-                    ds[var_name][time_step_st:time_step_fin,lat_t,lon_t]=etp_t #output from etp function
+                if nodata_PET==False:
+                    #print ("nodata_PET==False")
+                    PET_t=PET_tools()
+                    PET_t.add_PET_method_point(method,**kwargs_)
+                    PET_t=PET_t.exec_PETs_point()
+                    #print ("after exec_PETs_point")
+                    #define PETs (calculated for each point for all time steps)
+                    ds[var_name][time_step_st:time_step_fin,lat_t,lon_t]=PET_t #output from PET function
                 else: 
                     #print ("in the last else")
                     ds[var_name][time_step_st:time_step_fin,lat_t,lon_t]=np.full(ds[var_name][time_step_st:time_step_fin,lat_t,lon_t].shape,-9999)
@@ -360,22 +357,22 @@ class ETP(ETP_tools):
 
 
     @staticmethod
-    #ETP_calc_better_performance
-    def ETP_calc(ds,method,preferred_date_interval,raster_etp_var_dic=None,var_name='ETP_Val',**kwargs):
+    #PET_calc_better_performance
+    def pet(ds,method,raster_PET_var_dic=None,var_name='PET',**kwargs):
         '''
-            ## etp_calcs.ETP.ETP_calc()
+            ## PET_calcs.PET.PET_calc()
             
-            ds = ETP_calc(ds, method, preferred_date_interval, var_name='ETP_Val', raster_etp_var_dic=None, **kwargs)
+            ds = PET_calc(ds, method, var_name='PET', raster_PET_var_dic=None, **kwargs)
             
-            ETP_calc method calculate evapotranspiration in all the dataset. It uses ***pyet*** library for
-            ETP calculations which is opted for use in a single point.
+            PET_calc method calculate evapotranspiration in all the dataset. It uses ***pyet*** library for
+            PET calculations which is opted for use in a single point.
 
-            Depending on the ETP method, necessary arguments have to be introduced to the database. If the argument is a 
-            fix number for all times and coordinates, it could be determined right away. If the ETP
+            Depending on the PET method, necessary arguments have to be introduced to the database. If the argument is a 
+            fix number for all times and coordinates, it could be determined right away. If the PET
             related argument is equal to 'ds', the argument will be derived from the variable with the same name
             in the dataset. Note that user have to introduce this variables to the dataset beforehead. If the
-            argument value changes with the coordinate but not with the time, the etp argument have to be equal
-            to 'raster'. the direction and the band of the targed master have to be determined in raster_etp_var_dic
+            argument value changes with the coordinate but not with the time, the PET argument have to be equal
+            to 'raster'. the direction and the band of the targed master have to be determined in raster_PET_var_dic
             argument using the following syntax:
 
             {"var_name":["raster_dir","raster_band"]} or {"var_name":"raster_dir"} (band default to 1) or {"var_name":["raster_dir"]} (band default to 1)
@@ -383,11 +380,11 @@ class ETP(ETP_tools):
         
             Let's elaborate using this function with an example:
 
-                Suppose we are using penman method for calculating ETP. "tmean" and "wind" are mandatory arguments for this method.
+                Suppose we are using penman method for calculating PET. "tmean" and "wind" are mandatory arguments for this method.
                 Since in this example "tmean" and "wind" are changing in each coordinate, the user have to use "ds"
                 to determine the this data have to be retrieved from dataset variables by the same name. Then there are "aw" and "bw" which
                 have a fixed value by default ("aw"=2.6, "bw"=0.536), but could be changed based on the coordinates.
-                so by defining "aw"="raster" and "bw"="raster and raster_etp_var_dic={"aw":["ras_dir",band1],"bw":["ras_dir",band2]},
+                so by defining "aw"="raster" and "bw"="raster and raster_PET_var_dic={"aw":["ras_dir",band1],"bw":["ras_dir",band2]},
                 aw and bw arguments are equal to raster values of band 1 and 2 respectively. 
 
 
@@ -483,13 +480,8 @@ class ETP(ETP_tools):
                             tmean: **Mandatory**, rs: **Mandatory**, rh: **Mandatory**, k: 0.31
                 
                 ---
-                - preferred_date_interval str
-
-                    Waterpybal dataset time interval.
-                
-                ---
-                - raster_etp_var_dic dic default: None
-                    If the ETP variable doesn't change in time, it is possible to use a raster to introduce it's values.
+                - raster_PET_var_dic dic default: None
+                    If the PET variable doesn't change in time, it is possible to use a raster to introduce it's values.
                     
                     Format:
 
@@ -498,13 +490,13 @@ class ETP(ETP_tools):
                 ---
                 - **kwargs dic
                 
-                    A dictionary that defines the inputs of the ETP method.
+                    A dictionary that defines the inputs of the PET method.
                     
                     The constant values can be defined directly
                     
-                    Rasters have to be defined with "raster" keyword, and then introduced in raster_etp_var_dic argument as a dictionary
+                    Rasters have to be defined with "raster" keyword, and then introduced in raster_PET_var_dic argument as a dictionary
 
-                    If the ETP variable exists in the waterpybal dataset, the "ds" keyword have to be used. 
+                    If the PET variable exists in the waterpybal dataset, the "ds" keyword have to be used. 
 
                     Format:
                         {"var_name_1":constant_value, "var_name_2": "raster", "var_name_3": "ds",... }
@@ -529,7 +521,9 @@ class ETP(ETP_tools):
         lons=[ n for n in range(0,ds["lon"].shape[0])]
         times=ds["time"][:].data
 
-        if raster_etp_var_dic==None: raster_etp_var_dic={} #{"var_name":["raster_dir",raster_band]} or {"var_name":"raster_dir"} (band default to 1) or {"var_name":["raster_dir"]} (band default to 1)
+        if raster_PET_var_dic==None: raster_PET_var_dic={} #{"var_name":["raster_dir",raster_band]} or {"var_name":"raster_dir"} (band default to 1) or {"var_name":["raster_dir"]} (band default to 1)
+        
+        preferred_date_interval=ds.date_interval
 
         if preferred_date_interval=='datetime64[h]': d_i_t='datetime64[m]'
         elif preferred_date_interval=='datetime64[D]':d_i_t='datetime64[h]'
@@ -537,7 +531,7 @@ class ETP(ETP_tools):
 
         time_ind=times[time_step_st:time_step_fin].astype(d_i_t)
         
-        #extracting the arguments for etp calculation
+        #extracting the arguments for PET calculation
         all_kwargs_dic={}
 
         for k in kwargs:
@@ -546,13 +540,13 @@ class ETP(ETP_tools):
                 v_k=ds[k][time_step_st:time_step_fin,:,:].data
             
             elif type(kwargs[k])==str and kwargs[k]=='raster':
-                    if type(raster_etp_var_dic[k])==str:
-                        rast_dir=raster_etp_var_dic[k]
+                    if type(raster_PET_var_dic[k])==str:
+                        rast_dir=raster_PET_var_dic[k]
                         rast_band=1 
                     else:
-                        rast_dir=raster_etp_var_dic[k][0]
+                        rast_dir=raster_PET_var_dic[k][0]
                         try:
-                            rast_band=raster_etp_var_dic[k][1]
+                            rast_band=raster_PET_var_dic[k][1]
                         except:  
                             rast_band=1  
                     dataset = rs.open(rast_dir)
@@ -566,7 +560,7 @@ class ETP(ETP_tools):
                     
                     #kwargs_dic_key=str(lat_t)+str(lon_t)
                     #kwargs_={}
-                    #nodata_etp=False
+                    #nodata_PET=False
                 
                     
                     if type(kwargs[k])==str and kwargs[k]=='ds':
@@ -579,8 +573,8 @@ class ETP(ETP_tools):
                         v=v_k[:,lat_t,lon_t]
                         #if k=="lat": v=v * np.pi / 180
                         if np.all(v==-9999):
-                            #print ("nodata_etp_311")
-                            nodata_etp=True
+                            #print ("nodata_PET_311")
+                            nodata_PET=True
                             temp_v=False
                         else:
                             '''print ("k",k)        
@@ -594,8 +588,8 @@ class ETP(ETP_tools):
                     elif type(kwargs[k])==str and kwargs[k]=='raster':
 
                         if msk[lat_t,lon_t]==0: 
-                            nodata_etp=True
-                            #print ("nodata_etp_raster")
+                            nodata_PET=True
+                            #print ("nodata_PET_raster")
                             temp_v=False
 
                         else:
@@ -614,32 +608,32 @@ class ETP(ETP_tools):
             all_kwargs_dic[k]=kwargs_dic    
         ######################        
         
-        #calculating the etp in each point
+        #calculating the PET in each point
         array_for_ds=np.full(ds[var_name].shape,-9999)
         for lat_t in lats:
             
                 for lon_t in lons: 
                     
                     kwargs_={}
-                    nodata_etp=False
+                    nodata_PET=False
                     for k in kwargs:
                         aa=all_kwargs_dic[k][str(lat_t)+str(lon_t)]
                         if type(aa)==bool and aa==False:
-                            nodata_etp=True
+                            nodata_PET=True
                         else:
                             kwargs_[k]=aa
 
-                    if nodata_etp==False:
-                        #print ("nodata_etp==False")
-                        etp_t=ETP_tools()
-                        etp_t.add_ETP_method_point(method,**kwargs_)
-                        etp_t=etp_t.exec_ETPs_point()
-                        #print (etp_t)
-                        #print (etp_t[method].shape)
-                        #print ("after exec_ETPs_point")
-                        #define ETPs (calculated for each point for all time steps)
-                        etp_t[method][etp_t[method]<0]=0
-                        array_for_ds[time_step_st:time_step_fin,lat_t,lon_t]=etp_t[method] #output from etp function
+                    if nodata_PET==False:
+                        #print ("nodata_PET==False")
+                        PET_t=PET_tools()
+                        PET_t.add_PET_method_point(method,**kwargs_)
+                        PET_t=PET_t.exec_PETs_point()
+                        #print (PET_t)
+                        #print (PET_t[method].shape)
+                        #print ("after exec_PETs_point")
+                        #define PETs (calculated for each point for all time steps)
+                        PET_t[method][PET_t[method]<0]=0
+                        array_for_ds[time_step_st:time_step_fin,lat_t,lon_t]=PET_t[method] #output from PET function
                     else: 
                         #print ("in the last else")
                         #ds[var_name][time_step_st:time_step_fin,lat_t,lon_t]=np.full(ds[var_name][time_step_st:time_step_fin,lat_t,lon_t].shape,-9999)

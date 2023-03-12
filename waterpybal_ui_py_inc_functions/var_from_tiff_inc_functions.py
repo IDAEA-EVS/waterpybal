@@ -19,7 +19,6 @@ class Ui_Dialog_var_from_tiff_(QtWidgets.QDialog):
         self.ui.toolButton.clicked.connect(self.selectFolder)
         ##############
         self.ds=None
-        self.preferred_date_interval=None
         ##############
         #to work when it is okeyed
         self.ui.buttonBox_from_tiff.accepted.connect(lambda: self.ok_clicked())
@@ -50,10 +49,9 @@ class Ui_Dialog_var_from_tiff_(QtWidgets.QDialog):
     def ok_clicked(self):
         folder_dir=self.ui.lineEdit_var_path.text()
         var_name=self.ui.comboBox.currentText()
-        preferred_date_interval=self.preferred_date_interval
         if self.ui.checkBox.isChecked()==False:
             multiply=True
         if self.ui.checkBox.isChecked()==True:
             multiply=False
 
-        self.ds=variable_management.var_introduction_from_tiffs(self.ds,folder_dir,var_name,preferred_date_interval,multiply)
+        self.ds=variable_management.var_introduction_from_tiffs(self.ds,folder_dir,var_name,multiply)

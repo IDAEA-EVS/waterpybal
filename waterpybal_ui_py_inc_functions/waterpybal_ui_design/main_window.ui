@@ -632,7 +632,7 @@ QGroupBox::title{subcontrol-origin: margin;subcontrol-position:top center;paddin
            </font>
           </property>
           <property name="text">
-           <string>ETP Calculation</string>
+           <string>PET Calculation</string>
           </property>
          </widget>
         </item>

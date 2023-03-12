@@ -17,26 +17,26 @@ class Ui_Dialog_open_dataset_(QtWidgets.QDialog):
         self.ui.setupUi(self)
         self.show()
         
-        self.single_point=False
+        #self.single_point=False
         ##############
         self.ui.toolButton_open.clicked.connect(lambda: self.open_ds())
         self.ui.toolButton_browse_xy_raster.clicked.connect(lambda:self.selectrastFile())
 
-        self.ui.checkBox_single_point.setStyleSheet("""
+        '''self.ui.checkBox_single_point.setStyleSheet("""
             QCheckBox {
                 font-size: 13px;
             }
             QCheckBox::indicator { width: 15px; height: 15px;}
             }
-        """)
+        """)'''
         ##################
         #to work when it is okeyed
         self.ui.buttonBox.accepted.connect(lambda: self.ok_clicked())
         
-        self.ui.checkBox_single_point.stateChanged.connect(lambda: self.single_p_checked())
+        #self.ui.checkBox_single_point.stateChanged.connect(lambda: self.single_p_checked())
     
     ##########################
-    def single_p_checked(self):
+    '''def single_p_checked(self):
         if self.ui.checkBox_single_point.isChecked()==True:
             self.ui.label_sample_raster.setEnabled(False)
             self.ui.lineEdit_sample_raster.setEnabled(False)
@@ -46,7 +46,7 @@ class Ui_Dialog_open_dataset_(QtWidgets.QDialog):
             self.ui.label_sample_raster.setEnabled(True)
             self.ui.lineEdit_sample_raster.setEnabled(True)
             self.ui.toolButton_browse_xy_raster.setEnabled(True)
-            self.single_point=False
+            self.single_point=False'''
 
     ##########################
     def open_ds(self):
@@ -67,8 +67,7 @@ class Ui_Dialog_open_dataset_(QtWidgets.QDialog):
     def ok_clicked(self):
         self.sam_raster_dir=self.ui.lineEdit_sample_raster.text()
         self.ds_dir=self.ui.lineEdit_open.text()
-        preferred_date_interval=self.ui.comboBox_time_interval.currentText()
-        if preferred_date_interval=="Daily":self.preferred_date_interval='datetime64[D]'
-        if preferred_date_interval=="Monthly":self.preferred_date_interval='datetime64[M]'
-        if preferred_date_interval=="Hourly":self.preferred_date_interval='datetime64[h]'
+
+        self.ds=nc.Dataset(self.ds_dir,'r+',format='NETCDF4')
+
         

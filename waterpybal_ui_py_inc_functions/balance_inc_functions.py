@@ -1,6 +1,6 @@
 from PyQt6 import QtWidgets,QtGui
 from waterpybal_ui_py_inc_functions.waterpybal_ui_py.balance import Ui_balance_Dialog
-from waterpybal.balance_calcs import balance
+from waterpybal.balance_calcs import Balance
 #from waterpybal.balance_calcs import balance #meth balance_calculation_main
 import sys
 import inspect
@@ -37,4 +37,4 @@ class Ui_balance_Dialog_(QtWidgets.QDialog):
     ##########################
     def ok_clicked(self):
         init_swr=self.ui.lineEdit_init_swr.text()
-        self.ds=balance.balance_calculation_main(self.ds,predef_ru_dir_or_np=None,predef_ru_type="dataset",init_swr=init_swr)
+        self.ds=Balance.balance(self.ds,predef_ru_dir_or_np=None,predef_ru_type="dataset",init_swr=init_swr)

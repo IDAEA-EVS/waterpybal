@@ -1,7 +1,7 @@
 import rasterio as rs
 import numpy as np
 
-class urban_cycle_calcs():
+class Urban_cycle():
     '''
     # class urban_infiltration.urban_cycle_calcs()
     
@@ -33,7 +33,7 @@ class urban_cycle_calcs():
     #direct infiltration (%) dir_infil (percentage of water precipitation+irrigation)
 
     @staticmethod
-    def urban_cycle_main (ds,urban_area_raster_dir,variables_dic):
+    def urban_cycle (ds,urban_area_raster_dir,variables_dic):
         '''
         ## urban_infiltration.urban_cycle_calcs.urban_infiltration_main()
             
@@ -114,7 +114,7 @@ class urban_cycle_calcs():
 
                         - Water from other sources (underground infrustructures,etc.): key wat_other, mm
 
-                        - Urban to calculated Infiltration and Evapotranspiration ratio: key urban_to_ds_inf_etp_ratio, %
+                        - Urban to calculated Infiltration and Evapotranspiration ratio: key urban_to_ds_inf_PET_ratio, %
                 ---
 
             **Returns**
@@ -140,14 +140,13 @@ class urban_cycle_calcs():
 
 
         INF_Val_list=[]
-        ETP_Val_list=[]
+        PET_Val_list=[]
         Runoff_Val_list=[]
         
-        urban_to_ds_inf_etp_ratio=ds["urban_to_ds_inf_etp_ratio"][:,:,:].data
 
         for time_t in time_steps:
-            prec=ds["Prec_Val"][time_t,:,:].data
-            irrig=ds["Irig_Val"][time_t,:,:].data
+            prec=ds["Prec"][time_t,:,:].data
+            irrig=ds["Irrig"][time_t,:,:].data
             wat_cons=ds["wat_cons"][time_t,:,:].data
             dir_infil=ds["dir_infil"][time_t,:,:].data            
             wat_net_loss=ds["wat_net_loss"][time_t,:,:].data
@@ -162,21 +161,22 @@ class urban_cycle_calcs():
             wat_other=ds["wat_other"][time_t,:,:].data
             
 
-            INF_Val,ETP_Val,Runoff_Val=urban_cycle_tools.urban_infiltration_np(prec,irrig,wat_cons,wat_net_loss,urb_dir_evap,urb_indir_evap,sew_net_loss_low,sew_net_loss_high,prec_sewage_threshold,runoff_to_sewage,dir_infil,wat_supp_wells,wat_supp_wells_loss,wat_other)            
+            INF_Val,PET_Val,Runoff_Val=urban_cycle_tools.urban_infiltration_np(prec,irrig,wat_cons,wat_net_loss,urb_dir_evap,urb_indir_evap,sew_net_loss_low,sew_net_loss_high,prec_sewage_threshold,runoff_to_sewage,dir_infil,wat_supp_wells,wat_supp_wells_loss,wat_other)            
             
             INF_Val_list.append(INF_Val)
-            ETP_Val_list.append(ETP_Val)
+            PET_Val_list.append(PET_Val)
             Runoff_Val_list.append(Runoff_Val)
 
         #append to NETCDF
-        urban_results_list=[INF_Val_list,ETP_Val_list,Runoff_Val_list]
+        #urban_results_list=[INF_Val_list,PET_Val_list,Runoff_Val_list]
+        urban_results_list=[INF_Val_list,PET_Val_list]
         
-        ds=urban_cycle_tools.infilt_to_ds(ds,urban_area_raster_dir,urban_results_list,urban_to_ds_inf_etp_ratio)
+        ds=urban_cycle_tools.infilt_to_ds(ds,urban_area_raster_dir,urban_results_list)
         
         return ds 
     
 ################################################################
-class urban_Composite_CN_correction():
+class Urban_Composite_CN():
     '''
     # class urban_infiltration.urban_Composite_CN_correction()
     
@@ -193,7 +193,7 @@ class urban_Composite_CN_correction():
     '''
 
     @staticmethod
-    def cia_main(ds,cia_raster,corrected_cn=True):
+    def CIA(ds,cia_raster,corrected_cn=True):
         '''
         ## urban_infiltration.urban_Composite_CN_correction.cia_main()
             
@@ -231,7 +231,7 @@ class urban_Composite_CN_correction():
         if corrected_cn==True:
             cn_var="CN_mod"
         else:
-            cn_var="CN_Val"
+            cn_var="CN"
 
         CN_Prev_3d=ds[cn_var][:,:,:].data
         CN_Prev_3d[CN_Prev_3d==-9999]=np.nan
@@ -244,7 +244,7 @@ class urban_Composite_CN_correction():
         cia_3d=np.repeat(cia_np[np.newaxis,:, : ], ds["time"].shape[0], axis=0)
         ##########
 
-        composite_CN=urban_Composite_CN_correction.connected_imperv_area_correction(CN_Prev_3d,cia_3d)
+        composite_CN=urban_Composite_CN_correction_tools.connected_imperv_area_correction(CN_Prev_3d,cia_3d)
 
         ds_vals=ds[cn_var][:,:,:].data
         ds_vals[~np.isnan(cia_3d)]=composite_CN[~np.isnan(cia_3d)]
@@ -255,7 +255,7 @@ class urban_Composite_CN_correction():
         return ds
 
     @staticmethod
-    def ucia_main(ds,tia_raster,ucia_raster,corrected_cn=True):
+    def UIA(ds,tia_raster,ucia_raster,corrected_cn=True):
         '''
         ## urban_infiltration.urban_Composite_CN_correction.ucia_main()
             
@@ -298,7 +298,7 @@ class urban_Composite_CN_correction():
         if corrected_cn==True:
             cn_var="CN_mod"
         else:
-            cn_var="CN_Val"
+            cn_var="CN"
 
         CN_Prev_3d=ds[cn_var][:,:,:].data
         CN_Prev_3d[CN_Prev_3d==-9999]=np.nan
@@ -318,7 +318,7 @@ class urban_Composite_CN_correction():
         tia_3d=np.repeat(tia_np[np.newaxis,:, : ], ds["time"].shape[0], axis=0)
         ##########
 
-        composite_CN=urban_Composite_CN_correction.unconnected_imperv_area_correction(CN_Prev_3d,ucia_3d,tia_3d)
+        composite_CN=urban_Composite_CN_correction_tools.unconnected_imperv_area_correction(CN_Prev_3d,ucia_3d,tia_3d)
         
         
         ds_vals=ds[cn_var][:,:,:].data
@@ -339,43 +339,45 @@ class urban_cycle_tools():
         irrig[irrig==-9999]=0
         prec[prec==-9999]=0
         #####
-        val_wat_net_loss_infiltration=wat_cons*(wat_net_loss/100)
+        val_wat_net_loss_infiltration=wat_cons*(wat_net_loss/100) #WSNLV=WSNC * WSNL
         
-        val_wat_cons=wat_cons*(1-wat_net_loss/100)
+        val_wat_cons=wat_cons*(1-wat_net_loss/100) #WSNCV= WSNC-WSNLV
         
         #####
 
-        val_wat_supp_wells_loss=wat_supp_wells*(wat_supp_wells_loss/100)
+        val_wat_supp_wells_loss=wat_supp_wells*(wat_supp_wells_loss/100) #WCNNLV=WCNN * WCNNL
         
-        val_wat_supp_wells=wat_supp_wells*(1-wat_supp_wells_loss/100)
+        val_wat_supp_wells=wat_supp_wells*(1-wat_supp_wells_loss/100) #WCNNV=WCNN-WCNNLV
 
         #####
 
         #val_sewage_input_before_runoff from water network and wells after indirect evaporation
-        val_sewage_input_before_runoff=(val_wat_cons+val_wat_supp_wells)*(1-urb_indir_evap/100)
+        val_sewage_input_before_runoff=(val_wat_cons+val_wat_supp_wells)*(1-urb_indir_evap/100) #SNV1=(WSNCV + WCNNV) * (1-IUE)
 
         #val_runoff_to_sewage from prec and irrig
-        val_runoff_to_sewage=(prec+irrig)*(1-urb_dir_evap/100)*(runoff_to_sewage/100)
+        val_runoff_to_sewage=(prec+irrig)*(1-urb_dir_evap/100)*(runoff_to_sewage/100) #RtSV= (P+I) * (1- DUE) * RtS
         
         
         
-        sew_input=val_sewage_input_before_runoff+val_runoff_to_sewage + wat_other
-
+        sew_input=val_sewage_input_before_runoff+val_runoff_to_sewage + wat_other #SNV2=SNV1+RtSV+WOS
+        
+        ##SNV3,SNLV2
         val_sew_net_out,val_sew_net_loss_infiltration=urban_cycle_tools.sewage_loss(sew_net_loss_low,sew_net_loss_high,sew_input,prec,prec_sewage_threshold)
-
         
-        val_dir_infil=(prec+irrig)*(dir_infil/100)
+        val_dir_infil=(prec+irrig)*(dir_infil/100) #DIV= (P+I) * DI
 
-        in_out_water_delta=wat_cons+prec+irrig+ wat_supp_wells+ wat_other -val_sew_net_out
+        in_out_water_delta=wat_cons+prec+irrig+ wat_supp_wells+ wat_other -val_sew_net_out #DELTAWV=P+I+WSNC+WCNN+WOS-SNV3
         
+
         #total_infiltration= water supply network loss + wells loss+ sewer los + direct infiltration from perc and irrig +
         total_infiltration=val_wat_net_loss_infiltration + val_wat_supp_wells_loss + val_sew_net_loss_infiltration + val_dir_infil
+        #TIV= WSNLV + WCNNLV + SNLV2 + DIV
 
         #total_evapotranspiration= indirect urban evap (from water network and wells) + direc evap of prec and irrig
-        total_evapotranspiration= (val_wat_cons+val_wat_supp_wells) * (urb_indir_evap/100) + (prec+irrig)*(urb_dir_evap/100) 
+        total_evapotranspiration= (val_wat_cons+val_wat_supp_wells) * (urb_indir_evap/100) + (prec+irrig)*(urb_dir_evap/100) #TEPV= (WSNCV + WCNNV)*IUE+ (P+I)*DUE
         
 
-        total_runoff= in_out_water_delta - total_infiltration - total_evapotranspiration
+        total_runoff= in_out_water_delta - total_infiltration - total_evapotranspiration #TRV=DELTAWV-TETV-TIV
         
         total_runoff[total_runoff<0]=0
 
@@ -392,11 +394,11 @@ class urban_cycle_tools():
         high_bool=~low_bool
 
         for bool_lh,sw_net_los in zip([low_bool,high_bool],[sew_net_loss_low,sew_net_loss_high]):
-            val_sew_net_loss_infiltration[bool_lh]=sew_input[bool_lh]*(sw_net_los[bool_lh]/100)
-            val_sew_net_out[bool_lh]=sew_input[bool_lh]*(1-sw_net_los[bool_lh]/100)
+            val_sew_net_loss_infiltration[bool_lh]=sew_input[bool_lh]*(sw_net_los[bool_lh]/100) #SNLV2=SNV2 *SNL
+            val_sew_net_out[bool_lh]=sew_input[bool_lh]*(1-sw_net_los[bool_lh]/100) #SNV3=SNV2-SNLV2
 
 
-        return  val_sew_net_out,val_sew_net_loss_infiltration
+        return  val_sew_net_out,val_sew_net_loss_infiltration #SNV3,SNLV2
     
     ###############
     @staticmethod
@@ -448,7 +450,7 @@ class urban_cycle_tools():
 
     ###############
     @staticmethod
-    def infilt_to_ds(ds,urban_area_raster_dir,urban_results_list,urban_to_ds_inf_etp_ratio):
+    def infilt_to_ds(ds,urban_area_raster_dir,urban_results_list):
         #for time_t in time_steps:  #ETR1,Def1,Ru1,Rec1
         
         if ds["lat"].shape[0]==1 and ds["lon"].shape[0]==1:
@@ -459,24 +461,19 @@ class urban_cycle_tools():
         urban_raster_3d=np.repeat(urban_raster_np[np.newaxis,:, : ], ds["time"].shape[0], axis=0)
 
         
-        for name,lst in zip(["INF_Val","ETP_Val","Runoff_Val"],urban_results_list):                
+        for name,lst in zip(["URB_INF","URB_EP"],urban_results_list):                
             
             urb_val=np.array(lst)  #3D
 
-            ds_vals=ds[name][:,:,:].data
+            #ds_vals=ds[name][:,:,:].data
             #to include just the data with prec available
-            prec_vals=ds["Prec_Val"][:,:,:].data
-            ds_vals[prec_vals==-9999]=np.nan
+            prec_vals=ds["Prec"][:,:,:].data
+            urb_val[prec_vals==-9999]=-9999
 
             #to just overwrite the values that are marked as urban area
-            val_urb_t=~np.isnan(urban_raster_3d)
-            k=urban_to_ds_inf_etp_ratio[val_urb_t]/100
+            urb_val[np.isnan(urban_raster_3d)]=-9999
 
-            ds_vals[val_urb_t]=ds_vals[val_urb_t]*(1-k) + urb_val[val_urb_t]*k
-            
-            ds_vals[prec_vals==-9999]=-9999
-
-            ds[name][:,:,:]=ds_vals
+            ds[name][:,:,:]=urb_val
             
         return ds
 
@@ -495,11 +492,11 @@ class urban_Composite_CN_correction_tools():
     def unconnected_imperv_area_correction(CN_Prev,Uncon_Imp_area_perc,Total_imp_area_perc):
 
         if Total_imp_area_perc >30:
-            composite_CN=urban_Composite_CN_correction.connected_imperv_area_correction(CN_Prev,Uncon_Imp_area_perc)
+            composite_CN=urban_Composite_CN_correction_tools.connected_imperv_area_correction(CN_Prev,Uncon_Imp_area_perc)
         
         else:
 
-            input_to_t2=(1-Uncon_Imp_area_perc/Total_imp_area_perc)*1.7*Total_imp_area_perc
+            input_to_t2=(1-Uncon_Imp_area_perc/Total_imp_area_perc)*1.7 + 1.63
 
 
             composite_CN=CN_Prev + (120-CN_Prev) * input_to_t2/460

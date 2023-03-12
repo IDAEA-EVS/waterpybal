@@ -53,7 +53,7 @@ class Ui_Dialog_visual_(QtWidgets.QDialog):
         self.ds=None
         self.org_ds_dir=None
         self.sam_raster_dir=None
-        self.single_point=False
+        self.single_point="FALSE"
         #################
         self.ui.toolButton_refresh.clicked.connect(lambda: self.updatelist_vars())
         self.ui.toolButton_path.clicked.connect(lambda: self.open_ds())
@@ -75,7 +75,7 @@ class Ui_Dialog_visual_(QtWidgets.QDialog):
     
 
     def sing_point_mods(self):
-        if self.single_point:
+        if self.single_point=="TRUE":
             self.ui.lineEdit_lat.setText("0")
             self.ui.lineEdit_lat.setEnabled(False)
 
@@ -126,7 +126,7 @@ class Ui_Dialog_visual_(QtWidgets.QDialog):
         if self.ui.checkBox_all_vars.isChecked()==False:
             var_name_list=[self.ui.comboBox_var_name.currentText()]
         else: 
-            var_name_list=["Prec_Val","Irig_Val","INF_Val","ETP_Val","PRu_Val","ETR_Val","Def_Val","Rec_Val","Ru_Val"]
+            var_name_list=["Prec","Irrig","INF","PET","SWR","ETR","Def","Rec","ASWR"]
 
         
         lat_name=self.ui.lineEdit_lat_name.text()
@@ -195,8 +195,11 @@ class Ui_Dialog_visual_(QtWidgets.QDialog):
             dims_list=["time_bnds","time","lat","lon","x","y"]
             self.list_vars=[n for n in list_vars if n not in dims_list]
             self.ui.comboBox_var_name.addItems(self.list_vars)
+
+            self.single_point=self.ds_n.single_point
             self.ds_n.close()
         except: pass
+        self.sing_point_mods()
     
     ###############    
     def time_funcs(self,to_fig_or_csv):

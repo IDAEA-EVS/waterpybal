@@ -1,8 +1,8 @@
 from .dataset_prep import dataset_gen,variable_management
-from .balance_calcs import balance
-from .etp_calcs import ETP
-from .inf_calcs import infiltration
+from .balance_calcs import Balance
+from .pet_calcs import PET
+from .inf_calcs import Infiltration
 from .post_processing import post_process
-from .swr_calcs import swr
-from .urban_cycle import urban_cycle_calcs, urban_Composite_CN_correction
+from .swr_calcs import SWR
+from .urban_cycle import Urban_cycle, Urban_Composite_CN
 from .version import __version__

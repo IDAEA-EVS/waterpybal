@@ -470,7 +470,7 @@ class Ui_MainWindow(object):
         self.label_3.setText(_translate("MainWindow", "3."))
         self.pushButton_to_swr.setText(_translate("MainWindow", "Soil Water Reserve Calculation"))
         self.label_4.setText(_translate("MainWindow", "4."))
-        self.pushButton_to_etp.setText(_translate("MainWindow", "ETP Calculation"))
+        self.pushButton_to_etp.setText(_translate("MainWindow", "PET Calculation"))
         self.label_5.setText(_translate("MainWindow", "5."))
         self.pushButton_to_infiltration.setText(_translate("MainWindow", "Infiltration Calculation"))
         self.label_6.setText(_translate("MainWindow", "6."))

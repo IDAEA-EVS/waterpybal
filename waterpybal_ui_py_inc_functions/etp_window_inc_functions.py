@@ -1,6 +1,6 @@
 from PyQt6 import QtWidgets,QtCore
 from .waterpybal_ui_py.etp_window import Ui_Dialog_etp
-from waterpybal.etp_calcs import ETP
+from waterpybal.pet_calcs import PET
 import sys
 from gui_help.gui_help_load import loadhelp
 
@@ -16,10 +16,8 @@ class Ui_Dialog_etp_(QtWidgets.QDialog):
         self.show()
         ##############
         self.ds=None
-        self.preferred_date_interval=None
-        self.single_point=False
         ##############
-        self.etp_wpb_etp=ETP()
+        self.etp_wpb_etp=PET()
         self.methods_dic=self.etp_wpb_etp.methods_dic
         methods_list=[" "]+list(self.methods_dic.keys())
         self.ui.comboBox_etp_method.addItems(methods_list)
@@ -30,7 +28,7 @@ class Ui_Dialog_etp_(QtWidgets.QDialog):
         #to work when it is okeyed
         self.ui.buttonBox.accepted.connect(lambda: self.ok_clicked())
 
-        loadhelp(self,"etp_help.md")
+        loadhelp(self,"pet_help.md")
 
     
     def ok_clicked(self):
@@ -65,8 +63,8 @@ class Ui_Dialog_etp_(QtWidgets.QDialog):
         #print ("raster_etp_var_dic####\n",raster_etp_var_dic)
         #print ("etp_meth_input_dic####\n",etp_meth_input_dic)
 
-        self.ds=ETP.ETP_calc(self.ds,method=self.new_method,preferred_date_interval=self.preferred_date_interval,
-            raster_etp_var_dic=raster_etp_var_dic,var_name='ETP_Val',**etp_meth_input_dic)
+        self.ds=PET.pet(self.ds,method=self.new_method,
+            raster_etp_var_dic=raster_etp_var_dic,var_name='PET',**etp_meth_input_dic)
       
     ######################
     def update_table(self):
@@ -93,7 +91,7 @@ class Ui_Dialog_etp_(QtWidgets.QDialog):
                 #lat parameter is an exception because lat & lon is defined 1D in dataset
                 if item[0] in ["lat", "lon"]:
                     combo_c1 = QtWidgets.QComboBox()
-                    if self.single_point:
+                    if self.ds.single_point=="TRUE":
                         combo_c1.addItems(["Constant"])
                     else:
                         combo_c1.addItems(["Constant","Raster"])
@@ -102,7 +100,7 @@ class Ui_Dialog_etp_(QtWidgets.QDialog):
                 else:
                 #combobox
                     combo_c1 = QtWidgets.QComboBox()
-                    if self.single_point:
+                    if self.ds.single_point=="TRUE":
                         combo_c1.addItems(["Constant","Dataset"])
                     else:
                         combo_c1.addItems(["Constant","Raster","Dataset"])

@@ -72,8 +72,8 @@ def monthly_to_daily(meteo_dir,output_dir,num_of_events_per_month,var_name):
 
 if __name__=="__main__":
 
-    meteo_dir=r"C:\Users\Ash kan\Documents\watbalpy\waterball_test\modelito_for_paper_tests\METEO_9stations.csv"
+    meteo_dir=r"C:\Users\Ash kan\Documents\watbalpy\waterball_test\modelito_for_paper_tests\8x_METEO_9stations.csv"
     output_dir=r"C:\Users\Ash kan\Documents\watbalpy\waterball_test\modelito_for_paper_tests"
-    num_of_events_per_month=6
+    num_of_events_per_month=9
     var_name="Prec_Val"
     monthly_to_daily(meteo_dir,output_dir,num_of_events_per_month,var_name)

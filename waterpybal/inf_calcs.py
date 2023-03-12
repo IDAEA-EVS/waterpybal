@@ -15,7 +15,7 @@ class infiltration_functions(object):
         #lons=[ n for n in range(0,ds["lon"].shape[0])]
         #for lat in lats:
         #    for lon in lons:
-        prec_plane=ds["Prec_Val"][:,:,:].data
+        prec_plane=ds["Prec"][:,:,:].data
         prec_plane[prec_plane==-9999]=np.nan
         for time_step in time_steps:
             fdap=0
@@ -54,7 +54,7 @@ class infiltration_functions(object):
 
         return float(cnt[(cnt["Land use code"]==int(LU_)) & (cnt["Slope category-Hydrologic condition"]==int(SC_))][int(HSG_)])
     #-----------------------------------------
-    def CN_AMC_modded(CN,ds,preferred_date_interval,msk,amc1_coeffs=None,amc3_coeffs=None,dormant_thresh=None,growing_thresh=None,average_thresh=True,mon_list_dormant=None):
+    def CN_AMC_modded(CN,ds,msk,amc1_coeffs=None,amc3_coeffs=None,dormant_thresh=None,growing_thresh=None,average_thresh=True,mon_list_dormant=None):
         #CN,ds,amc1_coeffs=None,amc3_coeffs=None,dormant_thresh=None,growing_thresh=None,average_thresh=True,mon_list_dormant=None
         if amc1_coeffs==None: amc1_coeffs=[0.0069,0.2575,0]
         if amc3_coeffs==None: amc3_coeffs=[-0.0086,1.8338,0]
@@ -64,6 +64,8 @@ class infiltration_functions(object):
         
         time_steps=[ n for n in range(0,ds["time"].shape[0])]
         
+        preferred_date_interval=ds.date_interval
+
         if preferred_date_interval=='datetime64[h]': time_str= 'minutes'
         elif preferred_date_interval=='datetime64[D]': time_str= 'hours'
         elif preferred_date_interval=='datetime64[M]': time_str= 'days'
@@ -113,7 +115,7 @@ class infiltration_functions(object):
         return ds
 
     #-----------------------------------------
-    def runoff_infilt_calc(ds,cn_var,advanced_cn,advanced_cn_dic):
+    def infilt_runoff__calc(ds,cn_var,advanced_cn,advanced_cn_dic):
         #Ia=0.2*S (Initial abstraction)
         #S (potential max retention) calculation from the curve number
         #Q runoff
@@ -122,29 +124,21 @@ class infiltration_functions(object):
         CN_mod=ds[cn_var][:,:,:].data
         CN_mod[CN_mod==-9999]=np.nan
         ##########
-        P=ds["Prec_Val"][:,:,:].data
+        P=ds["Prec"][:,:,:].data
         P[P==-9999]=np.nan
         ##########
-        Irig=ds["Irig_Val"][:,:,:].data       
-        Irig[Irig==-9999]=np.nan 
+        Irrig=ds["Irrig"][:,:,:].data       
+        Irrig[Irrig==-9999]=np.nan 
         ##########
-        P_Irig=P+Irig
+        P_Irrig=P+Irrig
         ##########
         #calculate runoff
         if advanced_cn==False:
             S=(25400/CN_mod)-254
-            Ia=0.2*S
-            ##########
-            Q=np.zeros(CN_mod.shape)
-            ##########
-            P_bool=P_Irig>Ia #to calculate if P>Ia if not, zero
-            P_bool[np.isnan(P_Irig)]==False
-            P_bool[np.isnan(CN_mod)]==False
-            Q[P_bool]=(P_Irig[P_bool]-Ia[P_bool])*(P_Irig[P_bool]-Ia[P_bool])/(P_Irig[P_bool]+0.8*S[P_bool])
-            #Q[~P_bool]=np.nan
+            landa=0.2
+ 
         else:
-
-            S,Q=infiltration_functions.adv_runoff_calc(
+            S,landa=infiltration_functions.adv_runoff_calc(
                 advanced_cn_dic["landa"],
                 CN_mod,
                 advanced_cn_dic["A"],
@@ -154,17 +148,20 @@ class infiltration_functions(object):
                 advanced_cn_dic["x"],
                 advanced_cn_dic["y"],
                 advanced_cn_dic["z"])
-
-        print (P_Irig[P_Irig>0])
-        print (Ia[Ia>0])
-        print (Q[Q>0])
-
-        print (P_Irig[P_Irig<0])
-        print (Ia[Ia<0])
-        print (Q[Q<0])
+        ##########
+        Ia=landa*S
+        Ia[Ia<0]=0
+        Q=np.zeros(CN_mod.shape)
+        ##########
+        P_bool=P_Irrig>Ia #to calculate if P>Ia if not, zero
+        P_bool[np.isnan(P_Irrig)]==False
+        P_bool[np.isnan(CN_mod)]==False
+        Q[P_bool]=(P_Irrig[P_bool]-Ia[P_bool])*(P_Irrig[P_bool]-Ia[P_bool])/(P_Irrig[P_bool]-Ia[P_bool]+S[P_bool])
+        #Q[~P_bool]=np.nan
+        Q[Q<0]=0
         
         #inf=P-Ia-Q
-        inf=P_Irig-Ia-Q
+        inf=P_Irrig-Ia-Q
         print ("inf in runoff inf cal 0",np.count_nonzero(inf==0))
         inf[inf<0]=0
         print ("inf in runoff inf cal 0 after",np.count_nonzero(inf==0))
@@ -174,9 +171,14 @@ class infiltration_functions(object):
         inf=np.nan_to_num(inf,nan=-9999)
         print ("inf in runoff inf cal 9999 2",np.count_nonzero(inf==-9999))
         print ("inf in runoff inf cal 0 2",np.count_nonzero(inf==0))
-        ds["INF_Val"][:,:,:]=inf
+        ds["INF"][:,:,:]=inf
+        Ia[np.isnan(P)]=np.nan
+        Ia[np.isnan(CN_mod)]=np.nan
+        Ia=np.nan_to_num(inf,nan=-9999)
+        ds["Ia"][:,:,:]=Ia
+
         
-        return  ds,Ia      
+        return  ds   
     
     #-----------------------------------------
     @staticmethod
@@ -235,19 +237,19 @@ class infiltration_functions(object):
     
 
     #-----------------------------------------
-    #zero values of irigation if it is not defined
-    def Irig_calc(ds):
+    #zero values of Irrigation if it is not defined
+    def Irrig_calc(ds):
 
-        irig=ds["Irig_Val"][:,:,:].data
-        P=ds["Prec_Val"][:,:,:].data
-        # if irigation var is empty
-        if np.all(irig==-9999):
-            irig=np.zeros(irig.shape)
+        Irrig=ds["Irrig"][:,:,:].data
+        P=ds["Prec"][:,:,:].data
+        # if Irrigation var is empty
+        if np.all(Irrig==-9999):
+            Irrig=np.zeros(Irrig.shape)
         
 
-            irig[P==-9999]=-9999
+            Irrig[P==-9999]=-9999
 
-        ds["Irig_Val"][:,:,:]=irig
+        ds["Irrig"][:,:,:]=Irrig
 
         return ds
 
@@ -262,30 +264,20 @@ class infiltration_functions(object):
         #--------------------
         
         #calculate S from CN
-        S= A * np.power(CN_mod,x) + B * np.power(CN_mod,y) + C * z + D
+        S= A * np.power(CN_mod,x) + B * np.power(CN_mod,y) + C * np.power(CN_mod,z)  + D
 
-        #calculate Q
-
-        numerator= 2*landa * ( S * landa -1)
-        
-        denominator= 1- landa - 2 *  math.sqrt( landa )
-
-        Q= numerator/denominator
-
-        if Q<0: Q=0
-
-        return S,Q
+        return S,landa
         
     #-----------------------------------------
 
-class infiltration(object):
+class Infiltration(object):
     '''
     # class inf_calcs.infiltration()
     The class to calculate the infiltration
 
     **Methods**
 
-        > ds, Ia = Inf_calc(ds,CN_table_dir,raster_dir,HSG_band,LU_band,ELEV_or_HC_band,DEM_path_or_raster,DEM_or_raster,filled_dep,slope_range_list,amc1_coeffs,amc3_coeffs,dormant_thresh,growing_thresh,average_thresh,mon_list_dormant,preferred_date_interval,corrected_cn,single_cn_val,cn_val,advanced_cn,advanced_cn_dic,SC_or_HC)
+        > ds, Ia = Inf_calc(ds,CN_table_dir,raster_dir,HSG_band,LU_band,ELEV_or_HC_band,DEM_path_or_raster,DEM_or_raster,filled_dep,slope_range_list,amc1_coeffs,amc3_coeffs,dormant_thresh,growing_thresh,average_thresh,mon_list_dormant,corrected_cn,single_cn_val,cn_val,advanced_cn,advanced_cn_dic,SC_or_HC)
         
         > ds = runoff_calc(ds,Ia)
         
@@ -295,11 +287,11 @@ class infiltration(object):
     ---
 
     '''
-    def Inf_calc(ds,CN_table_dir,raster_dir,HSG_band,LU_band,ELEV_or_HC_band,preferred_date_interval,corrected_cn=False, single_cn_val=False,cn_val=None,advanced_cn_dic=None,advanced_cn=False, filled_dep=True, slope_range_list=None, amc1_coeffs=None, amc3_coeffs=None, dormant_thresh=None, growing_thresh=None, average_thresh=False, mon_list_dormant=None, SC_or_HC="HC", DEM_or_raster="raster" ,DEM_path_or_raster=None):  
+    def inf(ds,CN_table_dir,raster_dir,HSG_band,LU_band,ELEV_or_HC_band,corrected_cn=False, single_cn_val=False,cn_val=None,advanced_cn_dic=None,advanced_cn=False, filled_dep=True, slope_range_list=None, amc1_coeffs=None, amc3_coeffs=None, dormant_thresh=None, growing_thresh=None, average_thresh=False, mon_list_dormant=None, SC_or_HC="HC", DEM_or_raster="raster" ,DEM_path_or_raster=None):  
         '''
             ## inf_calcs.infiltration.Inf_calc()
 
-            ds, Ia = Inf_calc(ds,CN_table_dir,raster_dir,HSG_band,LU_band,ELEV_or_HC_band,DEM_path_or_raster,DEM_or_raster,filled_dep,slope_range_list,amc1_coeffs,amc3_coeffs,dormant_thresh,growing_thresh,average_thresh,mon_list_dormant,preferred_date_interval,corrected_cn,single_cn_val,cn_val,advanced_cn,advanced_cn_dic,SC_or_HC)
+            ds, Ia = Inf_calc(ds,CN_table_dir,raster_dir,HSG_band,LU_band,ELEV_or_HC_band,DEM_path_or_raster,DEM_or_raster,filled_dep,slope_range_list,amc1_coeffs,amc3_coeffs,dormant_thresh,growing_thresh,average_thresh,mon_list_dormant,corrected_cn,single_cn_val,cn_val,advanced_cn,advanced_cn_dic,SC_or_HC)
 
             The method to calculate the infiltration
 
@@ -386,11 +378,6 @@ class infiltration(object):
                     if None, mon_list_dormant=[10,11,12,1,2,3]. List of dormant month. Rest of the month will be growing month.
 
                 ---
-                preferred_date_interval dtype str
-
-                    Time interval of the dataset as a dtype.
-
-                ---
                 corrected_cn bool default False
 
                     If the Antecedent Moisture Condition (AMC) corrections have to be applied
@@ -418,7 +405,7 @@ class infiltration(object):
 
                     Formulas:
                         
-                        S= A * CN_mod^x + B * CN_mod^y + C * z + D
+                        S= A * CN_mod^x + B * CN_mod^y + C * CN_mod^z + D
 
                         S= landa * Ia
 
@@ -447,7 +434,7 @@ class infiltration(object):
 
         if single_cn_val==False:
             
-            ds=infiltration_functions.Irig_calc(ds)
+            ds=infiltration_functions.Irrig_calc(ds)
 
             #1-from raster, read HSG, LU,read Slope and calculate slope catagory
             HSG,SC,LU,msk=infiltration_functions.read_raster_DEM_HSG_LU(raster_dir,int(HSG_band),int(LU_band),int(ELEV_or_HC_band),DEM_path_or_raster,DEM_or_raster,filled_dep,slope_range_list,SC_or_HC=SC_or_HC)
@@ -465,7 +452,7 @@ class infiltration(object):
                 else: cn_l.append(infiltration_functions.CNN(cnt,HSG_,SC_,LU_))
             CN=np.array(cn_l,dtype='float32').reshape(SC.shape)
             CN_all=np.repeat(CN[np.newaxis,:, : ], ds["time"].shape[0], axis=0)
-            ds["CN_Val"][:,:,:]= CN_all
+            ds["CN"][:,:,:]= CN_all
             #---------------
             #calculate five day percs
             if corrected_cn==True:
@@ -475,74 +462,27 @@ class infiltration(object):
         #single cn value defined by user
         else:
             corrected_cn=False
-            temp_arr=np.full(ds["Prec_Val"].shape,cn_val)
-            P=ds["Prec_Val"][:,:,:].data
+            temp_arr=np.full(ds["Prec"].shape,cn_val)
+            P=ds["Prec"][:,:,:].data
             temp_arr[P==-9999]=-9999
-            ds["CN_Val"][:,:,:]=temp_arr
+            ds["CN"][:,:,:]=temp_arr
         #---------------
         #calculate cn_amc_modded
         if corrected_cn==True:
-            ds=infiltration_functions.CN_AMC_modded(CN,ds,preferred_date_interval,msk,amc1_coeffs,amc3_coeffs,dormant_thresh,growing_thresh,average_thresh,mon_list_dormant)
+            ds=infiltration_functions.CN_AMC_modded(CN,ds,msk,amc1_coeffs,amc3_coeffs,dormant_thresh,growing_thresh,average_thresh,mon_list_dormant)
             cn_var="CN_mod"
         else:
-            cn_var="CN_Val"
+            cn_var="CN"
 
 
         #calculate infiltr
-        ds,Ia=infiltration_functions.runoff_infilt_calc(ds,cn_var,advanced_cn,advanced_cn_dic)
+        ds=infiltration_functions.infilt_runoff__calc(ds,cn_var,advanced_cn,advanced_cn_dic)
     
          
             
-        return ds,Ia
+        return ds
 
-    #-----------------------------------------    
-    def  runoff_calc(ds,Ia=None):
-        '''
-            ## inf_calcs.infiltration.runoff_calc()
-
-            ds = runoff_calc(ds,Ia=None)
-
-            The method to calculate the runoff in the database. Initial abstraction is None if the
-            curve number is not calculated by the waterpybal.
-            
-            If "runoff_Val" is imported directly to the dataset this method do not have to used.
-
-
-
-            **Parameters**
-
-                - ds netCDF dataset
-
-                    waterpybal netcdf dataset.
-                
-                ---
-                - Ia    None or numpy array default None
-
-                    Initial abstraction. 
-                    If None, runoff= Prec +Irrig - Infilt
-                    If not None, runoff= Prec +Irrig - Infilt - Ia
-                ---
-
-            **Returns**
-
-                -ds netCDF dataset
-
-                    waterpybal netcdf dataset.
-            
-            ---
-            ---
-        '''
-
-        runoff=ds["Irig_Val"][:,:,:].data+ds["Prec_Val"][:,:,:].data-ds["INF_Val"][:,:,:].data
-        if Ia is not None:
-            runoff=runoff-Ia
-        else:
-            pass
-
-        runoff[runoff<0]=0
-        ds["Runoff_Val"][:,:,:]=runoff
-
-        return ds    
+   
 
     #-----------------------------------------
     def max_inf_threshold(ds,var_inp,var_out,threshold):
@@ -551,7 +491,7 @@ class infiltration(object):
 
             ds = max_inf_threshold(ds,var_inp,var_out,threshold)
 
-            The method to force a threshold to an specific variable. Normally used for "INF_Val"
+            The method to force a threshold to an specific variable. Normally used for "INF"
             to limit maximum infiltration values.
 
             **Parameters**
@@ -563,11 +503,11 @@ class infiltration(object):
                 ---
                 - var_inp str
 
-                    Input variable to limit. "INF_Val" is used normally.
+                    Input variable to limit. "INF" is used normally.
                 ---
                 - var_out str
 
-                    Out variable to save the variable. "INF_Val" or "Prec_Val" is used normally.
+                    Out variable to save the variable. "INF" or "Prec" is used normally.
                 ---
                 - threshold float
 

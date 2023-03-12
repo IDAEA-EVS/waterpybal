@@ -1,7 +1,7 @@
 from PyQt6 import QtWidgets,QtGui
 from gui_help.gui_help_load import loadhelp
 from .waterpybal_ui_py.swr_window import Ui_Dialog_swr
-from waterpybal.swr_calcs import swr
+from waterpybal.swr_calcs import SWR
 
 
 class Ui_Dialog_swr_(QtWidgets.QDialog):
@@ -16,7 +16,6 @@ class Ui_Dialog_swr_(QtWidgets.QDialog):
         self.show()
         ##############
         self.ds=None
-        self.single_point=False
         #browse raster button
         self.ui.toolButton_browse_csv.clicked.connect(lambda: self.selectrastFile())
         ##################
@@ -79,7 +78,7 @@ class Ui_Dialog_swr_(QtWidgets.QDialog):
             self.ui.groupBox_single_values.setEnabled(True)
     #################
     def single_point_mod(self):
-        if self.single_point:
+        if self.ds.single_point=="TRUE":
             self.ui.checkBox_raster.setChecked(False)
             self.ui.checkBox_raster.setEnabled(False)
             self.ui.groupBox_raster.setEnabled(False)
@@ -103,7 +102,7 @@ class Ui_Dialog_swr_(QtWidgets.QDialog):
 
         if self.ui.checkBox_raster.isChecked(): #raster
 
-            raster_PRU_dir=self.ui.lineEdit_csv.text()
+            raster_SWR_dir=self.ui.lineEdit_csv.text()
             time_steps=None
 
             raster_bands_dic_or_val['pwp']=int(self.ui.lineEdit_pwp.text())
@@ -111,12 +110,12 @@ class Ui_Dialog_swr_(QtWidgets.QDialog):
             raster_bands_dic_or_val['rrt']=int(self.ui.lineEdit_rrt.text())
         
         elif self.ui.checkbox_ds_vals.isChecked(): #use the dataset values 
-            raster_PRU_dir=None
+            raster_SWR_dir=None
             time_steps="all"
 
 
         else: #same value
-            raster_PRU_dir=None
+            raster_SWR_dir=None
             time_steps=None
 
             raster_bands_dic_or_val['pwp']=float(self.ui.lineEdit_pwp_val.text())
@@ -126,7 +125,7 @@ class Ui_Dialog_swr_(QtWidgets.QDialog):
             self.ds=self.single_val_to_netcdf(self.ds,raster_bands_dic_or_val)
             
             
-        self.ds=swr.swr_calc(self.ds,time_steps,raster_PRU_dir,raster_bands_dic_or_val)
+        self.ds=SWR.swr(self.ds,time_steps,raster_SWR_dir,raster_bands_dic_or_val)
     
     ################
     #to add single point values to db
