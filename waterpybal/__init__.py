@@ -1,3 +1,7 @@
+"""
+An open source library for water balance modelling 
+"""
+
 from .dataset_prep import dataset_gen,variable_management
 from .balance_calcs import Balance
 from .pet_calcs import PET
