@@ -69,7 +69,7 @@ Corrected curve number: **CN_mod**, *no_unit*
 
 ### **Evapotranspiration-related variables**
 
-Potential Evapotranspiration: **ETP_Val**, *mm*
+Potential Evapotranspiration: **PET_Val**, *mm*
 
 
 &nbsp;
@@ -80,7 +80,7 @@ Soil water reserve: **PRu_Val**, *mm*
 
 Permanent Wilting Point: **pwp**, *no_unit*
 
-Field Capacity: **cc**, *no_unit* (Volumetric Content)
+Field Capacity: **fc**, *no_unit* (Volumetric Content)
 
 Root Radial Thickness: **rrt**, *no_unit*
 
@@ -133,5 +133,5 @@ Water Consumption NOT from network loss: **wat_supp_wells_loss**, *%*
 
 Water from other sources (underground infrustructures,etc.): **wat_other**, *mm*
 
-Urban to calculated Infiltration and Evapotranspiration ratio: **urban_to_ds_inf_etp_ratio**, *%*
+Urban to calculated Infiltration and Evapotranspiration ratio: **urban_to_ds_inf_pet_ratio**, *%*
 

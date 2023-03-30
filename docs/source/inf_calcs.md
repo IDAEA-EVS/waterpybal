@@ -1,18 +1,16 @@
-# class inf_calcs.infiltration()
+# class inf_calcs.Infiltration()
 The class to calculate the infiltration
 
 **Methods**
 
-> ds, Ia = Inf_calc(ds,CN_table_dir,raster_dir,HSG_band,LU_band,ELEV_or_HC_band,DEM_path_or_raster,DEM_or_raster,filled_dep,slope_range_list,amc1_coeffs,amc3_coeffs,dormant_thresh,growing_thresh,average_thresh,mon_list_dormant,preferred_date_interval,corrected_cn,single_cn_val,cn_val,advanced_cn,advanced_cn_dic,SC_or_HC)
-
-> ds = runoff_calc(ds,Ia)
+> ds = inf(ds,CN_table_dir,raster_dir,HSG_band,LU_band,ELEV_or_HC_band,corrected_cn=False, single_cn_val=False,cn_val=None,advanced_cn_dic=None,advanced_cn=False, filled_dep=True, slope_range_list=None, amc1_coeffs=None, amc3_coeffs=None, dormant_thresh=None, growing_thresh=None, average_thresh=False, mon_list_dormant=None, SC_or_HC="HC", DEM_or_raster="raster" ,DEM_path_or_raster=None)
 
 > ds = max_inf_threshold(ds,var_inp,var_out,threshold)
 ---
 ---
-## inf_calcs.infiltration.Inf_calc()
+## inf_calcs.Infiltration.inf()
 
-ds, Ia = Inf_calc(ds,CN_table_dir,raster_dir,HSG_band,LU_band,ELEV_or_HC_band,DEM_path_or_raster,DEM_or_raster,filled_dep,slope_range_list,amc1_coeffs,amc3_coeffs,dormant_thresh,growing_thresh,average_thresh,mon_list_dormant,preferred_date_interval,corrected_cn,single_cn_val,cn_val,advanced_cn,advanced_cn_dic,SC_or_HC)
+ds = inf(ds,CN_table_dir,raster_dir,HSG_band,LU_band,ELEV_or_HC_band,corrected_cn=False, single_cn_val=False,cn_val=None,advanced_cn_dic=None,advanced_cn=False, filled_dep=True, slope_range_list=None, amc1_coeffs=None, amc3_coeffs=None, dormant_thresh=None, growing_thresh=None, average_thresh=False, mon_list_dormant=None, SC_or_HC="HC", DEM_or_raster="raster" ,DEM_path_or_raster=None)
 
 The method to calculate the infiltration
 
@@ -27,6 +25,7 @@ waterpybal netcdf dataset.
 CN_table_dir str
 
 Path to the curve number xls table
+
 ---
 raster_dir str
 
@@ -112,6 +111,7 @@ If the Antecedent Moisture Condition (AMC) corrections have to be applied
 single_cn_val bool default False
 
 To use a single CN value for the whole dataset
+
 ---
 cn_val None or float default None
 
@@ -150,47 +150,11 @@ If Hydrologic Condition (default) or Slope Catagory (SC) is defined in the curve
 
 waterpybal netcdf dataset.
 
-- Ia numpy array
-
-Initial abstraction
----
----
-
-## inf_calcs.infiltration.runoff_calc()
-
-ds = runoff_calc(ds,Ia=None)
-
-The method to calculate the runoff in the database. Initial abstraction is None if the
-curve number is not calculated by the waterpybal.
-
-If "runoff_Val" is imported directly to the dataset this method do not have to used.
-
-
-
-**Parameters**
-
-- ds netCDF dataset
-
-waterpybal netcdf dataset.
-
----
-- Ia    None or numpy array default None
-
-Initial abstraction. 
-If None, runoff= Prec +Irrig - Infilt
-If not None, runoff= Prec +Irrig - Infilt - Ia
----
-
-**Returns**
-
-- ds netCDF dataset
-
-waterpybal netcdf dataset.
 
 ---
 ---
 
-## inf_calcs.infiltration.max_inf_threshold()
+## inf_calcs.Infiltration.max_inf_threshold()
 
 ds = max_inf_threshold(ds,var_inp,var_out,threshold)
 
@@ -207,14 +171,17 @@ waterpybal netcdf dataset.
 - var_inp str
 
 Input variable to limit. "INF_Val" is used normally.
+
 ---
 - var_out str
 
 Out variable to save the variable. "INF_Val" or "Prec_Val" is used normally.
+
 ---
 - threshold float
 
 threshold value
+
 ---
 
 **Returns**

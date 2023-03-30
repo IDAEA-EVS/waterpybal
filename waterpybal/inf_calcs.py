@@ -277,10 +277,8 @@ class Infiltration(object):
 
     **Methods**
 
-        > ds, Ia = Inf_calc(ds,CN_table_dir,raster_dir,HSG_band,LU_band,ELEV_or_HC_band,DEM_path_or_raster,DEM_or_raster,filled_dep,slope_range_list,amc1_coeffs,amc3_coeffs,dormant_thresh,growing_thresh,average_thresh,mon_list_dormant,corrected_cn,single_cn_val,cn_val,advanced_cn,advanced_cn_dic,SC_or_HC)
-        
-        > ds = runoff_calc(ds,Ia)
-        
+        > ds= inf(ds,CN_table_dir,raster_dir,HSG_band,LU_band,ELEV_or_HC_band,corrected_cn=False, single_cn_val=False,cn_val=None,advanced_cn_dic=None,advanced_cn=False, filled_dep=True, slope_range_list=None, amc1_coeffs=None, amc3_coeffs=None, dormant_thresh=None, growing_thresh=None, average_thresh=False, mon_list_dormant=None, SC_or_HC="HC", DEM_or_raster="raster" ,DEM_path_or_raster=None)
+                
         > ds = max_inf_threshold(ds,var_inp,var_out,threshold)
         
     ---
@@ -291,7 +289,7 @@ class Infiltration(object):
         '''
             ## inf_calcs.infiltration.Inf_calc()
 
-            ds, Ia = Inf_calc(ds,CN_table_dir,raster_dir,HSG_band,LU_band,ELEV_or_HC_band,DEM_path_or_raster,DEM_or_raster,filled_dep,slope_range_list,amc1_coeffs,amc3_coeffs,dormant_thresh,growing_thresh,average_thresh,mon_list_dormant,corrected_cn,single_cn_val,cn_val,advanced_cn,advanced_cn_dic,SC_or_HC)
+            ds = inf(ds,CN_table_dir,raster_dir,HSG_band,LU_band,ELEV_or_HC_band,corrected_cn=False, single_cn_val=False,cn_val=None,advanced_cn_dic=None,advanced_cn=False, filled_dep=True, slope_range_list=None, amc1_coeffs=None, amc3_coeffs=None, dormant_thresh=None, growing_thresh=None, average_thresh=False, mon_list_dormant=None, SC_or_HC="HC", DEM_or_raster="raster" ,DEM_path_or_raster=None)
 
             The method to calculate the infiltration
 
@@ -424,9 +422,6 @@ class Infiltration(object):
 
                     waterpybal netcdf dataset.
 
-                - Ia numpy array
-
-                    Initial abstraction
                 ---
                 ---
         
@@ -461,6 +456,7 @@ class Infiltration(object):
 
         #single cn value defined by user
         else:
+            ds=infiltration_functions.Irrig_calc(ds)
             corrected_cn=False
             temp_arr=np.full(ds["Prec"].shape,cn_val)
             P=ds["Prec"][:,:,:].data

@@ -1,4 +1,4 @@
-# ***ETP Calculation***
+# ***PET Calculation***
 
 The additional variables added to the dataset in step one can be used here to calculate **evapotranspiration**.
 

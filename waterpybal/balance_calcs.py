@@ -202,13 +202,13 @@ class tools():
 #-----------------------------------------
 class Balance(object):
     '''
-    # class balance_calcs.balance()
+    # class Balance.balance()
 
     The class to calculate the water balance
 
     **Methods**
 
-        > ds = balance_calculation_main (ds,predef_ru_dir_or_np,predef_ru_type='raster',init_swr=100)
+        > ds = balance (ds,predef_ru_dir_or_np=None,predef_ru_type='dataset',init_swr=100)
 
     ---
     ---
@@ -218,9 +218,9 @@ class Balance(object):
     @staticmethod
     def balance (ds,predef_ru_dir_or_np=None,predef_ru_type='dataset',init_swr=100):
         '''
-        ## balance_calcs.balance.balance_calculation_main ()
+        ## balance_calcs.Balance.balance ()
         
-            ds = balance_calculation_main (ds,predef_ru_dir_or_np,predef_ru_type='raster',init_swr=100)
+            ds = balance (ds,predef_ru_dir_or_np=None,predef_ru_type='dataset',init_swr=100)
         
             The method to calculate the water balance from the variables that are calculated using waterpybal.
 

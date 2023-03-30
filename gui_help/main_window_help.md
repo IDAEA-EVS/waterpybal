@@ -1,6 +1,6 @@
 # ***WaterpyBal Studio***
 
-WaterpyBal Studio is the user interface of [Waterpybal Python Library](https://github.com/IDAEA-EVS).
+WaterpyBal Studio is the user interface of [Waterpybal Python Library](https://github.com/IDAEA-EVS/waterpybal).
 
 WaterpyBal Studio contains the more frequently used capabilities of the Waterpybal Python Library.
 
@@ -36,4 +36,4 @@ After the completion of step 1 - 6, the *Visualization and outputs* option allow
 
 More information on each step are available in each section.
 
-The Waterpybal and Waterpybal Studio manual is also available in [Github](https://github.com/IDAEA-EVS).
+The Waterpybal and Waterpybal Studio manual is also available in [Github](https://github.com/IDAEA-EVS/waterpybal).

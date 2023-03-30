@@ -40,7 +40,7 @@ WaterpyBal Studio contains the more frequently used capabilities of the Waterpyb
 
 - Version:
     
-    alpha.1
+    1.0.0
 
 - Developer:
 
@@ -50,7 +50,7 @@ WaterpyBal Studio contains the more frequently used capabilities of the Waterpyb
 
 - License:
     
-    ...
+    AGPL-3.0 license
 
 - Contact Information:
 

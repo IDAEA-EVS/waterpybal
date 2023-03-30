@@ -1,17 +1,17 @@
-# class urban_infiltration.urban_cycle_calcs()
+# class urban_cycle.Urban_cycle()
 
 The class to calculate urban water cycle, inspired by the following article:
 This class could be used if the waterpybal dataset is marked as the urban dataset.
 
 **Methods**
 
-> ds = urban_cycle_main (ds,urban_area_raster_dir,variables_dic)
+> ds = urban_cycle (ds,urban_area_raster_dir,variables_dic)
 
 ---
 ---
-## urban_infiltration.urban_cycle_calcs.urban_infiltration_main()
+## urban_cycle.Urban_cycle.urban_cycle()
 
-ds = urban_cycle_main (ds,urban_area_raster_dir,variables_dic)
+ds = urban_cycle (ds,urban_area_raster_dir,variables_dic)
 
 The method to calculate the urban cycle.
 
@@ -94,7 +94,7 @@ Urban variables and their respective keys are as follows:
 
 - Water from other sources (underground infrustructures,etc.): key wat_other, %
 
-- Urban to calculated Infiltration and Evapotranspiration ratio: key urban_to_ds_inf_etp_ratio, %
+- Urban to calculated Infiltration and Evapotranspiration ratio: key urban_to_ds_inf_pet_ratio, %
 ---
 
 **Returns**
@@ -105,22 +105,22 @@ waterpybal netcdf dataset.
 
 ---
 ---
-# class urban_infiltration.urban_Composite_CN_correction()
+# class urban_cycle.Urban_Composite_CN()
 
 The class to calculate urban composite curve number 
 
 **Methods**
 
-> ds = cia_main(cia_raster,ds,corrected_cn)
+> ds = CIA(cia_raster,ds,corrected_cn)
 
-> ds = ucia_main(tia_raster,ucia_raster,ds,corrected_cn)
+> ds = UIA(tia_raster,ucia_raster,ds,corrected_cn)
 
 ---
 ---
 
-## urban_infiltration.urban_Composite_CN_correction.cia_main()
+## urban_cycle.Urban_Composite_CN.CIA()
 
-ds = cia_main(cia_raster,ds,corrected_cn)
+ds = CIA(cia_raster,ds,corrected_cn)
 
 The method to calculate Connected Impervious Area urban composite curve number 
 
@@ -139,6 +139,7 @@ Connected Impervious Area Percentage of the urban zones of the study area
 - corrected_cn bool default True
 
 If use correctedCN values by AMC as the inputs of composite CN calculation. 
+
 ---
 
 **Returns**
@@ -149,9 +150,9 @@ waterpybal netcdf dataset.
 
 ---
 ---
-## urban_infiltration.urban_Composite_CN_correction.ucia_main()
+## urban_cycle.Urban_Composite_CN.UIA()
 
-ds = ucia_main(tia_raster,ucia_raster,ds,corrected_cn=True)
+ds = UIA(tia_raster,ucia_raster,ds,corrected_cn=True)
 
 The method to calculate Unconnected Impervious Area urban composite curve number 
 

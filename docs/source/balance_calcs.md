@@ -1,16 +1,17 @@
-# class balance_calcs.balance()
+# class balance_calcs.Balance()
 
 The class to calculate the water balance
 
 **Methods**
 
-> ds = balance_calculation_main (ds,predef_ru_dir_or_np,predef_ru_type='raster',init_swr=100)
+> ds = balance (ds,predef_ru_dir_or_np=None,predef_ru_type='dataset',init_swr=100)
 
 ---
----
-## balance_calcs.balance.balance_calculation_main ()
 
-ds = balance_calculation_main (ds,predef_ru_dir_or_np,predef_ru_type='raster',init_swr=100)
+
+## balance_calcs.Balance.balance()
+
+> ds = balance (ds,predef_ru_dir_or_np=None,predef_ru_type='dataset',init_swr=100)
 
 The method to calculate the water balance from the variables that are calculated using waterpybal.
 
@@ -47,6 +48,3 @@ The percentage of the preliminary SWR values that is saturated.
 - ds netCDF dataset
 
 waterpybal netcdf dataset.
-
----
----

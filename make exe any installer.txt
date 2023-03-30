@@ -6,7 +6,7 @@ using the pyinstaller and spec file (same name as the main .py file), make the e
 The properties of the spec file is already made for a onefile installation
 
 command:
-pyinstaller waterpybalstudiointro_window.spec
+pyinstaller waterpybal_gui_main.spec
 
 uso icofx to make icons
 

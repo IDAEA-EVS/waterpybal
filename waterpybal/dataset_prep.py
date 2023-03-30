@@ -15,7 +15,7 @@ class dataset_gen(object):
 
     **Methods**
 
-        > dtype = ds_dimensions(self,lat_lon_type,lat_lon_source,time_source,time_type,preferred_date_interval,lat_name="lat",lon_name="lon",time_name="time",border_res_dic=None,time_dic=None)
+        > ds_dimensions(self,lat_lon_type,lat_lon_source,time_source,time_type,preferred_date_interval,lat_name="lat",lon_name="lon",time_name="time",border_res_dic=None,time_dic=None,single_point=False)
         
         > ds = var_generation(self,dir,ds_values_dic=None,urban_ds=False)
         
@@ -53,7 +53,7 @@ class dataset_gen(object):
         '''
             ## dataset_prep.dataset_gen.ds_dimensions()
             
-            dtype = ds_dimensions(lat_lon_type,lat_lon_source,time_source,time_type,lat_name,lon_name,time_name,border_res_dic,time_dic,preferred_date_interval)
+            ds_dimensions(self,lat_lon_type,lat_lon_source,time_source,time_type,preferred_date_interval,lat_name="lat",lon_name="lon",time_name="time",border_res_dic=None,time_dic=None,single_point=False)
             
             The method to create the waterpybal netCDF dataset lat long and time dimensions
 
@@ -109,14 +109,12 @@ class dataset_gen(object):
                 - preferred_date_interval str
 
                     Date interval of the dataset. "Hourly", "Daily" and "Monthly" are valid.
-
-                ---
-
-            **Returns**
-
-                - dtype str
                 
-                    Dataset time interval dtype
+                ---
+                - single_point boolean default: False
+
+                    If the balance has to be calculated in a single point instead of a raster area
+
                 ---
                 ---
         '''
@@ -342,9 +340,9 @@ class variable_management(object):
 
         > ds = var_interpolation(ds,ras_sample_dir,csv_dir,var_name,method,interpolation_time_int,time_csv_col="time",lat_csv_col="lat",lon_csv_col="lon",multiply=False)
         
-        > ds = var_introduction_from_tiffs(ds,folder_dir,var_name,multiply)
+        > ds = var_introduction_from_tiffs(ds,folder_dir,var_name,multiply=False)
 
-        > ds = var_introduction_from_csv(ds,csv_dir,time_csv_col,var_name,interpolation_time_int,multiply)
+        > ds = var_introduction_from_csv(ds,csv_dir,var_name,interpolation_time_int,time_csv_col="time",multiply=False)
     
         > ds = var_introduction_from_nc(new_nc_dir,ds,var_name)
     ---
@@ -748,6 +746,7 @@ class variable_management(object):
         '''
         ds_temp=nc.Dataset(new_nc_dir,'r+',format='NETCDF')
         ds[var_name][: ,: ,:]=ds_temp[var_name][:, :, :]
+        ds_temp.close()
         return ds
 
 ###################################################################

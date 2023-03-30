@@ -1,27 +1,27 @@
-# class etp_calcs.ETP()
+# class pet_calcs.PET()
 The class to calculate evapotranspiration
 **Methods**
 
-> ds = ETP_calc(ds, method, preferred_date_interval, var_name='ETP_Val', raster_etp_var_dic=None, **kwargs)
+> ds = pet(ds,method,raster_PET_var_dic=None,var_name='PET',**kwargs)
 
 
 ---
 ---
 
-## etp_calcs.ETP.ETP_calc()
+## pet_calcs.PET.pet()
 
 
-ds = ETP_calc(ds, method, preferred_date_interval, var_name='ETP_Val', raster_etp_var_dic=None, **kwargs)
+ds = pet(ds,method,raster_PET_var_dic=None,var_name='PET',**kwargs)
 
-ETP_calc method calculate evapotranspiration in all the dataset. It uses ***pyet*** library for
-ETP calculations which is opted for use in a single point.
+pet method calculate evapotranspiration in all the dataset. It uses ***pyet*** library for
+PET calculations which is opted for use in a single point.
 
-Depending on the ETP method, necessary arguments have to be introduced to the database. If the argument is a 
-fix number for all times and coordinates, it could be determined right away. If the ETP
+Depending on the PET method, necessary arguments have to be introduced to the database. If the argument is a 
+fix number for all times and coordinates, it could be determined right away. If the PET
 related argument is equal to 'ds', the argument will be derived from the variable with the same name
 in the dataset. Note that user have to introduce this variables to the dataset beforehead. If the
-argument value changes with the coordinate but not with the time, the etp argument have to be equal
-to 'raster'. the direction and the band of the targed master have to be determined in raster_etp_var_dic
+argument value changes with the coordinate but not with the time, the pet argument have to be equal
+to 'raster'. the direction and the band of the targed master have to be determined in raster_pet_var_dic
 argument using the following syntax:
 
 {"var_name":["raster_dir","raster_band"]} or {"var_name":"raster_dir"} (band default to 1) or {"var_name":["raster_dir"]} (band default to 1)
@@ -29,11 +29,11 @@ argument using the following syntax:
 
 Let's elaborate using this function with an example:
 
-Suppose we are using penman method for calculating ETP. "tmean" and "wind" are mandatory arguments for this method.
+Suppose we are using penman method for calculating PET. "tmean" and "wind" are mandatory arguments for this method.
 Since in this example "tmean" and "wind" are changing in each coordinate, the user have to use "ds"
 to determine the this data have to be retrieved from dataset variables by the same name. Then there are "aw" and "bw" which
 have a fixed value by default ("aw"=2.6, "bw"=0.536), but could be changed based on the coordinates.
-so by defining "aw"="raster" and "bw"="raster and raster_etp_var_dic={"aw":["ras_dir",band1],"bw":["ras_dir",band2]},
+so by defining "aw"="raster" and "bw"="raster and raster_pet_var_dic={"aw":["ras_dir",band1],"bw":["ras_dir",band2]},
 aw and bw arguments are equal to raster values of band 1 and 2 respectively. 
 
 
@@ -128,14 +128,10 @@ aw and bw arguments are equal to raster values of band 1 and 2 respectively.
 
         tmean: **Mandatory**, rs: **Mandatory**, rh: **Mandatory**, k: 0.31
 
----
-- preferred_date_interval str
-
-Waterpybal dataset time interval.
 
 ---
-- raster_etp_var_dic dic default: None
-If the ETP variable doesn't change in time, it is possible to use a raster to introduce it's values.
+- raster_pet_var_dic dic default: None
+If the PET variable doesn't change in time, it is possible to use a raster to introduce it's values.
 
 Format:
 
@@ -144,13 +140,13 @@ Format:
 ---
 - **kwargs dic
 
-A dictionary that defines the inputs of the ETP method.
+A dictionary that defines the inputs of the PET method.
 
 The constant values can be defined directly
 
-Rasters have to be defined with "raster" keyword, and then introduced in raster_etp_var_dic argument as a dictionary
+Rasters have to be defined with "raster" keyword, and then introduced in raster_pet_var_dic argument as a dictionary
 
-If the ETP variable exists in the waterpybal dataset, the "ds" keyword have to be used. 
+If the PET variable exists in the waterpybal dataset, the "ds" keyword have to be used. 
 
 Format:
 {"var_name_1":constant_value, "var_name_2": "raster", "var_name_3": "ds",... }

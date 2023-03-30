@@ -1,6 +1,6 @@
 # ***Soil Water Reserve Calculation***
 
-CC: Field Capacity (Volumetric Content)
+FC: Field Capacity (Volumetric Content)
 
 PWP: Permanent Wilting Point
 

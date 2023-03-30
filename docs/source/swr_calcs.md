@@ -1,20 +1,20 @@
-# class swr_calcs.swr.swr_calc()
+# class swr_calcs.SWR.swr()
 
 The class to calculate Soil Water Reserve
 
 **Methods**
 
-> ds = swr_calc(ds,time_steps,raster_PRU_dir=None,raster_bands_dic_or_val=None)
+> ds = swr(ds,time_steps,raster_PRU_dir=None,raster_bands_dic_or_val=None)
 
 ---
 ---
-## swr_calcs.swr.swr_calc.swr_calc()
+## swr_calcs.swr.SWR.swr()
 
-ds = swr_calc(ds,time_steps,raster_PRU_dir=None,raster_bands_dic_or_val=None)
+ds = swr(ds,time_steps,raster_PRU_dir=None,raster_bands_dic_or_val=None)
 
 The method to calculate Soil Water Reserve
 
-camp capacity = cc
+field capacity = fc
 
 permanent wilting point = pwp
 
@@ -44,7 +44,7 @@ SWR for steps 123 to the final step will be calculated using the data from step 
 ---
 - raster_PRU_dir None or str default None
 
-Path to the multiband raster that contains "cc", "pwp" & "rrt" values.
+Path to the multiband raster that contains "fc", "pwp" & "rrt" values.
 Useful when SWR is constant in time and varies in space.
 If None, use the data from the waterpybal dataset (spatio-temporal variation).
 
@@ -52,9 +52,9 @@ If None, use the data from the waterpybal dataset (spatio-temporal variation).
 - raster_bands_dic_or_val None or dict default None
 
 Ignored if raster_PRU_dir is None. The dictionary containing the band number of the
-multiband raster for "cc", "pwp" & "rrt".
+multiband raster for "fc", "pwp" & "rrt".
 
-Format: raster_bands_dic_or_val = {"cc":value, "rrt": value , "pwp": value}
+Format: raster_bands_dic_or_val = {"fc":value, "rrt": value , "pwp": value}
 
 ---
 

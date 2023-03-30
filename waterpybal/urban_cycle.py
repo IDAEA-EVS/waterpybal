@@ -132,7 +132,7 @@ class Urban_cycle():
             input_var=v["input_var"]
             dataset_raster_dir_or_value=v["dataset_raster_dir_or_value"]
 
-            ds=urban_cycle_tools.urban_input_raster_or_value(ds,urban_area_raster_dir,variable_name, input_var ,dataset_raster_dir_or_value)
+            ds=urban_cycle_tools.urban_input_raster_or_value(ds,variable_name, input_var ,dataset_raster_dir_or_value,urban_area_raster_dir)
         #Append data to the variables
         time_steps=[ n for n in range(0,len(ds["time"][:].data))]
 
@@ -402,7 +402,7 @@ class urban_cycle_tools():
     
     ###############
     @staticmethod
-    def urban_input_raster_or_value(ds,urban_area_raster_dir,variable_name, input_var ,dataset_raster_dir_or_value):
+    def urban_input_raster_or_value(ds,variable_name, input_var ,dataset_raster_dir_or_value,urban_area_raster_dir=None):
 
 
         if ds["lat"].shape[0]==1 and ds["lon"].shape[0]==1:

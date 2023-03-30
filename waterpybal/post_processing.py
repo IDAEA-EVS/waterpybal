@@ -327,7 +327,7 @@ class post_process():
                 i.to_csv(os.path.join(csv_path,date_str+'.csv'))
     
     ##################################
-    def gen_report(ds_dir,time_dic,var_name_list,save_dir,sam_raster_dir,lat_name='lat',lon_name='lon',identifier_raster_array=None,region="Total"): #region: "Total", "1"
+    def gen_report(ds_dir,time_dic,var_name_list,save_dir,sam_raster_dir=None,lat_name='lat',lon_name='lon',identifier_raster_array=None,region="Total"): #region: "Total", "1"
         
         '''
         ## post_processing.post_process.gen_report ( )
@@ -409,7 +409,9 @@ class post_process():
         df=None
         reg_pix_area=None
         try: d,reg_pix_area,mks= tools.read_raster(sam_raster_dir)
-        except: pass
+        except: 
+            print ("Unable to calculate the study area. Eash pixel area is assumed as 1 m2")
+            reg_pix_area=1
 
         for selected_var in selected_vars:
             
