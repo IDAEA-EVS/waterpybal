@@ -1,4 +1,5 @@
 #skip commiting the compiled files
+*.txt
 *.tiff
 *.tif
 *.pyc
@@ -12,21 +13,21 @@
 *.csv
 *.vrt
 *.png
-.qt_for_python
-input
 *.exe
-__pycache__
 build
 dist
 .vscode
 *.ifp
 *.spec
 *.docx
-*.txt
 *.ico
-meteo_month_to_day_random.py
-gui_help
-waterpybal (studio) guides
-waterpybal_ui_py_inc_functions
-installer
-dist_for_exe
+waterpybal_gui_main.py
+meteo_month_to_day_random.py/
+gui_help/
+waterpybal (studio) guides/
+waterpybal_ui_py_inc_functions/
+installer/
+dist_for_exe/
+.qt_for_python/
+__pycache__/
+input/
