@@ -46,7 +46,7 @@ There is a notebook in `WaterpyBal's github repository <https://github.com/IDAEA
 WaterpyBal Studio: Graphic User interface of WaterpyBal
 =======================================================
 
-The GUI of WaterpyBal (WaterpyBal Studio) can be foud `here <https://github.com/IDAEA-EVS/waterpybal>`_
+The GUI of WaterpyBal (WaterpyBal Studio), alongside the installation guide and the user manual can be found `here <http://hdl.handle.net/10261/305226>`_
 
 
 .. toctree::

@@ -32,7 +32,13 @@ pip can be used for the installation:
 
 Alternatively, download the waterpybal folder from the github repository and add it to lib folder in python path alongside other python libraries.
 
+---
 
+
+
+## ***documentation:***
+\
+Waterpybal documentation can be found in [readthedocs](https://waterpybal.readthedocs.io)
 ---
 
 
@@ -45,6 +51,7 @@ There is a notebook in [WaterpyBal's github repository](https://github.com/IDAEA
 ---
 
 
+
 ## ***WaterpyBal Studio: Graphic User interface of WaterpyBal***
 
-The GUI of WaterpyBal (WaterpyBal Studio), alongside the installation guide and the user manual can be found [here](http://hdl.handle.net/10261/305226)
+The GUI of WaterpyBal (WaterpyBal Studio), alongside the installation guide and the user manual can be foud [here](http://hdl.handle.net/10261/305226)

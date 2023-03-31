@@ -8,7 +8,7 @@ The properties of the spec file is already made for a onefile installation
 command:
 pyinstaller waterpybal_gui_main.spec
 
-uso icofx to make icons
+use icofx to make icons
 
 use installforge to make the installer using the tutorial
 
