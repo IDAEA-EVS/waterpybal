@@ -1,4 +1,4 @@
-GDAL==3.5.0
+#GDAL==3.5.0
 matplotlib==3.5.3
 netCDF4==1.6.3
 numpy==1.21.5
