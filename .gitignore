@@ -33,4 +33,4 @@ __pycache__/
 input/
 
 #exclude
-!*/waterpybal/requirements.txt
+!waterpybal/waterpybal/requirements.txt
