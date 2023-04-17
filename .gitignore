@@ -31,3 +31,6 @@ dist_for_exe/
 .qt_for_python/
 __pycache__/
 input/
+
+#exclude
+!*/waterpybal/requirements.txt
