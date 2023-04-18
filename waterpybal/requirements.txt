@@ -9,3 +9,4 @@ pandas==1.3.5
 pyet==1.1.0
 xarray==0.20.1
 rioxarray==0.9.1
+myst_parser==1.0.0
